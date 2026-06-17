@@ -5,6 +5,11 @@ title: "[BUG] "
 labels: bug
 ---
 
+## Área afectada
+
+- [ ] Backend (`back/`)
+- [ ] Frontend (`front/`)
+
 ## Descripción del bug
 
 Una descripción clara y concisa del problema.
@@ -26,7 +31,8 @@ Qué pasó en realidad.
 ## Entorno
 
 - Versión de Node:
-- Versión de MongoDB:
+- Navegador y versión (si aplica al frontend):
+- Versión de MongoDB (si aplica al backend):
 - Sistema operativo:
 - Rama / commit:
 

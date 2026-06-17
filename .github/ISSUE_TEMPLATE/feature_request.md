@@ -5,6 +5,11 @@ title: "[FEATURE] "
 labels: enhancement
 ---
 
+## Área afectada
+
+- [ ] Backend (`back/`)
+- [ ] Frontend (`front/`)
+
 ## Descripción de la funcionalidad
 
 Qué te gustaría que se agregue o mejore.

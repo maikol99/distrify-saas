@@ -4,13 +4,13 @@
 
 ## Antes de contribuir
 
-Este proyecto se distribuye bajo licencia MIT con una **cláusula adicional de atribución obligatoria** (ver [LICENSE](LICENSE)). Cualquier fork, despliegue o uso comercial debe mantener visible el crédito **"Powered by Distrify — cuyocode.com.ar"**. Si tu contribución modifica el footer, layouts, o cualquier componente relacionado con esa atribución, tu PR no será aceptado si la elimina u oculta.
+Este proyecto se distribuye bajo licencia MIT con una **cláusula adicional de atribución obligatoria** (ver [LICENSE](../LICENSE)). Cualquier fork, despliegue o uso comercial debe mantener visible el crédito **"Powered by Distrify — cuyocode.com.ar"**. Si tu contribución modifica el footer, layouts, o cualquier componente relacionado con esa atribución, tu PR no será aceptado si la elimina u oculta.
 
 ## Configurar el entorno local
 
 ```bash
-git clone https://github.com/tu-usuario/distrify-back.git
-cd distrify-back
+git clone https://github.com/tu-usuario/distrify.git
+cd distrify/back
 npm install
 cp .env.example .env
 npm run start:dev
@@ -44,4 +44,4 @@ Abrí un [Issue](https://github.com/tu-usuario/distrify-back/issues) describiend
 
 ## Reportar vulnerabilidades de seguridad
 
-No abras un issue público. Seguí el proceso descrito en [SECURITY.md](SECURITY.md).
+No abras un issue público. Seguí el proceso descrito en [SECURITY.md](../SECURITY.md).

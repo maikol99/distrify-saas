@@ -106,7 +106,7 @@ Ver [CONTRIBUTING.md](CONTRIBUTING.md) para más detalles.
 
 ## Licencia
 
-Este proyecto está bajo la licencia **MIT con una cláusula adicional de atribución obligatoria**. Ver el archivo [LICENSE](LICENSE) para el texto completo.
+Este proyecto está bajo la licencia **MIT con una cláusula adicional de atribución obligatoria**. Ver el archivo [LICENSE](../LICENSE) para el texto completo.
 
 En resumen:
 

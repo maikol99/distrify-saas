@@ -4,19 +4,19 @@
 
 ## Antes de contribuir
 
-Este proyecto se distribuye bajo licencia MIT con una **cláusula adicional de atribución obligatoria** (ver [LICENSE](LICENSE)). Cualquier fork, despliegue o uso comercial debe mantener visible el crédito **"Powered by Distrify — cuyocode.com.ar"** en el footer de cada pantalla. Si tu contribución toca `FooterCreditComponent.vue`, `dashboardLayout.vue`, `landingPage.vue` o cualquier componente relacionado con esa atribución, tu PR no será aceptado si la elimina, oculta o reduce su visibilidad.
+Este proyecto se distribuye bajo licencia MIT con una **cláusula adicional de atribución obligatoria** (ver [LICENSE](../LICENSE)). Cualquier fork, despliegue o uso comercial debe mantener visible el crédito **"Powered by Distrify — cuyocode.com.ar"** en el footer de cada pantalla. Si tu contribución toca `FooterCreditComponent.vue`, `dashboardLayout.vue`, `landingPage.vue` o cualquier componente relacionado con esa atribución, tu PR no será aceptado si la elimina, oculta o reduce su visibilidad.
 
 ## Configurar el entorno local
 
 ```bash
-git clone https://github.com/tu-usuario/distrify-front.git
-cd distrify-front
+git clone https://github.com/tu-usuario/distrify.git
+cd distrify/front
 npm install
 cp .env.example .env
 npm run dev
 ```
 
-Necesitás tener corriendo el [backend de Distrify](https://github.com/tu-usuario/distrify-back) en paralelo. Ver el [README](README.md) para el detalle completo.
+Necesitás tener corriendo el backend de Distrify (`../back`) en paralelo. Ver el [README](README.md) para el detalle completo.
 
 ## Flujo de contribución
 

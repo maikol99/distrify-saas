@@ -14,13 +14,14 @@ Nos comprometemos a:
 
 ## Alcance
 
-Este proyecto sigue prácticas de seguridad estándar para aplicaciones NestJS. Las áreas de mayor interés para tests de seguridad incluyen:
+Este proyecto es un monorepo con un backend NestJS (`back/`) y un frontend Vue (`front/`). Las áreas de mayor interés para tests de seguridad incluyen:
 
 - Autenticación JWT y manejo de cookies HTTP-only
 - Aislamiento multi-tenant (ShopGuard)
 - Protección CSRF en endpoints de cambio de estado
 - Validación de entrada en todos los endpoints
 - Sanitización de datos en plantillas de email
+- Manejo de tokens y datos sensibles en el cliente (frontend)
 
 ## Prácticas de Seguridad
 
