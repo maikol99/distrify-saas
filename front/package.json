@@ -1,0 +1,55 @@
+{
+  "name": "distrify-front",
+  "version": "0.0.0",
+  "description": "Frontend del ERP y ecommerce Distrify, construido con Vue 3 y Vite.",
+  "author": "Distrify by Cuyocode",
+  "license": "MIT",
+  "homepage": "https://cuyocode.com.ar",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tu-usuario/distrify-front.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tu-usuario/distrify-front/issues"
+  },
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "serve": "set PORT=4433 && serve dist",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@primeuix/themes": "^1.2.3",
+    "@primevue/themes": "^4.3.9",
+    "@vuelidate/core": "^2.0.3",
+    "@vuelidate/validators": "^2.0.4",
+    "axios": "^1.7.3",
+    "chart.js": "^4.4.4",
+    "dexie": "^4.0.8",
+    "google-one-tap": "^1.0.6",
+    "hotkeys-js": "^3.13.7",
+    "html2canvas": "^1.4.1",
+    "html2pdf.js": "^0.10.2",
+    "https-localhost": "^4.7.1",
+    "js-cookie": "^3.0.5",
+    "jspdf": "^2.5.2",
+    "jspdf-autotable": "^3.8.4",
+    "localbase": "^0.7.7",
+    "moment": "^2.30.1",
+    "numeral": "^2.0.6",
+    "pinia": "^2.3.0",
+    "primevue": "^4.3.9",
+    "vue": "^3.4.29",
+    "vue-chartjs": "^5.3.2",
+    "vue-hotkeys": "^0.0.1",
+    "vue-router": "^4.3.3",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.5",
+    "vite": "^5.3.1",
+    "vite-plugin-pwa": "^0.20.5"
+  }
+}

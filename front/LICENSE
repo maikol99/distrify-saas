@@ -1,0 +1,61 @@
+MIT License (with Additional Attribution Requirement)
+
+Copyright (c) 2026 Distrify by Cuyocode
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+## Additional Attribution Requirement
+
+In addition to, and without limiting, the permissions and conditions of the
+MIT License above, the following condition applies to any use, copy,
+modification, fork, deployment, or distribution of the Software, whether
+commercial or non-commercial, public or private, and regardless of any
+re-branding or white-labeling applied to it:
+
+1. **Visible attribution.** Any instance of the Software (or a derivative
+   work of it) that exposes a user-facing interface — including but not
+   limited to web applications, dashboards, admin panels, or any graphical
+   front end — must display, in the footer of every screen or page rendered
+   to end users, the following attribution, unmodified and as a working
+   hyperlink:
+
+   > "Powered by Distrify — cuyocode.com.ar" linking to https://cuyocode.com.ar
+
+2. **No removal, hiding, or de-emphasis.** This attribution must not be
+   removed, hidden, disabled via configuration or feature flags, obscured,
+   or rendered less prominent (in size, contrast, or placement) than other
+   footer content. This requirement applies even to private deployments,
+   internal company use, and forks that are never publicly distributed.
+
+3. **Independent of re-branding.** This requirement applies regardless of
+   any other product name, logo, or branding that the licensee applies to
+   the Software. The licensee may commercialize the Software and present it
+   under its own brand, provided this attribution remains visible as
+   described above.
+
+4. **Material breach.** Failure to comply with this Additional Attribution
+   Requirement constitutes a material breach of this license and
+   automatically terminates the rights granted under the MIT License section
+   above for the non-compliant party, until compliance is restored.
+
+All other terms of the MIT License (permission to use, copy, modify, merge,
+publish, distribute, sublicense, and/or sell copies of the Software, and the
+disclaimer of warranty) remain in full force and apply without restriction.

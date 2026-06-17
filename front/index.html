@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+    <!-- Google Fonts & Icons -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Tailwind CSS (via CDN for Landing Page) -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#ff9933",
+              secondary: "#3399ff",
+              "background-light": "#f8f7f5",
+              "background-dark": "#23190f",
+            },
+            fontFamily: {
+              display: ["Inter", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- SEO básico -->
+    <title>Distrify | Sistema de Gestión de Negocios Inteligente</title>
+    <meta
+      name="description"
+      content="Distrify es un sistema de gestión de negocios que centraliza ventas, compras, stock, finanzas y reportes en un solo lugar. Controlá tu negocio fácilmente desde cualquier dispositivo."
+    />
+    <meta
+      name="keywords"
+      content="sistema de gestión, distrify, gestión de negocios, control de ventas, stock, caja diaria, reportes, facturación, sistema web, gestión comercial"
+    />
+    <meta name="author" content="Distrify" />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Open Graph (para Facebook, WhatsApp, LinkedIn, etc.) -->
+    <meta
+      property="og:title"
+      content="Distrify | Sistema de Gestión de Negocios Inteligente"
+    />
+    <meta
+      property="og:description"
+      content="Controlá ventas, compras, stock y finanzas desde una sola plataforma. Distrify simplifica la gestión diaria de tu negocio."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://distrify.com" />
+    <meta property="og:image" content="https://distrify.com/og-image.jpg" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Distrify | Sistema de Gestión de Negocios Inteligente"
+    />
+    <meta
+      name="twitter:description"
+      content="Distrify centraliza toda la gestión de tu negocio: ventas, stock, caja y reportes en tiempo real."
+    />
+    <meta name="twitter:image" content="https://distrify.com/og-image.jpg" />
+
+    <!-- Favicons -->
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <!-- Nombre de la app -->
+    <meta name="application-name" content="Distrify" />
+    <meta name="theme-color" content="#0077ff" />
+
+    <!-- Scripts -->
+    <script type="module" src="/src/main.js"></script>
+    <script
+      src="https://kit.fontawesome.com/9e9fab53c7.js"
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- Google tag (gtag.js) -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-ZJ8ZBY7H60"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "G-ZJ8ZBY7H60");
+    </script>
+  </head>
+  <body>
+    <div id="app"></div>
+  </body>
+</html>

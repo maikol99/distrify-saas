@@ -1,0 +1,24 @@
+export enum UserRolesEnum {
+  ADMIN = 'ADMIN',
+  MANAGER = 'MANAGER',
+  USER = 'USER',
+  SUPER_ADMIN = 'SUPER_ADMIN',
+}
+
+export enum UserPlanEnum{
+  FREE='FREE',
+  BASIC = 'BASIC',
+  MEDIUM = 'MEDIUM',
+  PREMIUM = 'PREMIUM'
+}
+
+export enum UserDepartmentEnum {
+  VENTAS = 'VENTAS',
+  COMPRAS = 'COMPRAS',
+  LOGISTICA = 'LOGISTICA',
+  CALIDAD = 'CALIDAD',
+  DISTRIBUCION = 'DISTRIBUCION',
+  ADMINISTRACION = 'ADMINISTRACION',
+  RECURSOS_HUMANOS = 'RECURSOS_HUMANOS',
+  FINANZAS = 'FINANZAS',
+}

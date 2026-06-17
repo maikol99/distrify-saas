@@ -1,0 +1,22 @@
+import { fileURLToPath, URL } from "node:url";
+import { defineConfig } from "vite";
+import vue from "@vitejs/plugin-vue";
+import { VitePWA } from "vite-plugin-pwa";
+
+export default defineConfig({
+  plugins: [vue()],
+  resolve: {
+    alias: {
+      "@": fileURLToPath(new URL("./src", import.meta.url)),
+    },
+  },
+  build: {
+    minify: "terser", // usar terser para más control
+    terserOptions: {
+      compress: {
+        drop_console: true,   // elimina todos los console.log
+        drop_debugger: true,  // elimina debugger
+      },
+    },
+  },
+});
