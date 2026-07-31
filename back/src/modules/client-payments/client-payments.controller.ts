@@ -2,8 +2,12 @@ import { Controller, Post, Get, Put, Delete, Param, Query, Body, UseGuards } fro
 import { ClientPaymentsService } from './client-payments.service';
 import { ClientPaymentsDto } from './dto/client-payments.dto';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
+import { PlanGuard } from 'src/guards/plan.guard';
+import { RequirePlan } from 'src/decorators/plan.decorator';
+import { ShopPlanEnum } from 'src/modules/shops/enum/shops.enum';
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, PlanGuard)
+@RequirePlan(ShopPlanEnum.BASIC)
 @Controller('client-payments')
 export class ClientPaymentsController {
   constructor(private readonly clientPaymentsService: ClientPaymentsService) {}

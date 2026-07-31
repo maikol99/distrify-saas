@@ -22,6 +22,8 @@ export class Sales {
         productName: { type: String },
         salePrice: { type: Number },
         quantity: { type: Number },
+        isCombo: { type: Boolean, default: false },
+        comboProducts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Products' }],
         variants: [
           {
             size: { type: String },
@@ -37,6 +39,8 @@ export class Sales {
     productName: string;
     salePrice: number;
     quantity: number;
+    isCombo?: boolean;
+    comboProducts?: mongoose.Schema.Types.ObjectId[];
     variants?: {
       size: string;
       color: string;
@@ -139,3 +143,6 @@ export class Sales {
 }
 
 export const SalesSchema = SchemaFactory.createForClass(Sales);
+
+SalesSchema.index({ shopId: 1 });
+SalesSchema.index({ shopId: 1, createdAt: -1 });

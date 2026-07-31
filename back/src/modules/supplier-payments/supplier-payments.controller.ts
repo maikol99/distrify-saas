@@ -12,8 +12,12 @@ import {
 import { SupplierPaymentsService } from './supplier-payments.service';
 import { SupplierPaymentsDto } from './dto/supplier-payments.dto';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
+import { PlanGuard } from 'src/guards/plan.guard';
+import { RequirePlan } from 'src/decorators/plan.decorator';
+import { ShopPlanEnum } from 'src/modules/shops/enum/shops.enum';
 
-@UseGuards(JwtAuthGuard, )
+@UseGuards(JwtAuthGuard, PlanGuard)
+@RequirePlan(ShopPlanEnum.BASIC)
 @Controller('supplier-payments')
 export class SupplierPaymentsController {
   constructor(

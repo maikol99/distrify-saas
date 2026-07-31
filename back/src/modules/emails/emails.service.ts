@@ -13,7 +13,7 @@ export class EmailsService {
 
   constructor(private configService: ConfigService) {
     this.emailFrom = this.configService.get<string>('EMAIL_FROM', 'noreply@example.com');
-    this.emailFromName = this.configService.get<string>('EMAIL_FROM_NAME', 'Distrify');
+    this.emailFromName = this.configService.get<string>('EMAIL_FROM_NAME', 'Alevia Pay');
     this.frontendUrl = this.configService.get<string>('FRONTEND_URL', 'http://localhost:5173');
 
     const apiKey = this.configService.get<string>('RESEND_API_KEY');
@@ -147,7 +147,7 @@ export class EmailsService {
     userName?: string,
   ) {
     try {
-      const subject = 'Restablecimiento de contraseña - Distrify';
+      const subject = 'Restablecimiento de contraseña - Alevia Pay';
 
       const htmlBody = `
       <!DOCTYPE html>
@@ -155,7 +155,7 @@ export class EmailsService {
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Restablecimiento de contraseña - Distrify</title>
+        <title>Restablecimiento de contraseña - Alevia Pay</title>
         <style>
           @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap');
           * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -194,13 +194,13 @@ export class EmailsService {
         <div class="wrapper">
           <div class="email-container">
             <div class="header">
-              <div class="logo">Distrify</div>
+              <div class="logo">Alevia Pay</div>
               <div class="header-sub">Sistema de Gestión de Negocios</div>
             </div>
             <div class="content">
               <div class="greeting">Hola${userName ? ` ${userName}` : ''},</div>
               <div class="message">
-                Recibimos una solicitud para restablecer la contraseña de tu cuenta en Distrify.
+                Recibimos una solicitud para restablecer la contraseña de tu cuenta en Alevia Pay.
                 Si no la solicitaste, podés ignorar este correo sin problema.
               </div>
               <div class="btn-container">
@@ -218,12 +218,12 @@ export class EmailsService {
                 </ul>
               </div>
               <div class="security">
-                <div class="security-text">🔒 Por tu seguridad, nunca compartas este enlace. El equipo de Distrify jamás te lo solicitará.</div>
+                <div class="security-text">🔒 Por tu seguridad, nunca compartas este enlace. El equipo de Alevia Pay jamás te lo solicitará.</div>
               </div>
             </div>
             <div class="footer">
               <div class="footer-text">¿Necesitás ayuda? Respondé este correo y te asistimos.</div>
-              <div class="footer-text">Saludos, <span class="company">Equipo de Distrify</span></div>
+              <div class="footer-text">Saludos, <span class="company">Equipo de Alevia Pay</span></div>
               <div class="disclaimer">Este correo fue enviado automáticamente.</div>
             </div>
           </div>
@@ -255,7 +255,7 @@ export class EmailsService {
     userName?: string,
   ) {
     try {
-      const subject = 'Bienvenido a Distrify - Verifica tu cuenta';
+      const subject = 'Bienvenido a Alevia Pay - Verifica tu cuenta';
 
       const htmlBody = `
     <!DOCTYPE html>
@@ -263,7 +263,7 @@ export class EmailsService {
     <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Verificá tu cuenta - Distrify</title>
+      <title>Verificá tu cuenta - Alevia Pay</title>
       <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -304,14 +304,14 @@ export class EmailsService {
       <div class="wrapper">
         <div class="email-container">
           <div class="header">
-            <div class="logo">Distrify</div>
+            <div class="logo">Alevia Pay</div>
             <div class="header-sub">Sistema de Gestión de Negocios</div>
           </div>
           <div class="content">
             <div class="greeting">¡Bienvenido${userName ? ` ${userName}` : ''}!</div>
             <div class="sub-greeting">Tu cuenta está casi lista</div>
             <div class="message">
-              Gracias por registrarte en Distrify. Para activar tu cuenta y comenzar a gestionar tu negocio, verificá tu correo electrónico.
+              Gracias por registrarte en Alevia Pay. Para activar tu cuenta y comenzar a gestionar tu negocio, verificá tu correo electrónico.
             </div>
             <div class="btn-container">
               <a href="${this.frontendUrl}/validar-email/${verificationToken}" class="btn-main">Verificar mi cuenta</a>
@@ -334,8 +334,8 @@ export class EmailsService {
           </div>
           <div class="footer">
             <div class="footer-text">¿Tenés problemas? Respondé este correo y te ayudamos.</div>
-            <div class="footer-text">Saludos, <span class="company">Equipo de Distrify</span></div>
-            <div class="disclaimer">Este correo fue enviado automáticamente. Si no te registraste en Distrify, podés ignorarlo.</div>
+            <div class="footer-text">Saludos, <span class="company">Equipo de Alevia Pay</span></div>
+            <div class="disclaimer">Este correo fue enviado automáticamente. Si no te registraste en Alevia Pay, podés ignorarlo.</div>
           </div>
         </div>
       </div>
@@ -362,7 +362,7 @@ export class EmailsService {
   //?Enviar email de bienvenida
   async sendWelcomeEmail(to: string, userName: string, userEmail: string) {
     try {
-      const subject = `¡Bienvenido a Distrify, ${userName}!`;
+      const subject = `¡Bienvenido a Alevia Pay, ${userName}!`;
 
       const htmlBody = `
       <!DOCTYPE html>
@@ -370,7 +370,7 @@ export class EmailsService {
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>¡Bienvenido a Distrify!</title>
+        <title>¡Bienvenido a Alevia Pay!</title>
         <style>
           @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap');
           * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -405,13 +405,13 @@ export class EmailsService {
         <div class="wrapper">
           <div class="email-container">
             <div class="hero-header">
-              <div class="logo">Distrify</div>
+              <div class="logo">Alevia Pay</div>
               <div class="header-sub">Sistema de Gestión de Negocios</div>
             </div>
             <div class="content">
               <div class="greeting">¡Bienvenido, ${userName}!</div>
               <div class="message">
-                Tu cuenta en Distrify está lista. Empezá a gestionar tu negocio hoy mismo.
+                Tu cuenta en Alevia Pay está lista. Empezá a gestionar tu negocio hoy mismo.
               </div>
               <div class="steps">
                 <div class="steps-title">Primeros pasos:</div>
@@ -428,7 +428,7 @@ export class EmailsService {
             </div>
             <div class="footer">
               <div class="footer-text">¿Tenés dudas? Respondé este correo y te ayudamos.</div>
-              <div class="footer-text">Saludos, <span class="company">Equipo de Distrify</span></div>
+              <div class="footer-text">Saludos, <span class="company">Equipo de Alevia Pay</span></div>
               <div class="disclaimer">Recibiste este correo porque te registraste con: ${userEmail}</div>
             </div>
           </div>
@@ -695,7 +695,7 @@ export class EmailsService {
         day: 'numeric',
       });
 
-      const subject = `Resumen Diario - Distrify | ${new Date(date).toLocaleDateString('es-AR')}`;
+      const subject = `Resumen Diario - Alevia Pay | ${new Date(date).toLocaleDateString('es-AR')}`;
 
       const formatCurrency = (amount: number) => {
         return new Intl.NumberFormat('es-AR', {
@@ -735,7 +735,7 @@ export class EmailsService {
     <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Resumen Diario - Distrify</title>
+      <title>Resumen Diario - Alevia Pay</title>
       <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -779,7 +779,7 @@ export class EmailsService {
       <div class="email-container">
         <div class="hero-header">
           <div class="hero-title">Resumen Diario</div>
-          <div class="hero-subtitle">Distrify - Gestión & ecommerce</div>
+          <div class="hero-subtitle">Alevia Pay - Gestión & ecommerce</div>
           <div class="date-badge">${formattedDate}</div>
         </div>
         <div class="content">
@@ -844,8 +844,8 @@ export class EmailsService {
           </div>
         </div>
         <div class="footer">
-          <div class="footer-text">Este es tu resumen automático diario de Distrify. ¡Que tengas un excelente día!</div>
-          <div class="footer-disclaimer">© 2025 Distrify. Sistema de Gestión de Negocios.</div>
+          <div class="footer-text">Este es tu resumen automático diario de Alevia Pay. ¡Que tengas un excelente día!</div>
+          <div class="footer-disclaimer">© 2025 Alevia Pay. Sistema de Gestión de Negocios.</div>
         </div>
       </div>
     </body>
@@ -871,7 +871,7 @@ export class EmailsService {
   //?Enviar email de prueba expirada
   async sendTrialExpiredEmail(to: string, userName?: string) {
     try {
-      const subject = 'Tu período de prueba en Distrify ha finalizado';
+      const subject = 'Tu período de prueba en Alevia Pay ha finalizado';
 
       const htmlBody = `
       <!DOCTYPE html>
@@ -879,7 +879,7 @@ export class EmailsService {
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Período de prueba finalizado - Distrify</title>
+        <title>Período de prueba finalizado - Alevia Pay</title>
         <style>
           @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
           * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -903,13 +903,13 @@ export class EmailsService {
       <body>
         <div class="email-container">
           <div class="header">
-            <div class="logo">Distrify</div>
+            <div class="logo">Alevia Pay</div>
             <div class="header-subtitle">Sistema de Gestión de Negocios</div>
           </div>
           <div class="content">
             <div class="greeting">Hola${userName ? ` ${userName}` : ''},</div>
             <div class="message">
-              Tu período de prueba gratuito de <strong>7 días</strong> en Distrify ha finalizado.
+              Tu período de prueba gratuito de <strong>7 días</strong> en Alevia Pay ha finalizado.
               Esperamos que hayas podido conocer todas las herramientas que tenemos para vos.
             </div>
             <div class="highlight-box">
@@ -919,7 +919,7 @@ export class EmailsService {
               </div>
             </div>
             <div class="message">
-              Con un plan premium podés acceder a todas las funcionalidades de Distrify:
+              Con un plan premium podés acceder a todas las funcionalidades de Alevia Pay:
               ventas, inventario, reportes, caja, pedidos y mucho más, sin interrupciones.
             </div>
             <div class="button-container">
@@ -930,7 +930,7 @@ export class EmailsService {
             </div>
           </div>
           <div class="footer">
-            <div class="footer-text">Saludos cordiales,<br><strong>Equipo de Distrify</strong></div>
+            <div class="footer-text">Saludos cordiales,<br><strong>Equipo de Alevia Pay</strong></div>
             <div class="disclaimer">Este correo fue enviado automáticamente.</div>
           </div>
         </div>

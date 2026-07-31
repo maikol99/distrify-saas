@@ -7,7 +7,7 @@
           <i class="fas fa-times"></i>
         </button>
         <div class="welcome-section">
-          <h1>Bienvenido a Distrify! 🎉</h1>
+          <h1>Bienvenido a Alevia Pay! 🎉</h1>
           <p class="welcome-subtitle">
             Comencemos a optimizar los procesos de tu negocio para que puedas
             <strong>recuperar tiempo y enfocarte en el crecimiento</strong>.
@@ -112,7 +112,7 @@
                 <i class="fas fa-play-circle"></i>
               </div>
               <div class="card-content">
-                <div class="card-label">Domina Distrify</div>
+                <div class="card-label">Domina Alevia Pay</div>
                 <h4>Tutoriales</h4>
               </div>
             </div>

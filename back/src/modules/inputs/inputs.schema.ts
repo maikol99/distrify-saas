@@ -34,3 +34,5 @@ export class Inputs {
 }
 
 export const InputsSchema = SchemaFactory.createForClass(Inputs);
+
+InputsSchema.index({ shopId: 1 });

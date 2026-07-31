@@ -8,7 +8,7 @@
 
       <h1 class="title">Verificá tu correo electrónico</h1>
       <p class="subtitle">
-        Para usar Distrify necesitás confirmar tu dirección de email.
+        Para usar Alevia Pay necesitás confirmar tu dirección de email.
         Buscá el correo que te enviamos a <strong>{{ email }}</strong> y hacé clic en el botón de verificación.
       </p>
 

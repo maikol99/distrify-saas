@@ -76,7 +76,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         trialEnd.setDate(trialEnd.getDate() + 7);
         if (new Date() > trialEnd) {
           throw new UnauthorizedException(
-            'Tu período de prueba de 7 días ha finalizado. Actualizá tu plan para continuar usando Distrify.',
+            'Tu período de prueba de 7 días ha finalizado. Actualizá tu plan para continuar usando Alevia Pay.',
           );
         }
       }

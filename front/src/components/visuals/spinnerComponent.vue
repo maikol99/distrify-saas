@@ -24,7 +24,7 @@
   width: 88px;
   height: 88px;
   border: 4px solid transparent;
-  border-top: 4px solid #f9931e; /* Color principal Distrify */
+  border-top: 4px solid #f9931e; /* Color principal Alevia Pay */
   border-radius: 50%;
   animation: spin 1s linear infinite;
   position: relative;

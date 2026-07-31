@@ -1286,7 +1286,7 @@ export default {
             "CONSUMIDOR FINAL"
           }`,
           `Vendedor: ${selectedSale.cashier || "NO IDENTIFICADO"}`,
-          `Terminal: DISTRIFY GESTIÓN`,
+          `Terminal: ALEVIA PAY`,
         ];
 
         if (selectedSale.listName) {
@@ -1586,7 +1586,7 @@ export default {
 
         doc.setFontSize(7);
         doc.setFont("helvetica", "normal");
-        doc.text("Distrify - Gestión & E-Commerce", pageWidth / 2, yPos, {
+        doc.text("Alevia Pay - Gestión & E-Commerce", pageWidth / 2, yPos, {
           align: "center",
         });
         yPos += 3;

@@ -1,8 +1,8 @@
 {
-  "name": "distrify-front",
+  "name": "alevia-pay-front",
   "version": "0.0.0",
-  "description": "Frontend del ERP y ecommerce Distrify, construido con Vue 3 y Vite.",
-  "author": "Distrify by Cuyocode",
+  "description": "Frontend del ERP y ecommerce Alevia Pay, construido con Vue 3 y Vite.",
+  "author": "Alevia Pay",
   "license": "MIT",
   "homepage": "https://cuyocode.com.ar",
   "repository": {

@@ -23,7 +23,7 @@
       <div class="card-content">
         <p class="card-text">
           Tu prueba gratuita de <span class="highlight-text">7 días</span> ha terminado.
-          Esperamos que hayas podido conocer todo lo que Distrify tiene para ofrecerte.
+          Esperamos que hayas podido conocer todo lo que Alevia Pay tiene para ofrecerte.
         </p>
         <p class="card-text">
           Para continuar gestionando tu negocio — ventas, inventario, caja, reportes y mucho más —

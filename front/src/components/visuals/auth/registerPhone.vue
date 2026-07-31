@@ -271,18 +271,10 @@ export default {
 
       if (this.phoneNumber.length === 0) return;
 
-      // Validar que solo contenga números
-      if (!/^\d+$/.test(this.phoneNumber)) {
-        this.hasError = true;
-        this.errorMessage = "El número solo puede contener dígitos";
-        return;
-      }
-
-      // Validar longitud mínima
-      if (this.phoneNumber.length < 6) {
-        this.hasError = true;
-        this.errorMessage = "El número debe tener al menos 6 dígitos";
-        return;
+      // Solo permitir dígitos — filtrar automáticamente
+      const cleaned = this.phoneNumber.replace(/\D/g, "");
+      if (cleaned !== this.phoneNumber) {
+        this.phoneNumber = cleaned;
       }
 
       // Validar longitud máxima
@@ -309,6 +301,12 @@ export default {
       return examples[this.selectedCountry.code] || "123456789";
     },
     async savePhoneNumber() {
+      // Validar mínimo solo al intentar guardar
+      if (this.phoneNumber && this.phoneNumber.length < 6) {
+        this.hasError = true;
+        this.errorMessage = "El número debe tener al menos 6 dígitos";
+        return;
+      }
       if (!this.canSaveNumber) return;
 
       this.sending = true;
@@ -331,11 +329,6 @@ export default {
 
           if (data.success) {
             this.$emit("submit");
-            if (this.phoneNumber) {
-              alert(
-                "¡Gracias por compartir tu teléfono! Nuestro equipo podrá contactarte solo  cuando sea necesario."
-              );
-            }
           }
         } else {
           // Si no hay número, simplemente continuar

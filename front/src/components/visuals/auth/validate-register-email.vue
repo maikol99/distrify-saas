@@ -2,7 +2,7 @@
   <div class="validate-container">
     <div class="validate-card">
       <div class="brand">
-        <div class="brand-logo">Distrify</div>
+        <div class="brand-logo">Alevia Pay</div>
         <div class="brand-sub">Sistema de Gestión de Negocios</div>
       </div>
 

@@ -1,4 +1,3 @@
-/* eslint-disable */
 import {
   BadRequestException,
   Injectable,
@@ -7,12 +6,13 @@ import {
   Logger,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import mongoose, { Model, Types } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Products } from './products.schema';
 import { v2 as cloudinary, v2 } from 'cloudinary';
 import toStream = require('buffer-to-stream');
 import { ConfigService } from '@nestjs/config';
 import { CreateProductDto } from './dto/products.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
 import {
   ProductRangeEnum,
   ProductUpdateActionEnum,
@@ -42,8 +42,14 @@ export class ProductsService {
       if (!body.shopId) {
         throw new BadRequestException('shopId no definido');
       }
+      if (typeof body.shopId === 'string' && Types.ObjectId.isValid(body.shopId)) {
+        (body as any).shopId = new Types.ObjectId(body.shopId);
+      }
+      if (typeof body.categoryId === 'string' && Types.ObjectId.isValid(body.categoryId)) {
+        (body as any).categoryId = new Types.ObjectId(body.categoryId);
+      }
       // Verificar límite de productos según plan
-      await this.planLimitsService.checkProductLimit(body.shopId as string);
+      await this.planLimitsService.checkProductLimit(body.shopId as any);
       const product = await this.productsModel.create(body);
       if (!product) {
         throw new InternalServerErrorException('Error creating product');
@@ -79,7 +85,11 @@ export class ProductsService {
   ) {
     try {
       // Construir el filtro base
-      const filter: any = { shopId };
+      const filter: any = {
+        shopId: Types.ObjectId.isValid(shopId)
+          ? { $in: [shopId, new Types.ObjectId(shopId)] }
+          : shopId,
+      };
 
       // Agregar filtro de búsqueda si se proporciona
       if (search && search.trim()) {
@@ -146,31 +156,14 @@ export class ProductsService {
       if (!page && !limit) {
         const products = await this.productsModel
           .find(filter)
-          .sort({ name: 1 });
-
-        // Popular manualmente solo los que tienen categoryId válido
-        const populatedProducts = await Promise.all(
-          products.map(async (product) => {
-            if (
-              product.categoryId &&
-              product.categoryId.toString() !== '' &&
-              mongoose.Types.ObjectId.isValid(product.categoryId)
-            ) {
-              try {
-                return await product.populate('categoryId');
-              } catch (error) {
-                // Si falla el populate, devolver el producto sin popular
-                return product;
-              }
-            }
-            return product;
-          }),
-        );
+          .populate({ path: 'categoryId', select: 'name description' })
+          .sort({ name: 1 })
+          .lean();
 
         return {
           success: true,
           message: 'Productos encontrados',
-          products: populatedProducts,
+          products,
         };
       }
 
@@ -180,28 +173,11 @@ export class ProductsService {
 
       const products = await this.productsModel
         .find(filter)
+        .populate({ path: 'categoryId', select: 'name description' })
         .skip(skip)
         .limit(numberLimit)
-        .sort({ name: 1 });
-
-      // Popular manualmente solo los que tienen categoryId válido
-      const populatedProducts = await Promise.all(
-        products.map(async (product) => {
-          if (
-            product.categoryId &&
-            product.categoryId.toString() !== '' &&
-            mongoose.Types.ObjectId.isValid(product.categoryId)
-          ) {
-            try {
-              return await product.populate('categoryId');
-            } catch (error) {
-              // Si falla el populate, devolver el producto sin popular
-              return product;
-            }
-          }
-          return product;
-        }),
-      );
+        .sort({ name: 1 })
+        .lean();
 
       const total = await this.productsModel.countDocuments(filter);
 
@@ -215,7 +191,7 @@ export class ProductsService {
       return {
         success: true,
         message: 'Productos encontrados',
-        products: populatedProducts,
+        products,
         pagination: {
           total: total,
           limit: numberLimit,
@@ -251,7 +227,7 @@ export class ProductsService {
   }
 
   //Actualizar producto
-  async update(id: string, body) {
+  async update(id: string, body: UpdateProductDto) {
     try {
       const productWithoutUpdate = await this.productsModel.findById(id);
 
@@ -352,8 +328,10 @@ export class ProductsService {
       const limitNumber = Number(limit) || 10;
       const skip = (pageNumber - 1) * limitNumber;
 
-      const normalizedInput = String(name).toLowerCase();
-      const accentInsensitiveRegex = normalizedInput
+      const escapedInput = String(name)
+        .replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
+        .toLowerCase();
+      const accentInsensitiveRegex = escapedInput
         .replace(/a/g, '[aá]')
         .replace(/e/g, '[eé]')
         .replace(/i/g, '[ií]')
@@ -362,43 +340,37 @@ export class ProductsService {
         .replace(/c/g, '[cç]');
       const regex = new RegExp(accentInsensitiveRegex, 'i');
 
+      const shopIdFilter = Types.ObjectId.isValid(shopId)
+        ? { $in: [shopId, new Types.ObjectId(shopId)] }
+        : shopId;
+
+      const searchFilter = {
+        shopId: shopIdFilter,
+        $or: [
+          { name: regex },
+          { code: regex },
+          { description: regex },
+        ],
+      };
+
       const products = await this.productsModel
-        .find({ shopId, name: regex })
+        .find(searchFilter)
+        .populate({ path: 'categoryId', select: 'name description' })
         .skip(skip)
         .limit(limitNumber)
-        .sort({ name: 1 });
-
-      // Popular solo los que tengan categoryId válido
-      const populatedProducts = await Promise.all(
-        products.map(async (product) => {
-          if (
-            product.categoryId &&
-            product.categoryId.toString() !== '' &&
-            mongoose.Types.ObjectId.isValid(product.categoryId)
-          ) {
-            try {
-              return await product.populate('categoryId');
-            } catch (error) {
-              return product;
-            }
-          }
-          return product;
-        }),
-      );
+        .sort({ name: 1 })
+        .lean();
 
       if (products.length === 0) {
         return { success: false, message: 'No se encontraron productos' };
       }
 
-      const totalDocuments = await this.productsModel.countDocuments({
-        shopId,
-        name: regex,
-      });
+      const totalDocuments = await this.productsModel.countDocuments(searchFilter);
 
       return {
         success: true,
         message: 'Productos encontrados',
-        data: populatedProducts,
+        data: products,
         pagination: {
           total: totalDocuments,
           page: pageNumber,
@@ -424,25 +396,10 @@ export class ProductsService {
         };
       }
 
-      const products = await this.productsModel.find({ shopId, code });
-
-      // Popular solo los que tengan categoryId válido
-      const populatedProducts = await Promise.all(
-        products.map(async (product) => {
-          if (
-            product.categoryId &&
-            product.categoryId.toString() !== '' &&
-            mongoose.Types.ObjectId.isValid(product.categoryId)
-          ) {
-            try {
-              return await product.populate('categoryId');
-            } catch (error) {
-              return product;
-            }
-          }
-          return product;
-        }),
-      );
+      const products = await this.productsModel
+        .find({ shopId, code })
+        .populate({ path: 'categoryId', select: 'name description' })
+        .lean();
 
       if (!products || products.length === 0) {
         return {
@@ -454,7 +411,7 @@ export class ProductsService {
       return {
         success: true,
         message: 'Productos encontrados',
-        data: populatedProducts,
+        data: products,
       };
     } catch (error) {
       this.logger.error('Error al buscar productos:', error);
@@ -576,18 +533,32 @@ export class ProductsService {
         throw new BadRequestException('shopId no definido');
       }
 
-      const query: any = { shopId };
+      const query: any = {
+        shopId: Types.ObjectId.isValid(shopId)
+          ? { $in: [shopId, new Types.ObjectId(shopId)] }
+          : shopId,
+      };
 
       if (categoryId) {
-        query['categoryId'] = categoryId;
+        query['categoryId'] = Types.ObjectId.isValid(categoryId)
+          ? { $in: [categoryId, new Types.ObjectId(categoryId)] }
+          : categoryId;
       }
 
       if (supplierId && supplierId.trim() !== '') {
-        query['supplierId'] = supplierId;
+        query['supplierId'] = Types.ObjectId.isValid(supplierId)
+          ? { $in: [supplierId, new Types.ObjectId(supplierId)] }
+          : supplierId;
       }
 
-      if (name) {
-        query['name'] = { $regex: name, $options: 'i' };
+      if (name && name.trim() !== '') {
+        const escapedInput = name.trim().replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+        const regex = new RegExp(escapedInput, 'i');
+        query.$or = [
+          { name: regex },
+          { code: regex },
+          { description: regex },
+        ];
       }
       if (minAmount !== undefined || maxAmount !== undefined) {
         query.sellPrice = {};
@@ -653,41 +624,12 @@ export class ProductsService {
 
       const products = await this.productsModel
         .find(query)
+        .populate({ path: 'categoryId', select: 'name' })
+        .populate({ path: 'supplierId', select: 'name' })
         .skip(skip)
         .limit(limitNumber)
-        .sort(sort);
-
-      const populatedProducts = await Promise.all(
-        products.map(async (product) => {
-          // Popular categoría si es válida
-          if (
-            product.categoryId &&
-            product.categoryId.toString() !== '' &&
-            mongoose.Types.ObjectId.isValid(product.categoryId)
-          ) {
-            try {
-              await product.populate({ path: 'categoryId', select: 'name' });
-            } catch (error) {
-              // Ignorar error y dejar sin popular
-            }
-          }
-
-          // Popular supplier si es válido
-          if (
-            product.supplierId &&
-            product.supplierId.toString() !== '' &&
-            mongoose.Types.ObjectId.isValid(product.supplierId)
-          ) {
-            try {
-              await product.populate({ path: 'supplierId', select: 'name' });
-            } catch (error) {
-              // Ignorar error y dejar sin popular
-            }
-          }
-
-          return product;
-        }),
-      );
+        .sort(sort)
+        .lean();
 
       if (products.length === 0) {
         return {
@@ -875,7 +817,7 @@ export class ProductsService {
   async getStockValue(shopId: string, location?: string) {
     try {
       const filter: any = { shopId };
-      const products = await this.productsModel.find(filter).select('name quantity depotStock buyPrice sellPrice category categoryId');
+      const products = await this.productsModel.find(filter).select('name quantity depotStock buyPrice sellPrice category categoryId').lean();
 
       let totalCost = 0;
       let totalSellValue = 0;

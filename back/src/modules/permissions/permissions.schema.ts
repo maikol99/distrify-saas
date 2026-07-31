@@ -17,3 +17,5 @@ export class UserPermissions extends Document {
 
 export const UserPermissionsSchema =
   SchemaFactory.createForClass(UserPermissions);
+
+UserPermissionsSchema.index({ shopId: 1 });

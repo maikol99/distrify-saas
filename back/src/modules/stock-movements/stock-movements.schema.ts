@@ -49,3 +49,5 @@ export class StockMovements {
 }
 
 export const StockMovementsSchema = SchemaFactory.createForClass(StockMovements);
+
+StockMovementsSchema.index({ shopId: 1 });

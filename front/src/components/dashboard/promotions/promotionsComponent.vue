@@ -148,7 +148,7 @@
                 <td>
                   <span v-if="promotion.type === 'discount'">
                     {{ promotion.discountType === "percentage" ? "%" : "$" }}
-                    {{ promotion.value }}
+                    {{ promotion.discountValue !== undefined && promotion.discountValue !== null ? promotion.discountValue : promotion.value }}
                   </span>
                   <span v-else>
                     {{ formatPrice(promotion.comboPrice) }}
@@ -222,7 +222,7 @@
               </span>
               <span class="font-bold text-sm px-2 py-1 rounded-md bg-white border border-gray-200 shadow-sm text-orange-600">
                 <template v-if="promotion.type === 'discount'">
-                  {{ promotion.discountType === "percentage" ? "%" : "$" }}{{ promotion.value }}
+                  {{ promotion.discountType === "percentage" ? "%" : "$" }}{{ promotion.discountValue !== undefined && promotion.discountValue !== null ? promotion.discountValue : promotion.value }}
                 </template>
                 <template v-else>
                   {{ formatPrice(promotion.comboPrice) }}
@@ -614,8 +614,9 @@ export default {
     },
 
     getProductNames(promotion) {
-      if (!promotion.products || promotion.products.length === 0) return "Sin productos";
-      const names = promotion.products.map((p) => {
+      const raw = promotion.productIds || promotion.products || [];
+      if (raw.length === 0) return "Sin productos";
+      const names = raw.map((p) => {
         if (typeof p === "object" && p.name) return p.name;
         if (typeof p === "object" && p.productId && p.productId.name) return p.productId.name;
         return "Producto";
@@ -669,15 +670,17 @@ export default {
     openEditModal(promotion) {
       this.isEditing = true;
       this.editingPromotionId = promotion._id;
+      const rawProducts = promotion.productIds || promotion.products || [];
       this.form = {
         name: promotion.name || "",
         type: promotion.type || "",
         discountType: promotion.discountType || "",
-        value: promotion.value || null,
+        value: promotion.discountValue !== undefined && promotion.discountValue !== null ? promotion.discountValue : (promotion.value || null),
         comboPrice: promotion.comboPrice || null,
-        products: (promotion.products || []).map((p) => {
-          if (typeof p === "object" && p.productId) return { _id: p.productId._id, name: p.productId.name };
-          return p;
+        products: rawProducts.map((p) => {
+          if (typeof p === "object" && p._id) return { _id: p._id, name: p.name };
+          if (typeof p === "object" && p.productId) return { _id: p.productId._id || p.productId, name: p.productId.name || "Producto" };
+          return { _id: p, name: "Producto" };
         }),
         startDate: promotion.startDate ? moment(promotion.startDate).format("YYYY-MM-DD") : "",
         endDate: promotion.endDate ? moment(promotion.endDate).format("YYYY-MM-DD") : "",
@@ -747,9 +750,11 @@ export default {
 
         if (this.form.type === "discount") {
           payload.discountType = this.form.discountType;
+          payload.discountValue = this.form.value;
           payload.value = this.form.value;
         } else {
           payload.comboPrice = this.form.comboPrice;
+          payload.discountValue = 0;
         }
 
         let result;

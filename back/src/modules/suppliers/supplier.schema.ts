@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Types } from 'mongoose';
 import { Buys } from 'src/modules/buys/buys.schema';
@@ -42,3 +41,5 @@ export class Suppliers {
 }
 
 export const SuppliersSchema = SchemaFactory.createForClass(Suppliers);
+
+SuppliersSchema.index({ shopId: 1 });

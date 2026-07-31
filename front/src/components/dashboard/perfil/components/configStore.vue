@@ -242,7 +242,7 @@
           <div class="info-text">
             <span class="info-label">Seguridad</span>
             <span class="info-value security-message">
-              Tu Access Token es crucial para procesar pagos. Distrify lo
+              Tu Access Token es crucial para procesar pagos. Alevia Pay lo
               almacena de forma segura y encriptada en nuestros servidores, y
               nunca maneja directamente tus datos privados o financieros.
             </span>
@@ -518,14 +518,11 @@ export default {
     },
     generateStoreLink() {
       const shopName = encodeURIComponent(this.globalStore.shopData.name);
-      console.log("Nombre de la tienda:", this.globalStore.shopData);
       const shopId = this.globalStore.shopId();
       const encryptedShopId = btoa(shopId); // Codificar el ID de la tienda
       const encodedShopId = encodeURIComponent(encryptedShopId);
-      console.log("ID de la tienda encriptado:", encryptedShopId);
-      console.log("ID de la tienda codificado:", encodedShopId);
-      this.storeLink = `https://distrify.com.ar/tienda/${shopName}/${encodedShopId}`;
-      console.log("Link de tienda generado:", this.storeLink);
+      const baseUrl = window.location.origin; // Funciona tanto en local como en producción
+      this.storeLink = `${baseUrl}/tienda/${shopName}/${encodedShopId}`;
     },
     copyLink() {
       if (this.storeLink) {

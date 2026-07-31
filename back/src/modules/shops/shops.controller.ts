@@ -10,7 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ShopsService } from './shops.service';
-import { CreateShopDto } from './dto/shops.dto';
+import { CreateShopDto, UpdateShopDto } from './dto/shops.dto';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 
 @Controller('shops')
@@ -49,7 +49,7 @@ export class ShopsController {
   //Actualizar un negocio por id
   @UseGuards(JwtAuthGuard)
   @Patch('/patch/update-shop-by-id/:id')
-  async updateShopById(@Param('id') id: string, @Body() body: CreateShopDto) {
+  async updateShopById(@Param('id') id: string, @Body() body: UpdateShopDto) {
     return await this.shopsService.updateShop(id, body);
   }
 

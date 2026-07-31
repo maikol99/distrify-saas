@@ -724,7 +724,7 @@ export const useSalesListStore = defineStore("salesList", {
 
         doc.setFontSize(7);
         doc.setFont("helvetica", "normal");
-        doc.text("Distrify - Gestión & E-Commerce", pageWidth / 2, yPos, {
+        doc.text("Alevia Pay - Gestión & E-Commerce", pageWidth / 2, yPos, {
           align: "center",
         });
         yPos += 3;

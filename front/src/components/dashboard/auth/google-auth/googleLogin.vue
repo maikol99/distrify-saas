@@ -1,57 +1,81 @@
 <template>
-  <div class="google-login-container">
-    <!-- Loading State -->
-    <div v-if="loading" class="loading-overlay">
-      <div class="loading-spinner">
-        <div class="spinner"></div>
-        <p class="loading-text">Iniciando sesión con Google...</p>
-      </div>
-    </div>
+  <div class="min-h-screen flex font-display items-center justify-center bg-slate-50 dark:bg-slate-950 relative overflow-hidden px-6 py-12">
+    <!-- Background Decor Blurry Blobs -->
+    <div class="absolute top-0 -left-4 w-96 h-96 bg-primary/20 rounded-full mix-blend-multiply filter blur-3xl animate-pulse-slow"></div>
+    <div class="absolute bottom-0 -right-4 w-96 h-96 bg-blue-500/20 rounded-full mix-blend-multiply filter blur-3xl animate-pulse-slow delay-700"></div>
 
-    <!-- Error State -->
-    <div v-if="error" class="error-container">
-      <div class="error-icon">
-        <svg viewBox="0 0 24 24" fill="none">
-          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-          <line x1="15" y1="9" x2="9" y2="15" stroke="currentColor" stroke-width="2"/>
-          <line x1="9" y1="9" x2="15" y2="15" stroke="currentColor" stroke-width="2"/>
-        </svg>
-      </div>
-      <p class="error-message">{{ error }}</p>
-      <button @click="clearError" class="retry-button">Intentar de nuevo</button>
-    </div>
+    <div class="w-full max-w-md relative z-10 transition-all">
+      <!-- Back Button -->
+      <button
+        @click="$router.push('/iniciar-sesion')"
+        class="flex items-center gap-1 text-slate-400 hover:text-primary transition-colors font-bold text-sm group mb-6"
+      >
+        <span class="material-symbols-outlined text-lg group-hover:-translate-x-1 transition-transform">arrow_back</span>
+        Volver al login
+      </button>
 
-    <!-- Success State -->
-    <div v-if="success" class="success-container">
-      <div class="success-icon">
-        <svg viewBox="0 0 24 24" fill="none">
-          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-          <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </div>
-      <h3 class="success-title">¡Bienvenido de vuelta!</h3>
-      <p class="success-message">Has iniciado sesión correctamente. Serás redirigido en un momento.</p>
-      <button @click="goToHome" class="home-button">Ir al Inicio</button>
-    </div>
-
-    <!-- Main Content -->
-    <div v-if="!loading && !error && !success" class="signin-content">
-      <div class="header">
-        <h2 class="title">Iniciar Sesión</h2>
-        <p class="subtitle">Accede a tu cuenta de forma rápida y segura</p>
-      </div>
-
-      <div class="button-container">
-        <div id="google-signin-button" class="google-button-wrapper"></div>
-
-        <div class="divider">
-          <span>o</span>
+      <!-- Main Login Card -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-8 rounded-3xl shadow-xl">
+        <!-- Logo & Header -->
+        <div class="flex flex-col items-center mb-6">
+          <img
+            src="/alevia-logo.png"
+            alt="Alevia Pay"
+            width="80px"
+            class="cursor-pointer mb-2"
+            @click="$router.push('/')"
+          />
+          <h2 class="text-2xl font-black tracking-tighter text-slate-800 dark:text-white">
+            Iniciar Sesión
+          </h2>
+          <p class="text-slate-500 dark:text-slate-400 text-xs mt-1 text-center">
+            Accede a tu cuenta de forma rápida y segura con tu cuenta de Google
+          </p>
         </div>
 
-        <p class="terms-text">
-          ¿No tienes cuenta? 
-          <router-link to="/registro" class="link">Regístrate aquí</router-link>
-        </p>
+        <!-- Loading State -->
+        <div v-if="loading" class="flex flex-col items-center justify-center py-8 space-y-4">
+          <div class="spinner-premium"></div>
+          <p class="text-slate-600 dark:text-slate-300 text-sm font-semibold animate-pulse">Iniciando sesión con Google...</p>
+        </div>
+
+        <!-- Error State -->
+        <div v-if="error" class="flex flex-col items-center justify-center py-6 text-center animate-fade-in">
+          <div class="w-12 h-12 bg-red-100 dark:bg-red-500/10 text-red-600 dark:text-red-400 rounded-full flex items-center justify-center mb-4">
+            <span class="material-symbols-outlined text-2xl">error</span>
+          </div>
+          <p class="text-red-600 dark:text-red-400 text-sm font-semibold mb-6 px-2">{{ error }}</p>
+          <button @click="clearError" class="px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold text-sm shadow-lg shadow-red-600/20 active:scale-95 transition-all">
+            Intentar de nuevo
+          </button>
+        </div>
+
+        <!-- Success State -->
+        <div v-if="success" class="flex flex-col items-center justify-center py-6 text-center animate-fade-in">
+          <div class="w-12 h-12 bg-green-100 dark:bg-green-500/10 text-green-600 dark:text-green-400 rounded-full flex items-center justify-center mb-4 animate-bounce">
+            <span class="material-symbols-outlined text-2xl">check_circle</span>
+          </div>
+          <h3 class="text-lg font-black text-slate-800 dark:text-white mb-2">¡Bienvenido de vuelta!</h3>
+          <p class="text-slate-500 dark:text-slate-400 text-sm mb-6">Has iniciado sesión correctamente. Redirigiendo...</p>
+          <button @click="goToHome" class="px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-xl font-bold text-sm shadow-lg shadow-green-600/20 active:scale-95 transition-all w-full">
+            Ir al Inicio
+          </button>
+        </div>
+
+        <!-- Signin Button wrapper -->
+        <div v-if="!loading && !error && !success" class="flex flex-col items-center justify-center py-4">
+          <div id="google-signin-button" class="w-full flex justify-center py-2"></div>
+          
+          <div class="relative w-full text-center my-6">
+            <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-200 dark:border-slate-800"></div></div>
+            <span class="relative bg-white dark:bg-slate-900 px-4 text-xs text-slate-400 font-bold uppercase tracking-widest">o</span>
+          </div>
+
+          <p class="text-slate-500 dark:text-slate-400 text-sm">
+            ¿No tienes cuenta?
+            <router-link to="/registro" class="text-primary hover:underline font-bold transition-all ml-1">Regístrate aquí</router-link>
+          </p>
+        </div>
       </div>
     </div>
   </div>
@@ -96,8 +120,6 @@ export default {
         return;
       }
 
-      console.log("Inicializando Google Sign-In para inicio de sesión...");
-
       try {
         window.google.accounts.id.initialize({
           client_id: clientId,
@@ -109,9 +131,9 @@ export default {
 
         // Renderizar el botón de Google
         window.google.accounts.id.renderButton(buttonElement, {
-          theme: "outline",
+          theme: this.isDarkTheme() ? "filled_black" : "outline",
           size: "large",
-          width: 280,
+          width: 320,
           text: "signin_with",
           shape: "rectangular",
           logo_alignment: "left"
@@ -119,12 +141,15 @@ export default {
 
         // Opcionalmente, mostrar el One Tap
         window.google.accounts.id.prompt();
-
-        console.log("Google Sign-In inicializado correctamente");
       } catch (error) {
         console.error("Error al inicializar Google Sign-In:", error);
         this.error = "Error al inicializar la autenticación con Google";
       }
+    },
+
+    isDarkTheme() {
+      return document.documentElement.classList.contains("dark") || 
+             window.matchMedia("(prefers-color-scheme: dark)").matches;
     },
 
     loadGoogleAPI() {
@@ -134,30 +159,18 @@ export default {
           return;
         }
         
-        console.log("Cargando la API de Google...");
-
         const script = document.createElement("script");
         script.src = "https://accounts.google.com/gsi/client";
         script.async = true;
         script.defer = true;
-        script.onload = () => {
-          console.log("API de Google cargada correctamente");
-          resolve();
-        };
-        script.onerror = () => {
-          console.error("Error al cargar la API de Google");
-          reject(new Error("No se pudo cargar la API de Google"));
-        };
-
+        script.onload = resolve;
+        script.onerror = reject;
         document.head.appendChild(script);
       });
     },
 
     async handleGoogleResponse(response) {
-      console.log("Respuesta recibida de Google");
-
       if (!response || !response.credential) {
-        console.error("No se recibió una credencial válida");
         this.error = "No se recibió una credencial válida de Google";
         return;
       }
@@ -167,51 +180,37 @@ export default {
 
       try {
         const credential = response.credential;
-        console.log("JWT completo obtenido correctamente");
 
-        // Validar el token en el backend
-        console.log("Enviando token al backend para validación...");
-        const { data: tokenData } = await api.post("/auth/post/verify-google-user", {
+        // Endpoint unificado: verifica token, crea usuario si no existe, y devuelve sesión
+        const { data: loginData } = await api.post("/auth/post/login-google", {
           token: credential,
         });
 
-        console.log("Respuesta de verificación:", tokenData);
-
-        if (!tokenData.success) {
-          throw new Error(tokenData.message || "Error en la validación del token");
-        }
-
-        // Iniciar sesión con los datos verificados
-        console.log("Iniciando sesión con los datos verificados...");
-        const { data: loginData } = await api.post("/auth/post/login-user", {
-          email: tokenData.email,
-          password: tokenData.id, // Usando el ID como contraseña como en tu código original
-        });
-
-        console.log("Respuesta de inicio de sesión:", loginData);
-
         if (!loginData.user) {
-          throw new Error(loginData.message || "Credenciales incorrectas");
+          throw new Error(loginData.message || "Error al iniciar sesión con Google");
         }
+
+        const expiresInMs = (loginData.expires_in || 28800) * 1000;
+        const expirationTime = Date.now() + expiresInMs;
 
         Cookies.set("user_info", JSON.stringify(loginData.user), {
-          expires: 7,
+          expires: expiresInMs / (1000 * 60 * 60 * 24),
           path: "/",
           sameSite: "Lax",
         });
 
-        // Mostrar modal de éxito
+        localStorage.setItem("token_expiration", expirationTime);
+        localStorage.removeItem("session_warning_shown");
+
         this.success = true;
-        console.log("Inicio de sesión exitoso, mostrando modal de éxito");
-        
-        // Auto-redirección después de 3 segundos
         setTimeout(() => {
           this.goToHome();
-        }, 3000);
+        }, 2000);
 
       } catch (error) {
-        this.error = error.message || "Error desconocido en el proceso de inicio de sesión";
-        console.error("Error completo:", error);
+        const msg = error.response?.data?.message || error.message || "Error desconocido en el proceso de inicio de sesión";
+        this.error = msg;
+        console.error("Error en login con Google:", error);
       } finally {
         this.loading = false;
       }
@@ -232,150 +231,13 @@ export default {
 </script>
 
 <style scoped>
-.google-login-container {
-  max-width: 400px;
-  margin: 0 auto;
-  padding: 2rem;
-  position: relative;
-  min-height: 400px;
-}
-
-/* Header Styles */
-.header {
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
-.title {
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: #1f2937;
-  margin-bottom: 0.5rem;
-  line-height: 1.2;
-}
-
-.subtitle {
-  font-size: 1rem;
-  color: #6b7280;
-  margin: 0;
-  line-height: 1.5;
-}
-
-/* Main Content */
-.signin-content {
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  padding: 2rem;
-  border: 1px solid #f3f4f6;
-}
-
-.button-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.5rem;
-}
-
-/* Google Button Wrapper */
-.google-button-wrapper {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  padding: 0.5rem 0;
-}
-
-/* Custom styling for Google button (if needed) */
-.google-button-wrapper :deep(.g-id-signin) {
-  border-radius: 8px !important;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
-  transition: all 0.2s ease !important;
-}
-
-.google-button-wrapper :deep(.g-id-signin:hover) {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
-  transform: translateY(-1px) !important;
-}
-
-/* Divider */
-.divider {
-  position: relative;
-  width: 100%;
-  text-align: center;
-  margin: 0.5rem 0;
-}
-
-.divider::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: #e5e7eb;
-  z-index: 1;
-}
-
-.divider span {
-  background: white;
-  padding: 0 1rem;
-  color: #9ca3af;
-  font-size: 0.875rem;
-  position: relative;
-  z-index: 2;
-}
-
-/* Terms Text */
-.terms-text {
-  font-size: 0.875rem;
-  color: #6b7280;
-  text-align: center;
-  line-height: 1.5;
-  margin: 0;
-}
-
-.link {
-  color: #3b82f6;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s ease;
-}
-
-.link:hover {
-  color: #2563eb;
-  text-decoration: underline;
-}
-
-/* Loading Overlay */
-.loading-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(4px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 16px;
-  z-index: 10;
-}
-
-.loading-spinner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-}
-
-.spinner {
+.spinner-premium {
   width: 40px;
   height: 40px;
-  border: 3px solid #f3f4f6;
+  border: 3px solid rgba(59, 130, 246, 0.1);
   border-top: 3px solid #3b82f6;
   border-radius: 50%;
-  animation: spin 1s linear infinite;
+  animation: spin 0.8s cubic-bezier(0.55, 0.15, 0.45, 0.85) infinite;
 }
 
 @keyframes spin {
@@ -383,208 +245,21 @@ export default {
   100% { transform: rotate(360deg); }
 }
 
-.loading-text {
-  font-size: 1rem;
-  color: #4b5563;
-  margin: 0;
-  font-weight: 500;
+.animate-pulse-slow {
+  animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-/* Error Container */
-.error-container {
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  border-radius: 12px;
-  padding: 1.5rem;
-  text-align: center;
-  animation: fadeIn 0.3s ease;
+@keyframes pulse {
+  0%, 100% { opacity: 0.15; }
+  50% { opacity: 0.3; }
 }
 
-.error-icon {
-  width: 48px;
-  height: 48px;
-  color: #ef4444;
-  margin: 0 auto 1rem;
-}
-
-.error-icon svg {
-  width: 100%;
-  height: 100%;
-}
-
-.error-message {
-  color: #dc2626;
-  font-size: 1rem;
-  margin: 0 0 1.5rem 0;
-  line-height: 1.5;
-  font-weight: 500;
-}
-
-.retry-button {
-  background: #ef4444;
-  color: white;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  font-size: 0.875rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.retry-button:hover {
-  background: #dc2626;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
-}
-
-.retry-button:active {
-  transform: translateY(0);
-}
-
-/* Success Container */
-.success-container {
-  background: #f0fdf4;
-  border: 1px solid #bbf7d0;
-  border-radius: 12px;
-  padding: 2rem 1.5rem;
-  text-align: center;
-  animation: fadeIn 0.3s ease;
-}
-
-.success-icon {
-  width: 56px;
-  height: 56px;
-  color: #22c55e;
-  margin: 0 auto 1.5rem;
-}
-
-.success-icon svg {
-  width: 100%;
-  height: 100%;
-}
-
-.success-title {
-  color: #15803d;
-  font-size: 1.25rem;
-  font-weight: 700;
-  margin: 0 0 1rem 0;
-  line-height: 1.3;
-}
-
-.success-message {
-  color: #166534;
-  font-size: 1rem;
-  margin: 0 0 2rem 0;
-  line-height: 1.5;
-  font-weight: 400;
-}
-
-.home-button {
-  background: #22c55e;
-  color: white;
-  border: none;
-  padding: 0.875rem 2rem;
-  border-radius: 10px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  min-width: 180px;
-}
-
-.home-button:hover {
-  background: #16a34a;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(34, 197, 94, 0.4);
-}
-
-.home-button:active {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Responsive Design */
-@media (max-width: 480px) {
-  .google-login-container {
-    padding: 1rem;
-  }
-  
-  .signin-content,
-  .success-container {
-    padding: 1.5rem;
-  }
-  
-  .title,
-  .success-title {
-    font-size: 1.5rem;
-  }
-  
-  .subtitle,
-  .success-message {
-    font-size: 0.875rem;
-  }
-  
-  .google-button-wrapper :deep(.g-id-signin) {
-    width: 100% !important;
-  }
-
-  .home-button {
-    min-width: 100%;
-    padding: 1rem 1.5rem;
-  }
-}
-
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-  .signin-content {
-    background: #1f2937;
-    border-color: #374151;
-  }
-
-  .success-container {
-    background: #064e3b;
-    border-color: #065f46;
-  }
-  
-  .title {
-    color: #f9fafb;
-  }
-  
-  .subtitle {
-    color: #d1d5db;
-  }
-
-  .success-title {
-    color: #34d399;
-  }
-
-  .success-message {
-    color: #a7f3d0;
-  }
-  
-  .divider::before {
-    background: #4b5563;
-  }
-  
-  .divider span {
-    background: #1f2937;
-    color: #9ca3af;
-  }
-  
-  .terms-text {
-    color: #d1d5db;
-  }
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 </style>

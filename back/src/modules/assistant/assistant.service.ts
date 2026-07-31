@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import OpenAI from 'openai';
+import Groq from 'groq-sdk';
 import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
@@ -12,9 +12,9 @@ import { Buys } from '../buys/buys.schema';
 
 @Injectable()
 export class AssistantService {
-  private openai: OpenAI;
+  private groq: Groq;
   private readonly logger = new Logger(AssistantService.name);
-  private readonly MODEL = 'gpt-4o-mini';
+  private readonly MODEL = 'llama-3.3-70b-versatile';
 
   constructor(
     private configService: ConfigService,
@@ -25,48 +25,48 @@ export class AssistantService {
     @InjectModel(Caja.name) private cajaModel: Model<Caja>,
     @InjectModel(Buys.name) private buysModel: Model<Buys>,
   ) {
-    this.openai = new OpenAI({
-      apiKey: this.configService.get<string>('OPEN_AI_API_KEY'),
+    this.groq = new Groq({
+      apiKey: this.configService.get<string>('GROQ_API_KEY'),
     });
   }
 
   async chat(userMessage: string, shopId: string, chatHistory: any[] = []) {
     try {
-      // Normalizar historial: soporta formato Gemini ({role, parts:[{text}]}) y OpenAI ({role, content})
-      const normalizedHistory: OpenAI.Chat.ChatCompletionMessageParam[] = chatHistory.map((msg) => {
-        if (typeof msg.content === 'string') return msg;
-        if (Array.isArray(msg.parts)) {
-          return { role: msg.role, content: msg.parts.map((p: any) => p.text ?? '').join('') };
-        }
-        return { role: msg.role, content: String(msg.content ?? '') };
+      // Normalizar historial al formato OpenAI { role: 'user'|'assistant', content: string }
+      const normalizedHistory: Groq.Chat.ChatCompletionMessageParam[] = chatHistory.map((msg) => {
+        const role = msg.role === 'model' ? 'assistant' : (msg.role ?? 'user');
+        let content = '';
+        if (typeof msg.content === 'string') content = msg.content;
+        else if (Array.isArray(msg.parts)) content = msg.parts.map((p: any) => p.text ?? '').join('');
+        else content = String(msg.content ?? '');
+        return { role, content } as Groq.Chat.ChatCompletionMessageParam;
       });
 
-      const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
+      const messages: Groq.Chat.ChatCompletionMessageParam[] = [
         { role: 'system', content: this.getSystemPrompt() },
         ...normalizedHistory,
         { role: 'user', content: userMessage },
       ];
 
-      const response = await this.openai.chat.completions.create({
+      const response = await this.groq.chat.completions.create({
         model: this.MODEL,
         messages,
-        tools: this.getTools(),
+        tools: this.getTools() as any,
         tool_choice: 'auto',
         temperature: 0.2,
+        max_tokens: 2048,
       });
 
-      const choice = response.choices[0];
-      const message = choice.message;
+      const choice = response.choices?.[0];
+      const toolCalls = choice?.message?.tool_calls;
 
-      if (message.tool_calls && message.tool_calls.length > 0) {
-        const toolCall = message.tool_calls[0] as OpenAI.Chat.ChatCompletionMessageFunctionToolCall;
+      if (toolCalls && toolCalls.length > 0) {
+        const toolCall = toolCalls[0];
         const name = toolCall.function.name;
         const args = JSON.parse(toolCall.function.arguments || '{}');
-
         this.logger.log(`Tool call: ${name} — ${JSON.stringify(args)}`);
 
         let result: any;
-
         if (name.startsWith('query_')) {
           result = await this.executeQuery(name, args, shopId);
         } else if (name.startsWith('preview_')) {
@@ -81,47 +81,49 @@ export class AssistantService {
         }
 
         // Segunda llamada para generar respuesta natural con el resultado del tool
-        const finalResponse = await this.openai.chat.completions.create({
+        const followupMessages: Groq.Chat.ChatCompletionMessageParam[] = [
+          ...messages,
+          choice.message as Groq.Chat.ChatCompletionMessageParam,
+          {
+            role: 'tool',
+            tool_call_id: toolCall.id,
+            content: JSON.stringify(result),
+          },
+        ];
+
+        const followup = await this.groq.chat.completions.create({
           model: this.MODEL,
-          messages: [
-            ...messages,
-            message, // incluye el tool_calls del modelo
-            {
-              role: 'tool',
-              tool_call_id: toolCall.id,
-              content: JSON.stringify(result),
-            },
-          ],
+          messages: followupMessages,
           temperature: 0.3,
+          max_tokens: 1024,
         });
 
-        return finalResponse.choices[0].message.content;
+        return followup.choices?.[0]?.message?.content ?? '';
       }
 
-      return message.content;
+      return choice?.message?.content ?? '';
     } catch (error) {
       this.logger.error('Error en AssistantService', error);
       throw error;
     }
   }
 
-  // ─── Tools definition (OpenAI format) ──────────────────────────────────────
+  // ─── Tools definition (OpenAI/Groq format) ────────────────────────────────
 
-  private getTools(): OpenAI.Chat.ChatCompletionTool[] {
+  private getTools() {
     return [
-      // ── Queries ──
       {
         type: 'function',
         function: {
           name: 'query_sales',
-          description: 'Consulta ventas del negocio. Usar para: "cuánto vendí", "total del día/mes", "ventas de hoy", "últimas ventas", "resumen de ventas".',
+          description: 'Consulta ventas del negocio: total vendido hoy, últimas ventas, etc.',
           parameters: {
             type: 'object',
             properties: {
-              query_type: { type: 'string', enum: ['total', 'count', 'list', 'today'], description: 'Tipo de consulta.' },
-              date_from: { type: 'string', description: 'Fecha inicio ISO opcional, ej: "2024-01-01".' },
-              date_to: { type: 'string', description: 'Fecha fin ISO opcional.' },
-              client_name: { type: 'string', description: 'Filtrar por nombre de cliente (opcional).' },
+              query_type: { type: 'string', enum: ['total', 'count', 'list', 'today'] },
+              date_from: { type: 'string' },
+              date_to: { type: 'string' },
+              client_name: { type: 'string' },
             },
             required: ['query_type'],
           },
@@ -131,13 +133,13 @@ export class AssistantService {
         type: 'function',
         function: {
           name: 'query_inventory',
-          description: 'Consulta el inventario/stock. Usar para: "productos con bajo stock", "cuántos productos hay", "buscar producto X", "stock de X".',
+          description: 'Consulta inventario o stock de productos.',
           parameters: {
             type: 'object',
             properties: {
-              query_type: { type: 'string', enum: ['low_stock', 'count', 'list', 'search'], description: 'Tipo de consulta.' },
-              product_name: { type: 'string', description: 'Nombre del producto (para search).' },
-              low_stock_threshold: { type: 'number', description: 'Umbral de stock bajo (por defecto 5).' },
+              query_type: { type: 'string', enum: ['low_stock', 'count', 'list', 'search'] },
+              product_name: { type: 'string' },
+              low_stock_threshold: { type: 'number' },
             },
             required: ['query_type'],
           },
@@ -147,12 +149,12 @@ export class AssistantService {
         type: 'function',
         function: {
           name: 'query_clients',
-          description: 'Consulta clientes. Usar para: "cuántos clientes tengo", "clientes con deuda", "buscar cliente X".',
+          description: 'Consulta los clientes registrados.',
           parameters: {
             type: 'object',
             properties: {
-              query_type: { type: 'string', enum: ['count', 'list', 'search', 'with_debt'], description: 'Tipo de consulta.' },
-              client_name: { type: 'string', description: 'Nombre del cliente a buscar (para search).' },
+              query_type: { type: 'string', enum: ['count', 'list', 'search', 'with_debt'] },
+              client_name: { type: 'string' },
             },
             required: ['query_type'],
           },
@@ -162,12 +164,12 @@ export class AssistantService {
         type: 'function',
         function: {
           name: 'query_suppliers',
-          description: 'Consulta proveedores. Usar para: "cuántos proveedores", "listar proveedores", "proveedores con deuda".',
+          description: 'Consulta proveedores registrados.',
           parameters: {
             type: 'object',
             properties: {
-              query_type: { type: 'string', enum: ['count', 'list', 'search', 'with_debt'], description: 'Tipo de consulta.' },
-              supplier_name: { type: 'string', description: 'Nombre del proveedor a buscar.' },
+              query_type: { type: 'string', enum: ['count', 'list', 'search', 'with_debt'] },
+              supplier_name: { type: 'string' },
             },
             required: ['query_type'],
           },
@@ -177,42 +179,39 @@ export class AssistantService {
         type: 'function',
         function: {
           name: 'query_caja',
-          description: 'Consulta el estado de la caja. Usar para: "estado de la caja", "caja abierta", "balance de caja", "última caja cerrada".',
+          description: 'Consulta estado y balance de la caja registradora.',
           parameters: {
             type: 'object',
             properties: {
-              query_type: { type: 'string', enum: ['current', 'summary', 'last_closed'], description: 'Tipo de consulta.' },
+              query_type: { type: 'string', enum: ['current', 'summary', 'last_closed'] },
             },
             required: ['query_type'],
           },
         },
       },
-
-      // ── Previews (SIEMPRE antes de crear) ──
       {
         type: 'function',
         function: {
           name: 'preview_sale',
-          description: 'Genera una PREVISUALIZACIÓN de una venta ANTES de crearla. SIEMPRE usar esto primero cuando el usuario quiera registrar/crear una venta. Nunca crear sin previsualizar primero.',
+          description: 'Genera previsualización de una venta nueva.',
           parameters: {
             type: 'object',
             properties: {
               items: {
                 type: 'array',
-                description: 'Productos de la venta.',
                 items: {
                   type: 'object',
                   properties: {
-                    product_name: { type: 'string', description: 'Nombre del producto (se buscará en la BD).' },
-                    quantity: { type: 'number', description: 'Cantidad.' },
-                    unit_price: { type: 'number', description: 'Precio unitario (opcional).' },
+                    product_name: { type: 'string' },
+                    quantity: { type: 'number' },
+                    unit_price: { type: 'number' },
                   },
                   required: ['product_name', 'quantity'],
                 },
               },
-              client_name: { type: 'string', description: 'Nombre del cliente (opcional).' },
-              payment_method: { type: 'string', description: 'Método de pago: Efectivo, Transferencia, Credito, Debito, Cuenta corriente.' },
-              discount: { type: 'number', description: 'Descuento en porcentaje (opcional).' },
+              client_name: { type: 'string' },
+              payment_method: { type: 'string', enum: ['Efectivo', 'Transferencia', 'Credito', 'Debito', 'Cuenta corriente'] },
+              discount: { type: 'number' },
             },
             required: ['items'],
           },
@@ -222,7 +221,7 @@ export class AssistantService {
         type: 'function',
         function: {
           name: 'confirm_sale',
-          description: 'Confirma y CREA la venta después de que el usuario aprobó la previsualización. Solo llamar si el usuario confirmó explícitamente.',
+          description: 'Confirma y crea una venta ya previsualizada.',
           parameters: {
             type: 'object',
             properties: {
@@ -254,17 +253,17 @@ export class AssistantService {
         type: 'function',
         function: {
           name: 'preview_product',
-          description: 'Genera una PREVISUALIZACIÓN de un nuevo producto ANTES de crearlo. SIEMPRE usar esto primero cuando el usuario quiera agregar/crear un producto.',
+          description: 'Previsualiza un producto nuevo antes de guardarlo.',
           parameters: {
             type: 'object',
             properties: {
-              name: { type: 'string', description: 'Nombre del producto.' },
-              code: { type: 'string', description: 'Código o código de barras.' },
-              buyPrice: { type: 'number', description: 'Precio de compra.' },
-              sellPrice: { type: 'number', description: 'Precio de venta.' },
-              quantity: { type: 'number', description: 'Stock inicial (por defecto 0).' },
-              category: { type: 'string', description: 'Categoría (opcional).' },
-              description: { type: 'string', description: 'Descripción (opcional).' },
+              name: { type: 'string' },
+              code: { type: 'string' },
+              buyPrice: { type: 'number' },
+              sellPrice: { type: 'number' },
+              quantity: { type: 'number' },
+              category: { type: 'string' },
+              description: { type: 'string' },
             },
             required: ['name', 'code', 'buyPrice', 'sellPrice'],
           },
@@ -274,7 +273,7 @@ export class AssistantService {
         type: 'function',
         function: {
           name: 'confirm_product',
-          description: 'Confirma y CREA el producto después de que el usuario aprobó la previsualización.',
+          description: 'Crea el producto definitivo en la base de datos.',
           parameters: {
             type: 'object',
             properties: {
@@ -294,14 +293,14 @@ export class AssistantService {
         type: 'function',
         function: {
           name: 'preview_client',
-          description: 'Genera una PREVISUALIZACIÓN de un nuevo cliente ANTES de crearlo. SIEMPRE usar esto primero cuando el usuario quiera registrar/agregar un cliente.',
+          description: 'Previsualiza un cliente nuevo antes de guardarlo.',
           parameters: {
             type: 'object',
             properties: {
-              name: { type: 'string', description: 'Nombre del cliente.' },
-              email: { type: 'string', description: 'Email (opcional).' },
-              phone: { type: 'string', description: 'Teléfono (opcional).' },
-              address: { type: 'string', description: 'Dirección (opcional).' },
+              name: { type: 'string' },
+              email: { type: 'string' },
+              phone: { type: 'string' },
+              address: { type: 'string' },
             },
             required: ['name'],
           },
@@ -311,7 +310,7 @@ export class AssistantService {
         type: 'function',
         function: {
           name: 'confirm_client',
-          description: 'Confirma y CREA el cliente después de que el usuario aprobó la previsualización.',
+          description: 'Crea el cliente definitivo en la base de datos.',
           parameters: {
             type: 'object',
             properties: {
@@ -328,16 +327,16 @@ export class AssistantService {
         type: 'function',
         function: {
           name: 'preview_supplier',
-          description: 'Genera una PREVISUALIZACIÓN de un nuevo proveedor ANTES de crearlo. SIEMPRE usar esto primero cuando el usuario quiera registrar/agregar un proveedor.',
+          description: 'Previsualiza un proveedor nuevo antes de guardarlo.',
           parameters: {
             type: 'object',
             properties: {
-              name: { type: 'string', description: 'Nombre del proveedor.' },
-              email: { type: 'string', description: 'Email (opcional).' },
-              phone: { type: 'string', description: 'Teléfono (opcional).' },
-              address: { type: 'string', description: 'Dirección (opcional).' },
-              cuit: { type: 'string', description: 'CUIT/identificación fiscal (opcional).' },
-              company: { type: 'string', description: 'Empresa (opcional).' },
+              name: { type: 'string' },
+              email: { type: 'string' },
+              phone: { type: 'string' },
+              address: { type: 'string' },
+              cuit: { type: 'string' },
+              company: { type: 'string' },
             },
             required: ['name'],
           },
@@ -347,7 +346,7 @@ export class AssistantService {
         type: 'function',
         function: {
           name: 'confirm_supplier',
-          description: 'Confirma y CREA el proveedor después de que el usuario aprobó la previsualización.',
+          description: 'Crea el proveedor definitivo en la base de datos.',
           parameters: {
             type: 'object',
             properties: {
@@ -366,11 +365,11 @@ export class AssistantService {
         type: 'function',
         function: {
           name: 'preview_purchase',
-          description: 'Genera una PREVISUALIZACIÓN de una compra a proveedor ANTES de crearla. SIEMPRE usar esto primero cuando el usuario quiera registrar/crear una compra.',
+          description: 'Previsualiza una compra a proveedor antes de guardarla.',
           parameters: {
             type: 'object',
             properties: {
-              supplier_name: { type: 'string', description: 'Nombre del proveedor (se buscará en la BD).' },
+              supplier_name: { type: 'string' },
               items: {
                 type: 'array',
                 items: {
@@ -383,8 +382,8 @@ export class AssistantService {
                   required: ['product_name', 'quantity', 'buy_price'],
                 },
               },
-              payment_method: { type: 'string', description: 'Método de pago: Efectivo, Transferencia, Credito, Debito, Cuenta corriente.' },
-              notes: { type: 'string', description: 'Notas adicionales (opcional).' },
+              payment_method: { type: 'string' },
+              notes: { type: 'string' },
             },
             required: ['supplier_name', 'items'],
           },
@@ -394,7 +393,7 @@ export class AssistantService {
         type: 'function',
         function: {
           name: 'confirm_purchase',
-          description: 'Confirma y CREA la compra después de que el usuario aprobó la previsualización.',
+          description: 'Crea la compra definitiva en la base de datos.',
           parameters: {
             type: 'object',
             properties: {
@@ -767,21 +766,50 @@ export class AssistantService {
   // ─── Query implementations ─────────────────────────────────────────────────
 
   private async querySales(args: any, shopId: string) {
-    const filter: any = { shopId, status: 'Completado' };
+    const shopIdObj = Types.ObjectId.isValid(shopId) ? new Types.ObjectId(shopId) : shopId;
+    const filter: any = {
+      $or: [
+        { shopId: shopIdObj },
+        { shopId: shopId }
+      ],
+      status: 'Completado'
+    };
+
+    let dateField = 'creationDate';
 
     if (args.query_type === 'today') {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       const tomorrow = new Date(today);
       tomorrow.setDate(today.getDate() + 1);
-      filter.creationDate = { $gte: today, $lt: tomorrow };
+      filter.$and = [
+        {
+          $or: [
+            { creationDate: { $gte: today, $lt: tomorrow } },
+            { createdAt: { $gte: today, $lt: tomorrow } }
+          ]
+        }
+      ];
     } else if (args.date_from || args.date_to) {
-      filter.creationDate = {};
-      if (args.date_from) filter.creationDate.$gte = new Date(args.date_from);
-      if (args.date_to) {
+      const dateSubFilter: any = {};
+      if (args.date_from && !isNaN(Date.parse(args.date_from))) {
+        dateSubFilter.$gte = new Date(args.date_from);
+      }
+      if (args.date_to && !isNaN(Date.parse(args.date_to))) {
         const to = new Date(args.date_to);
         to.setHours(23, 59, 59, 999);
-        filter.creationDate.$lte = to;
+        dateSubFilter.$lte = to;
+      }
+      // Solo aplicar el filtro si hay alguna condición válida
+      if (Object.keys(dateSubFilter).length > 0) {
+        filter.$and = [
+          {
+            $or: [
+              { creationDate: dateSubFilter },
+              { createdAt: dateSubFilter }
+            ]
+          }
+        ];
       }
     }
 
@@ -791,7 +819,7 @@ export class AssistantService {
 
     const sales = await this.salesModel
       .find(filter)
-      .sort({ creationDate: -1 })
+      .sort({ createdAt: -1 })
       .limit(args.query_type === 'list' ? 10 : 500)
       .lean();
 
@@ -1004,7 +1032,10 @@ export class AssistantService {
   // ─── System prompt ─────────────────────────────────────────────────────────
 
   private getSystemPrompt(): string {
-    return `Eres Distri, el asistente virtual inteligente de Distrify, un sistema de gestión de negocios (ERP) argentino.
+    const today = new Date().toLocaleDateString('es-AR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    const now = new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+    return `Eres Alevia, el asistente virtual inteligente de Alevia Pay, un sistema de gestión de negocios (ERP) argentino.
+Hoy es ${today} y la hora actual es ${now}. Cuando el usuario pida resúmenes de "esta semana", "el mes pasado" u otros períodos, calculá las fechas basándote en este día.
 
 CAPACIDADES:
 - Consultás ventas, inventario, clientes, proveedores y caja en tiempo real

@@ -101,7 +101,7 @@ export class ClientsController {
 
   //Traer clientes completos
   @Get('/get/complete-client/:id')
-  getCompleteClient(@Param('id') id: string) {
+  getCompleteClient(@Param('id') id: string): Promise<any> {
     return this.clientsService.getCompleteClient(id);
   }
 

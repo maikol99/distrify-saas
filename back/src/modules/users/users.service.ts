@@ -170,6 +170,8 @@ export class UsersService {
         'promociones',
         'movimientos-stock',
         'movimientos',
+        'turnos',
+        'sucursales',
       ];
       const users = await this.usersModel.find();
       const updatePromises = users.map((user) => {

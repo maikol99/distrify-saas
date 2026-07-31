@@ -805,7 +805,7 @@ export default {
           `Tipo de Pago: ${selectedPedido.paymentType || "NO ESPECIFICADO"}`,
           `Tipo de Entrega: ${selectedPedido.deliveryType || "NO ESPECIFICADO"
           }`,
-          `Terminal: DISTRIFY GESTIÓN`,
+          `Terminal: ALEVIA PAY`,
         ];
         if (selectedPedido.clientList) {
           ticketInfo.push(`Lista de precios: ${selectedPedido.clientList}`);
@@ -1035,7 +1035,7 @@ export default {
         yPos += 5;
         doc.setFontSize(7);
         doc.setFont("helvetica", "normal");
-        doc.text("Distrify - Gestión & E-Commerce", pageWidth / 2, yPos, {
+        doc.text("Alevia Pay - Gestión & E-Commerce", pageWidth / 2, yPos, {
           align: "center",
         });
         yPos += 3;

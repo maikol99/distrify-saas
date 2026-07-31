@@ -125,7 +125,7 @@ export default {
   components: {
     spinnerComponent, // Descomentar si usas el spinner
   },
-  emits: ["save", "close"],
+  emits: ["submit", "close"],
   data() {
     return {
       currentClient: {
@@ -161,11 +161,21 @@ export default {
         const clientData = {
           shopId: shopId,
           name: this.currentClient.name,
-          address: this.currentClient.address,
-          phone: this.currentClient.phone,
-          email: this.currentClient.email,
-          debt: this.currentClient.debt,
         };
+
+        // Solo incluir campos opcionales si tienen valor real
+        if (this.currentClient.address) {
+          clientData.address = this.currentClient.address;
+        }
+        if (this.currentClient.phone != null && String(this.currentClient.phone).trim() !== '') {
+          clientData.phone = String(this.currentClient.phone);
+        }
+        if (this.currentClient.email && this.currentClient.email.trim() !== '') {
+          clientData.email = this.currentClient.email.trim();
+        }
+        if (this.currentClient.debt != null && this.currentClient.debt !== 0) {
+          clientData.debt = this.currentClient.debt;
+        }
 
         const response = await api.post(
           "/clients/post/create-client",

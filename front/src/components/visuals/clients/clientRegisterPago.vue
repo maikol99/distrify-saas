@@ -136,6 +136,8 @@ export default {
     },
   },
 
+  emits: ["submit", "close"],
+
   data() {
     return {
       paymentAmount: null,

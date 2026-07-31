@@ -4,6 +4,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { ScheduleModule } from '@nestjs/schedule';
+import { validate } from './config/env.validation';
 
 // Modules
 import { ProductsModule } from './modules/products/products.module';
@@ -40,6 +41,7 @@ import { PromotionsModule } from './modules/promotions/promotions.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      validate,
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
@@ -58,7 +60,7 @@ import { PromotionsModule } from './modules/promotions/promotions.module';
       throttlers: [
         {
           ttl: 60000,
-          limit: 50,
+          limit: 300,
         },
       ],
     }),

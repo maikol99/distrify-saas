@@ -2,7 +2,7 @@ import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Shops } from './shops.schema';
 import mongoose, { Model } from 'mongoose';
-import { CreateShopDto } from './dto/shops.dto';
+import { CreateShopDto, UpdateShopDto } from './dto/shops.dto';
 import { EmailsService } from '../emails/emails.service';
 import { Users } from '../users/users.schema';
 import { Cron, CronExpression } from '@nestjs/schedule';
@@ -117,7 +117,7 @@ export class ShopsService {
   }
 
   //Actualizar un negocio por id
-  async updateShop(id: string, body: CreateShopDto) {
+  async updateShop(id: string, body: UpdateShopDto) {
     try {
       if (!id) {
         throw new NotFoundException('Id no encontrado');

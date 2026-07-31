@@ -5,47 +5,49 @@
       <div class="negocio-info">
         <div class="negocio-logo">
           <img
-            v-if="ecommerceStore.shopData.shopImage.secure_url"
+            v-if="ecommerceStore.shopData.shopImage?.secure_url"
             :src="ecommerceStore.shopData.shopImage.secure_url"
             :alt="ecommerceStore.shopData.name"
           />
+          <div v-else class="negocio-logo-placeholder">
+            <i class="fas fa-store"></i>
+          </div>
         </div>
         <div class="negocio-detalles">
           <h1 class="negocio-nombre">{{ ecommerceStore.shopData.name }}</h1>
           <p class="negocio-descripcion">
-            {{ ecommerceStore.shopData.description }}
+            {{ ecommerceStore.shopData.description || "Tu tienda, tu gestión, tu éxito" }}
           </p>
           <div class="negocio-contacto">
             <div class="contacto-item">
               <i class="fas fa-phone"></i>
-              <span>{{ ecommerceStore.shopData.phone }}</span>
+              <span>{{ ecommerceStore.shopData.phone || "+54 353 456 3453 45" }}</span>
             </div>
             <div class="contacto-item">
               <i class="fas fa-map-marker-alt"></i>
-              <span>{{ ecommerceStore.shopData.address }}</span>
+              <span>{{ ecommerceStore.shopData.address || "Argentina" }}</span>
             </div>
           </div>
         </div>
       </div>
-      <!-- Icono de Carrito en la esquina superior derecha -->
-      <!-- Icono de Carrito mejorado -->
+      <!-- Icono de Carrito -->
       <div class="carrito-icono" @click="goToCarrito">
         <i class="fas fa-shopping-cart"></i>
-        <span class="carrito-badge" v-if="ecommerceStore.carrito.length > 0">{{
-          ecommerceStore.carrito.length
-        }}</span>
+        <span class="carrito-badge">{{ ecommerceStore.carrito.length }}</span>
       </div>
     </header>
 
     <div class="contenido-principal">
       <!-- Filtros Laterales -->
-      <!-- Sección de filtros corregida -->
       <aside
         class="filtros-sidebar"
         :class="{ 'filtros-activos': mostrarFiltros }"
       >
         <div class="filtros-header">
-          <h3><i class="fas fa-filter"></i> Filtros</h3>
+          <h3><i class="fas fa-filter text-primary"></i> Filtros</h3>
+          <button @click="limpiarFiltrosYMostrarTodos" class="btn-limpiar-top">
+            <i class="fas fa-sync-alt"></i> Limpiar
+          </button>
           <button @click="toggleFiltros" class="btn-cerrar-filtros">
             <i class="fas fa-times"></i>
           </button>
@@ -53,78 +55,70 @@
 
         <!-- Filtro por Categoría -->
         <div class="filtro-grupo">
-          <h4><i class="fas fa-tags"></i> Categoría</h4>
+          <div class="filtro-grupo-header">
+            <h4>Categoría</h4>
+            <i class="fas fa-chevron-down"></i>
+          </div>
           <div class="filtro-opciones">
-            <label class="filtro-opcion">
-              <input
-                type="radio"
-                v-model="ecommerceStore.filtros.categoryId"
-                value=""
-                @change="ecommerceStore.filterProducts()"
-              />
-              <span class="checkmark"></span>
+            <div
+              class="filtro-opcion"
+              @click="ecommerceStore.filtros.categoryId = ''; ecommerceStore.filterProducts()"
+            >
+              <span class="checkmark" :class="{ selected: ecommerceStore.filtros.categoryId === '' }"></span>
               <span>Todas las categorías</span>
-            </label>
-            <label
+            </div>
+            <div
               v-for="categoria in ecommerceStore.categories"
               :key="categoria._id"
               class="filtro-opcion"
+              @click="ecommerceStore.filtros.categoryId = categoria._id; ecommerceStore.filterProducts()"
             >
-              <input
-                type="radio"
-                v-model="ecommerceStore.filtros.categoryId"
-                :value="categoria._id"
-                @change="ecommerceStore.filterProducts()"
-              />
-              <span class="checkmark"></span>
+              <span class="checkmark" :class="{ selected: ecommerceStore.filtros.categoryId === categoria._id }"></span>
               <span>{{ categoria.name }}</span>
-            </label>
+            </div>
           </div>
         </div>
 
         <!-- Filtro por Precio -->
         <div class="filtro-grupo">
-          <h4><i class="fas fa-dollar-sign"></i> Rango de Precio</h4>
+          <div class="filtro-grupo-header">
+            <h4>Rango de Precio</h4>
+            <i class="fas fa-chevron-down"></i>
+          </div>
           <div class="precio-inputs">
             <div class="input-group">
-              <i class="fas fa-dollar-sign input-icon"></i>
-              <label for=""> Mínimo: </label>
-              <input
-                type="number"
-                v-model="ecommerceStore.filtros.minAmount"
-                placeholder="Mínimo"
-                class="precio-input"
-              />
+              <label>Mínimo</label>
+              <div class="precio-input-wrapper">
+                <span class="precio-prefix">$</span>
+                <input
+                  type="number"
+                  v-model="ecommerceStore.filtros.minAmount"
+                  placeholder="0"
+                  class="precio-input"
+                />
+              </div>
             </div>
             <div class="input-group">
-              <i class="fas fa-dollar-sign input-icon"></i>
-              <label for=""> Máximo: </label>
-              <input
-                type="number"
-                v-model="ecommerceStore.filtros.maxAmount"
-                placeholder="Máximo"
-                class="precio-input"
-              />
+              <label>Máximo</label>
+              <div class="precio-input-wrapper">
+                <span class="precio-prefix">$</span>
+                <input
+                  type="number"
+                  v-model="ecommerceStore.filtros.maxAmount"
+                  placeholder="0"
+                  class="precio-input"
+                />
+              </div>
             </div>
           </div>
         </div>
 
         <button
-          class="btn-limpiar-filtros"
-          style="margin-bottom: 5px"
+          class="btn-aplicar-filtros"
           @click="ecommerceStore.filterProducts()"
         >
           <i class="fas fa-filter"></i>
-          Aplicar Filtros
-        </button>
-
-        <button
-          @click="ecommerceStore.limpiarFiltros()"
-          class="btn-limpiar-filtros"
-          v-if="ecommerceStore.filtersApplied"
-        >
-          <i class="fas fa-eraser"></i>
-          Limpiar Filtros
+          Aplicar filtros
         </button>
       </aside>
 
@@ -137,38 +131,50 @@
           </button>
 
           <div class="search-container">
+            <i class="fas fa-search search-bar-icon"></i>
             <input
               type="text"
               v-model="ecommerceStore.filtros.searchQuery"
-              @keydown.enter="ecommerceStore.filterProducts"
+              @keydown.enter="ecommerceStore.filterProducts()"
               class="buscador-input"
               placeholder="Buscar productos..."
-              @input="ecommerceStore.checkInput"
+              @input="ecommerceStore.checkInput()"
             />
-            <button class="btn-buscar" @click="ecommerceStore.filterProducts">
+            <button class="btn-buscar" @click="ecommerceStore.filterProducts()">
               <i class="fas fa-search"></i>
             </button>
           </div>
 
           <div class="productos-contador">
-            <i class="fas fa-box"></i>
-            {{ ecommerceStore.pagination.total }} productos encontrados
+            <i class="fas fa-box text-primary"></i>
+            <span>{{ ecommerceStore.pagination?.total ?? 0 }} productos encontrados</span>
           </div>
         </div>
 
         <!-- Grid de Productos -->
         <div class="productos-grid">
           <div
-            v-for="producto in ecommerceStore.products.filter(
-              (p) => p.showInStore !== false
+            v-for="producto in (ecommerceStore.products || []).filter(
+              (p) => p && p.showInStore !== false
             )"
-            :key="producto.id"
+            :key="producto._id || producto.id"
             class="producto-card"
+            :class="{ 'is-fav': isFavorite(producto._id) }"
             @click="verDetalle(producto)"
           >
             <div class="producto-imagen">
+              <!-- Left Heart Button -->
+              <button class="btn-favorite-left" @click.stop="toggleFavorite(producto._id)">
+                <i class="far fa-heart"></i>
+              </button>
+
+              <!-- Right Active Heart Circle Badge -->
+              <button v-if="isFavorite(producto._id)" class="btn-favorite-active-right" @click.stop="toggleFavorite(producto._id)">
+                <i class="fas fa-heart text-primary"></i>
+              </button>
+
               <img
-                v-if="producto.images.length > 0"
+                v-if="producto.images && producto.images.length > 0"
                 :src="producto.images[0].secure_url"
                 :alt="producto.name"
               />
@@ -176,15 +182,12 @@
                 <i class="fas fa-exclamation-triangle"></i>
                 Agotado
               </div>
-              <div class="producto-overlay">
-                <i class="fas fa-eye"></i>
-              </div>
+              <div class="producto-overlay"></div>
             </div>
             <div class="producto-info">
               <h3 class="producto-nombre">{{ producto.name }}</h3>
               <div class="producto-precio">
-                <i class="fas fa-dollar-sign"></i>
-                {{ producto.sellPrice.toFixed(2) }}
+                {{ formatPrice(producto.sellPrice) }}
               </div>
               <div
                 class="producto-stock"
@@ -201,13 +204,12 @@
               </div>
               <button class="btn-ver-detalle">
                 <i class="fas fa-eye"></i>
-                Ver Detalle
+                Ver detalle
               </button>
             </div>
           </div>
         </div>
 
-        <!-- Mensaje cuando no hay productos -->
         <!-- Mensaje cuando no hay productos -->
         <div
           v-if="ecommerceStore.products.length === 0 && !ecommerceStore.loading"
@@ -224,13 +226,10 @@
             </h3>
             <h3 v-else>No hay productos disponibles</h3>
 
-            <p v-else>
+            <p v-if="!ecommerceStore.filtersApplied">
               Este negocio aún no ha agregado productos a su catálogo
             </p>
 
-            <!-- Botón para limpiar filtros solo si hay filtros aplicados -->
-
-            <!-- Mostrar filtros activos -->
             <div
               v-if="ecommerceStore.filtersApplied"
               class="filtros-activos-resumen"
@@ -267,35 +266,25 @@
                   <i class="fas fa-dollar-sign"></i>
                   Precio máx: ${{ ecommerceStore.filtros.precioMax }}
                 </span>
-                <span
-                  v-if="ecommerceStore.filtros.disponibilidad"
-                  class="filtro-tag"
-                >
-                  <i class="fas fa-boxes"></i>
-                  {{
-                    ecommerceStore.filtros.disponibilidad === "en-stock"
-                      ? "En stock"
-                      : "Sin stock"
-                  }}
-                </span>
               </div>
             </div>
           </div>
         </div>
+
         <!-- Paginación -->
-        <div v-if="ecommerceStore.products.length > 0" class="paginacion">
+        <div v-if="(ecommerceStore.products || []).length > 0" class="paginacion">
           <button
             @click="ecommerceStore.previousPage"
             :disabled="ecommerceStore.pagination.page === 1"
             class="btn-paginacion"
           >
             <i class="fas fa-chevron-left"></i>
-            Anterior
           </button>
 
           <div class="numeros-pagina">
-            Página {{ ecommerceStore.pagination.page }} de
-            {{ ecommerceStore.pagination.totalPages }}
+            <button class="btn-numero-pagina activa">
+              {{ ecommerceStore.pagination.page }}
+            </button>
           </div>
 
           <button
@@ -306,7 +295,6 @@
             "
             class="btn-paginacion"
           >
-            Siguiente
             <i class="fas fa-chevron-right"></i>
           </button>
         </div>
@@ -353,30 +341,6 @@
               Enviar Pregunta
             </button>
           </form>
-
-          <!-- Preguntas Frecuentes -->
-          <div class="preguntas-frecuentes">
-            <h4><i class="fas fa-question-circle"></i> Preguntas Frecuentes</h4>
-            <div
-              class="pregunta-item"
-              v-for="pregunta in preguntas"
-              :key="pregunta.id"
-            >
-              <div class="pregunta-titulo" @click="togglePregunta(pregunta.id)">
-                <span>{{ pregunta.pregunta }}</span>
-                <i
-                  :class="
-                    pregunta.abierta
-                      ? 'fas fa-chevron-up'
-                      : 'fas fa-chevron-down'
-                  "
-                ></i>
-              </div>
-              <div v-if="pregunta.abierta" class="pregunta-respuesta">
-                {{ pregunta.respuesta }}
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -387,6 +351,11 @@
       class="filtros-overlay"
       @click="toggleFiltros"
     ></div>
+
+    <!-- Footer de la Tienda -->
+    <footer class="tienda-footer">
+      <p>© {{ new Date().getFullYear() }} {{ ecommerceStore.shopData?.name }}. Todos los derechos reservados.</p>
+    </footer>
   </div>
   <spinnerComponent v-if="ecommerceStore.loading"></spinnerComponent>
   <toastComponent
@@ -401,6 +370,7 @@ import spinnerComponent from "@/components/visuals/spinnerComponent.vue";
 import { useEcommerceStore } from "@/stores/ecommerceStore";
 import productDetail from "@/components/visuals/ecommerce/productDetail.vue";
 import toastComponent from "@/components/visuals/toast/toastComponent.vue";
+
 export default {
   name: "TiendaVirtual",
   components: {
@@ -417,6 +387,9 @@ export default {
       mostrarDetalle: false,
       mostrarContacto: false,
       productoSeleccionado: null,
+
+      // Wishlist/Favoritos
+      favorites: JSON.parse(localStorage.getItem("store_favorites") || "[]"),
 
       // Filtros
       filtros: {
@@ -440,42 +413,6 @@ export default {
       return Math.ceil(
         this.ecommerceStore.pagination.total /
           this.ecommerceStore.pagination.limit
-      );
-    },
-
-    paginasVisibles() {
-      const current = this.ecommerceStore.pagination.currentPage;
-      const total = this.totalPaginas;
-      const delta = 2;
-      const range = [];
-      const rangeWithDots = [];
-
-      for (
-        let i = Math.max(2, current - delta);
-        i <= Math.min(total - 1, current + delta);
-        i++
-      ) {
-        range.push(i);
-      }
-
-      if (current - delta > 2) {
-        rangeWithDots.push(1, "...");
-      } else {
-        rangeWithDots.push(1);
-      }
-
-      rangeWithDots.push(...range);
-
-      if (current + delta < total - 1) {
-        rangeWithDots.push("...", total);
-      } else if (total > 1) {
-        rangeWithDots.push(total);
-      }
-
-      return rangeWithDots.filter(
-        (page) =>
-          page !== "..." ||
-          rangeWithDots.indexOf(page) === rangeWithDots.lastIndexOf(page)
       );
     },
   },
@@ -575,6 +512,27 @@ export default {
         await this.ecommerceStore.fetchProducts();
       }
     },
+
+    toggleFavorite(productId) {
+      if (this.favorites.includes(productId)) {
+        this.favorites = this.favorites.filter((id) => id !== productId);
+      } else {
+        this.favorites.push(productId);
+      }
+      localStorage.setItem("store_favorites", JSON.stringify(this.favorites));
+    },
+
+    isFavorite(productId) {
+      return this.favorites.includes(productId);
+    },
+
+    formatPrice(value) {
+      if (value === undefined || value === null) return "$ 0,00";
+      return "$ " + Number(value).toLocaleString("es-AR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
+    },
   },
 
   async mounted() {
@@ -595,393 +553,308 @@ export default {
 </script>
 
 <style scoped>
-
-.btn-buscar{
-  background-color: #333;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.btn-buscar:hover {
-  background-color: #555;
-}
-
-.search-container{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 2rem;
-}
-
-.search-container input{
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  padding: 0.5rem 1rem;
-  margin-right: 0.5rem;
-  flex: 1;
-}
-
-/* Mejoras para el mensaje de sin productos - adaptado a tu estilo */
-.sin-productos {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 4rem 2rem;
-  color: #666;
-  background-color: #fff;
-  border: 1px solid #e5e5e5;
-  border-radius: 8px;
-  margin: 1.5rem 0;
-  min-height: 400px;
-}
-
-.sin-productos-icono {
-  margin-bottom: 2rem;
-}
-
-.sin-productos-icono i {
-  font-size: 4rem;
-  color: #ccc;
-  margin-bottom: 0;
-}
-
-.sin-productos-contenido {
-  max-width: 500px;
-  width: 100%;
-}
-
-.sin-productos h3 {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-  color: #333;
-  font-weight: 500;
-}
-
-.sin-productos p {
-  font-size: 1rem;
-  color: #666;
-  margin-bottom: 1.5rem;
-  line-height: 1.5;
-}
-
-.btn-limpiar-filtros-mensaje {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  background-color: #333;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  margin: 0 auto;
-}
-
-.btn-limpiar-filtros-mensaje:hover {
-  background-color: #555;
-}
-
-.btn-limpiar-filtros-mensaje i {
-  font-size: 0.8rem;
-}
-
-/* Filtros activos resumen */
-.filtros-activos-resumen {
-  margin-top: 2rem;
-  padding: 1.5rem;
-  background-color: #f8f8f8;
-  border: 1px solid #e5e5e5;
-  border-radius: 8px;
-}
-
-.filtros-activos-resumen h4 {
-  font-size: 1rem;
-  font-weight: 500;
-  color: #333;
-  margin-bottom: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.filtros-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  justify-content: center;
-}
-
-.filtro-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  background-color: #fff;
-  color: #666;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 0.85rem;
-  font-weight: 500;
-}
-
-.filtro-tag i {
-  font-size: 0.75rem;
-  color: #999;
-}
-
-/* Responsive adaptado a tu estilo */
-@media (max-width: 768px) {
-  .sin-productos {
-    padding: 3rem 1.5rem;
-    margin: 1rem 0;
-    min-height: 300px;
-  }
-
-  .sin-productos-icono i {
-    font-size: 3rem;
-  }
-
-  .sin-productos h3 {
-    font-size: 1.25rem;
-  }
-
-  .sin-productos p {
-    font-size: 0.9rem;
-  }
-
-  .filtros-activos-resumen {
-    padding: 1rem;
-  }
-
-  .filtros-tags {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .filtro-tag {
-    width: fit-content;
-  }
-}
-
-@media (max-width: 480px) {
-  .sin-productos {
-    padding: 2rem 1rem;
-  }
-
-  .sin-productos-icono i {
-    font-size: 2.5rem;
-  }
-
-  .sin-productos h3 {
-    font-size: 1.125rem;
-  }
-
-  .btn-limpiar-filtros-mensaje {
-    width: 100%;
-    padding: 1rem;
-  }
-
-  .filtros-activos-resumen {
-    margin-top: 1.5rem;
-    padding: 1rem;
-  }
-}
-/* Reset y estilos base */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
 
 .tienda-container {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background-color: #fafafa;
+  font-family: 'Outfit', sans-serif;
+  background-color: #f4f6f9;
   min-height: 100vh;
-  color: #333;
+  color: #1e293b;
+  --primary-color: #2563eb;
+  --primary-hover: #1d4ed8;
+  --primary-light: rgba(37, 99, 235, 0.08);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.07);
+  --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --transition-all: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Header del Negocio */
 .negocio-header {
   position: relative;
-  background-color: #fff;
-  border-bottom: 1px solid #e5e5e5;
-  padding: 2rem 1rem;
+  background-color: #1d273a;
+  padding: 2.5rem 3.5rem;
+  border-radius: 0;
+  margin: 0 0 2rem 0;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.carrito-icono {
+/* Background Wavy Art */
+.negocio-header::before {
+  content: '';
   position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background-color: white;
-  padding: 0.6rem;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 80% 20%, rgba(37, 99, 235, 0.08) 0%, transparent 50%),
+              radial-gradient(circle at 10% 80%, rgba(79, 70, 229, 0.08) 0%, transparent 60%);
+  z-index: 1;
+}
+
+.negocio-info {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 2.25rem;
+}
+
+.negocio-logo {
+  flex-shrink: 0;
+}
+
+.negocio-logo img {
+  width: 90px;
+  height: 90px;
   border-radius: 50%;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  z-index: 100;
+  object-fit: cover;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  box-shadow: var(--shadow-md);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.negocio-logo-placeholder {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  box-shadow: var(--shadow-md);
+  background: radial-gradient(circle, #2a364f 0%, #171f30 100%);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.carrito-icono:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+.negocio-logo-placeholder i {
+  font-size: 2.25rem;
+  color: #a5b4fc;
 }
 
-.carrito-icono i {
-  font-size: 1.4rem;
-  color: #2c3e50;
-}
-
-.carrito-badge {
-  position: absolute;
-  top: -6px;
-  right: -6px;
-  background-color: #e74c3c;
-  color: white;
-  font-size: 0.75rem;
-  font-weight: bold;
-  padding: 0.15rem 0.45rem;
-  border-radius: 999px;
-  box-shadow: 0 0 0 2px white;
-}
-
-.negocio-info {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-}
-
-.negocio-logo img {
-  width: 80px;
-  height: 80px;
-  border-radius: 8px;
-  object-fit: cover;
-  border: 1px solid #e5e5e5;
+.negocio-detalles {
+  flex: 1;
 }
 
 .negocio-nombre {
-  font-size: 1.75rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: #111;
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 0.35rem;
+  letter-spacing: -0.03em;
 }
 
 .negocio-descripcion {
   font-size: 0.95rem;
-  color: #666;
-  margin-bottom: 1rem;
+  color: #94a3b8;
+  margin-bottom: 1.5rem;
   line-height: 1.5;
+  max-width: 600px;
+  font-weight: 500;
 }
 
 .negocio-contacto {
   display: flex;
+  gap: 1rem;
   flex-wrap: wrap;
-  gap: 1.5rem;
-  align-items: center;
 }
 
 .contacto-item {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  color: #666;
-  font-size: 0.9rem;
+  gap: 0.625rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #cbd5e1;
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 0.625rem 1.25rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  transition: var(--transition-all);
+}
+
+.contacto-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
 }
 
 .contacto-item i {
-  color: #999;
-  width: 16px;
+  color: var(--primary-color);
+  font-size: 0.9rem;
+}
+
+.contacto-item i.fa-map-marker-alt {
+  color: var(--primary-color);
+}
+
+/* Icono de Carrito */
+.carrito-icono {
+  position: absolute;
+  top: 50%;
+  right: 3rem;
+  transform: translateY(-50%);
+  z-index: 10;
+  background: #ffffff;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  box-shadow: var(--shadow-lg);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-all);
+}
+
+.carrito-icono:hover {
+  transform: translateY(-50%) scale(1.06);
+  box-shadow: 0 12px 28px -5px rgba(0, 0, 0, 0.2);
+}
+
+.carrito-icono i {
+  font-size: 1.35rem;
+  color: #1e293b;
+}
+
+.carrito-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background-color: var(--primary-color);
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 900;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 4px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 3px #1d273a;
 }
 
 /* Contenido Principal */
 .contenido-principal {
-  margin: 0 auto;
-  display: flex;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 260px 1fr;
   gap: 2rem;
-  padding: 2rem 1rem;
+  padding: 0 2.5rem 4rem 2.5rem;
 }
 
 /* Filtros Sidebar */
 .filtros-sidebar {
-  width: 280px;
-  background-color: #fff;
-  border: 1px solid #e5e5e5;
-  border-radius: 8px;
-  padding: 1.5rem;
+  background-color: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 1.5rem;
+  padding: 2rem 1.75rem;
   height: fit-content;
   position: sticky;
   top: 2rem;
-  overflow-y: auto;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-all);
+}
+
+.filtros-sidebar:hover {
+  box-shadow: var(--shadow-md);
 }
 
 .filtros-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.75rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid #f1f5f9;
 }
 
 .filtros-header h3 {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #111;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #1e293b;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.625rem;
 }
 
 .filtros-header h3 i {
-  color: #666;
-  font-size: 0.9rem;
+  color: var(--primary-color);
+  font-size: 1.25rem;
+}
+
+.btn-limpiar-top {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: var(--transition-all);
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.5rem;
+}
+
+.btn-limpiar-top:hover {
+  color: var(--primary-color);
+  background-color: #f0f7ff;
+}
+
+.btn-limpiar-top i {
+  font-size: 0.8rem;
 }
 
 .btn-cerrar-filtros {
   display: none;
-  background: none;
+  background-color: #f1f5f9;
   border: none;
-  font-size: 1.2rem;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  color: #999;
-  padding: 0.25rem;
+  color: #64748b;
+  transition: var(--transition-all);
 }
 
 .btn-cerrar-filtros:hover {
-  color: #666;
+  background-color: #e2e8f0;
+  color: #0f172a;
 }
 
 .filtro-grupo {
   margin-bottom: 2rem;
 }
 
-.filtro-grupo h4 {
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: #333;
-  margin-bottom: 1rem;
+.filtro-grupo-header {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 0.5rem;
+  margin-bottom: 1rem;
+  cursor: pointer;
 }
 
-.filtro-grupo h4 i {
-  color: #999;
+.filtro-grupo-header h4 {
   font-size: 0.8rem;
+  font-weight: 800;
+  color: #1e293b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.filtro-grupo-header i {
+  font-size: 0.8rem;
+  color: #94a3b8;
 }
 
 .filtro-opciones {
@@ -995,34 +868,38 @@ export default {
   align-items: center;
   gap: 0.75rem;
   cursor: pointer;
-  font-size: 0.9rem;
-  color: #666;
-  padding: 0.25rem 0;
+  font-size: 0.925rem;
+  color: #475569;
+  padding: 0.15rem 0;
+  font-weight: 600;
+  transition: var(--transition-all);
 }
 
 .filtro-opcion:hover {
-  color: #333;
-}
-
-.filtro-opcion input[type="radio"] {
-  display: none;
+  color: var(--primary-color);
 }
 
 .checkmark {
-  width: 16px;
-  height: 16px;
-  border: 1px solid #ccc;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #cbd5e1;
   border-radius: 50%;
   position: relative;
-  transition: all 0.2s ease;
+  transition: var(--transition-all);
+  background-color: #fff;
+  flex-shrink: 0;
 }
 
-.filtro-opcion input[type="radio"]:checked + .checkmark {
-  border-color: #333;
-  background-color: #333;
+.filtro-opcion:hover .checkmark {
+  border-color: #94a3b8;
 }
 
-.filtro-opcion input[type="radio"]:checked + .checkmark::after {
+.checkmark.selected {
+  border-color: var(--primary-color);
+  background-color: var(--primary-color);
+}
+
+.checkmark.selected::after {
   content: "";
   position: absolute;
   top: 50%;
@@ -1037,60 +914,80 @@ export default {
 .precio-inputs {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 1rem;
 }
 
 .input-group {
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
 }
 
-.input-icon {
-  position: absolute;
-  left: 0.75rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #999;
-  font-size: 0.8rem;
+.input-group label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #475569;
+  margin-left: 0.25rem;
+}
+
+.precio-input-wrapper {
+  display: flex;
+  align-items: center;
+  background-color: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  transition: var(--transition-all);
+}
+
+.precio-input-wrapper:focus-within {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  background-color: #fff;
+}
+
+.precio-prefix {
+  background-color: #f1f5f9;
+  border-right: 1px solid #cbd5e1;
+  color: #475569;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0.625rem 0.875rem;
+  user-select: none;
 }
 
 .precio-input {
   width: 100%;
-  padding: 0.75rem 0.75rem 0.75rem 2rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 0.9rem;
-  transition: border-color 0.2s ease;
+  padding: 0.625rem 0.875rem;
+  border: none !important;
+  background: transparent !important;
+  font-size: 0.875rem;
+  color: #334155;
+  outline: none !important;
+  box-shadow: none !important;
 }
 
-.precio-input:focus {
-  outline: none;
-  border-color: #333;
-}
-
-.btn-limpiar-filtros {
+.btn-aplicar-filtros {
   width: 100%;
-  padding: 0.75rem;
-  background-color: #f8f8f8;
-  color: #666;
-  border: 1px solid #e5e5e5;
-  border-radius: 4px;
+  padding: 0.875rem;
+  background-color: #1d273a;
+  color: #fff;
+  border: none;
+  border-radius: 0.75rem;
   cursor: pointer;
-  font-size: 0.9rem;
-  font-weight: 500;
-  transition: all 0.2s ease;
+  font-size: 0.875rem;
+  font-weight: 700;
+  transition: var(--transition-all);
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+  margin-top: 1.5rem;
 }
 
-.btn-limpiar-filtros:hover {
-  background-color: #f0f0f0;
-  color: #333;
-}
-
-.btn-limpiar-filtros i {
-  font-size: 0.8rem;
+.btn-aplicar-filtros:hover {
+  background-color: #0f172a;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
 }
 
 /* Contenido de Productos */
@@ -1102,151 +999,280 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
-  padding: 1rem 0;
+  margin-bottom: 2rem;
+  gap: 1.5rem;
 }
 
 .btn-filtros-mobile {
   display: none;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.75rem 1rem;
-  background-color: #333;
+  padding: 0.75rem 1.25rem;
+  background-color: #1d273a;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 0.75rem;
+  font-weight: 700;
   cursor: pointer;
-  font-size: 0.9rem;
-  font-weight: 500;
+  font-size: 0.875rem;
+  transition: var(--transition-all);
 }
 
 .btn-filtros-mobile:hover {
-  background-color: #555;
+  background-color: var(--primary-color);
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 9999px;
+  padding: 0.25rem 0.25rem 0.25rem 1.25rem;
+  width: 480px;
+  max-width: 100%;
+  border: 1px solid #e2e8f0;
+  transition: var(--transition-all);
+  box-shadow: var(--shadow-sm);
+}
+
+.search-container:focus-within {
+  border-color: #cbd5e1;
+  box-shadow: var(--shadow-md);
+}
+
+.search-bar-icon {
+  color: #94a3b8;
+  font-size: 0.95rem;
+  margin-right: 0.5rem;
+}
+
+.buscador-input {
+  border: none !important;
+  background: transparent !important;
+  padding: 0.625rem 0;
+  font-size: 0.9rem;
+  color: #334155;
+  flex: 1;
+  outline: none;
+  box-shadow: none !important;
+  font-weight: 500;
+}
+
+.btn-buscar {
+  background-color: #1d273a;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition-all);
+}
+
+.btn-buscar:hover {
+  background-color: #0f172a;
+  transform: scale(1.04);
 }
 
 .productos-contador {
-  font-size: 0.9rem;
-  color: #666;
+  background-color: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  padding: 0.85rem 1.5rem;
+  box-shadow: var(--shadow-sm);
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.625rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #1e293b;
+  white-space: nowrap;
 }
 
 .productos-contador i {
-  color: #999;
-  font-size: 0.8rem;
+  color: var(--primary-color);
+  font-size: 1.1rem;
 }
 
 /* Grid de Productos */
 .productos-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.75rem;
+}
+
+@media (max-width: 1200px) {
+  .productos-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .productos-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .producto-card {
   background-color: #fff;
-  border: 1px solid #e5e5e5;
-  border-radius: 8px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 1.5rem;
   overflow: hidden;
-  transition: all 0.2s ease;
-  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  transition: var(--transition-all);
+  box-shadow: var(--shadow-sm);
+}
+
+.producto-card.is-fav {
+  border-color: rgba(37, 99, 235, 0.4);
 }
 
 .producto-card:hover {
-  border-color: #ccc;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transform: translateY(-4px);
+  border-color: rgba(37, 99, 235, 0.3);
+  box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.06), 0 8px 16px -8px rgba(37, 99, 235, 0.12);
 }
 
 .producto-imagen {
   position: relative;
-  height: 200px;
+  height: 240px;
   overflow: hidden;
-  background-color: #f8f8f8;
-}
-
-.producto-imagen img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.producto-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background: radial-gradient(circle, #ffffff 60%, #fafbfc 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0;
-  transition: opacity 0.2s ease;
+  padding: 1.5rem;
+  border-bottom: 1px solid #f1f5f9;
 }
 
-.producto-card:hover .producto-overlay {
-  opacity: 1;
+.producto-imagen img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.producto-overlay i {
-  color: white;
-  font-size: 1.5rem;
+.producto-card:hover .producto-imagen img {
+  transform: scale(1.06);
+}
+
+.btn-favorite-left {
+  position: absolute;
+  top: 0.875rem;
+  left: 0.875rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 5;
+  transition: var(--transition-all);
+}
+
+.btn-favorite-left:hover {
+  transform: scale(1.1);
+}
+
+.btn-favorite-left i {
+  font-size: 1.05rem;
+  color: #94a3b8;
+}
+
+.btn-favorite-active-right {
+  position: absolute;
+  top: 0.875rem;
+  right: 0.875rem;
+  background-color: white;
+  border: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 5;
+  transition: var(--transition-all);
+}
+
+.btn-favorite-active-right:hover {
+  transform: scale(1.1);
+}
+
+.btn-favorite-active-right i {
+  font-size: 0.95rem;
+  color: var(--primary-color);
 }
 
 .producto-agotado {
   position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
-  background-color: #dc3545;
+  top: 0.875rem;
+  left: 3rem; /* Shift to not overlap left heart button */
+  background-color: #ef4444;
   color: white;
-  padding: 0.25rem 0.75rem;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  font-weight: 500;
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 800;
   display: flex;
   align-items: center;
   gap: 0.25rem;
+  box-shadow: var(--shadow-sm);
+  z-index: 2;
 }
 
 .producto-info {
-  padding: 1.25rem;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 }
 
 .producto-nombre {
-  font-size: 1rem;
-  font-weight: 500;
-  color: #111;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1e293b;
   margin-bottom: 0.5rem;
-  line-height: 1.3;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  height: 3.1rem;
 }
 
 .producto-precio {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #333;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--primary-color);
   margin-bottom: 0.75rem;
   display: flex;
   align-items: center;
-  gap: 0.25rem;
-}
-
-.producto-precio i {
-  font-size: 1rem;
-  color: #666;
+  letter-spacing: -0.02em;
 }
 
 .producto-stock {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.85rem;
-  margin-bottom: 1rem;
-  color: #28a745;
+  gap: 0.375rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: #10b981;
+  background-color: #ecfdf5;
+  padding: 0.35rem 0.75rem;
+  border-radius: 9999px;
+  width: fit-content;
 }
 
 .producto-stock.sin-stock {
-  color: #dc3545;
+  color: #ef4444;
+  background-color: #fef2f2;
 }
 
 .producto-stock i {
@@ -1255,27 +1281,29 @@ export default {
 
 .btn-ver-detalle {
   width: 100%;
-  padding: 0.75rem;
-  background-color: #333;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 0.9rem;
-  font-weight: 500;
+  padding: 0.875rem;
+  background-color: white;
+  color: #1d273a;
+  border: 1.5px solid #1d273a;
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 700;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: var(--transition-all);
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+  margin-top: auto;
 }
 
 .btn-ver-detalle:hover {
-  background-color: #555;
+  background-color: #1d273a;
+  color: white;
 }
 
 .btn-ver-detalle i {
-  font-size: 0.8rem;
+  font-size: 0.85rem;
 }
 
 /* Paginación */
@@ -1283,87 +1311,109 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 0.5rem;
-  margin-top: 2rem;
+  gap: 0.75rem;
+  margin-top: 3.5rem;
   padding: 1.5rem 0;
 }
 
 .btn-paginacion {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1rem;
-  background-color: #333;
-  color: white;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background-color: #e2e8f0;
+  color: #475569;
   border: none;
-  border-radius: 4px;
+  border-radius: 0.75rem;
   cursor: pointer;
   font-size: 0.9rem;
-  font-weight: 500;
-  transition: background-color 0.2s ease;
+  transition: var(--transition-all);
 }
 
 .btn-paginacion:hover:not(:disabled) {
-  background-color: #555;
+  background-color: #cbd5e1;
+  color: #1e293b;
 }
 
 .btn-paginacion:disabled {
-  background-color: #e5e5e5;
-  color: #999;
+  background-color: #f1f5f9;
+  color: #cbd5e1;
   cursor: not-allowed;
 }
 
 .numeros-pagina {
   display: flex;
-  gap: 0.25rem;
-  margin: 0 1rem;
+  gap: 0.5rem;
 }
 
 .btn-numero-pagina {
   width: 40px;
   height: 40px;
-  border: 1px solid #ddd;
-  background-color: white;
-  color: #666;
-  border-radius: 4px;
+  border: none;
+  background-color: #e2e8f0;
+  color: #475569;
+  border-radius: 0.75rem;
   cursor: pointer;
   font-size: 0.9rem;
-  font-weight: 500;
-  transition: all 0.2s ease;
+  font-weight: 700;
+  transition: var(--transition-all);
 }
 
 .btn-numero-pagina:hover {
-  border-color: #333;
-  color: #333;
+  background-color: #cbd5e1;
 }
 
 .btn-numero-pagina.activa {
-  background-color: #333;
+  background-color: var(--primary-color);
   color: white;
-  border-color: #333;
+  border-radius: 50%;
 }
 
 /* Sin Productos */
 .sin-productos {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  padding: 3rem;
-  color: #666;
+  padding: 5rem 2rem;
+  color: #64748b;
   background-color: #fff;
-  border: 1px solid #e5e5e5;
-  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  border-radius: 1.5rem;
+  margin: 1.5rem 0;
+  min-height: 400px;
+  box-shadow: var(--shadow-sm);
 }
 
-.sin-productos i {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-  color: #ccc;
+.sin-productos-icono {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.sin-productos-icono i {
+  font-size: 2.25rem;
+  color: #94a3b8;
 }
 
 .sin-productos h3 {
-  font-size: 1.25rem;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #1e293b;
   margin-bottom: 0.5rem;
-  color: #333;
-  font-weight: 500;
+}
+
+.sin-productos p {
+  font-size: 0.95rem;
+  color: #64748b;
+  margin-bottom: 1.5rem;
 }
 
 /* Modales */
@@ -1373,7 +1423,8 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1383,57 +1434,69 @@ export default {
 
 .modal-contacto {
   background-color: white;
-  border-radius: 8px;
+  border-radius: 1.5rem;
   max-width: 500px;
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
   position: relative;
-  border: 1px solid #e5e5e5;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  animation: modalEnter 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes modalEnter {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 .btn-cerrar-modal {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background-color: #f8f8f8;
-  border: 1px solid #e5e5e5;
-  width: 32px;
-  height: 32px;
-  border-radius: 4px;
+  top: 1.25rem;
+  right: 1.25rem;
+  background-color: #f1f5f9;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
   cursor: pointer;
-  color: #666;
+  color: #64748b;
   z-index: 10;
-  transition: all 0.2s ease;
+  transition: var(--transition-all);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 .btn-cerrar-modal:hover {
-  background-color: #f0f0f0;
-  color: #333;
+  background-color: #e2e8f0;
+  color: #0f172a;
 }
 
-/* Modal Contacto */
 .contacto-contenido {
-  padding: 2rem;
+  padding: 2.25rem;
 }
 
 .contacto-contenido h3 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #111;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #0f172a;
   margin-bottom: 1.5rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  letter-spacing: -0.02em;
 }
 
 .contacto-contenido h3 i {
-  color: #666;
-  font-size: 1rem;
+  color: var(--primary-color);
 }
 
 .formulario-pregunta {
@@ -1441,214 +1504,312 @@ export default {
 }
 
 .campo-grupo {
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
 }
 
 .campo-grupo label {
-  display: block;
-  font-weight: 500;
-  color: #333;
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
 }
 
 .campo-grupo label i {
-  color: #666;
-  font-size: 0.8rem;
+  color: #94a3b8;
 }
 
 .campo-grupo input,
 .campo-grupo textarea {
   width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  padding: 0.75rem 1rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.75rem;
   font-size: 0.9rem;
-  font-family: inherit;
-  transition: border-color 0.2s ease;
+  color: #334155;
+  transition: var(--transition-all);
+  background-color: #f8fafc;
 }
 
 .campo-grupo input:focus,
 .campo-grupo textarea:focus {
   outline: none;
-  border-color: #333;
+  border-color: var(--primary-color);
+  background-color: #fff;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 
 .btn-enviar-pregunta {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  background-color: #333;
+  width: 100%;
+  padding: 0.875rem;
+  background: linear-gradient(135deg, #1d273a 0%, #0f172a 100%);
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 0.75rem;
   font-size: 0.9rem;
-  font-weight: 500;
+  font-weight: 700;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: var(--transition-all);
 }
 
 .btn-enviar-pregunta:hover {
-  background-color: #555;
+  background: linear-gradient(135deg, #0f172a 0%, #020617 100%);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
 }
 
-.btn-enviar-pregunta i {
-  font-size: 0.8rem;
-}
-
-/* Preguntas Frecuentes */
-.preguntas-frecuentes h4 {
-  font-size: 1rem;
+/* Footer */
+.tienda-footer {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  color: #94a3b8;
+  font-size: 0.85rem;
   font-weight: 600;
-  color: #111;
-  margin-bottom: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  border-top: 1px solid #e2e8f0;
+  width: 100%;
+  max-width: 100%;
+  margin: 3rem 0 0 0;
 }
 
-.preguntas-frecuentes h4 i {
-  color: #666;
-  font-size: 0.9rem;
+/* Dark Mode Overrides */
+.dark .tienda-container {
+  background-color: #0f172a;
+  color: #cbd5e1;
 }
 
-.pregunta-item {
-  border: 1px solid #f0f0f0;
-  border-radius: 4px;
-  margin-bottom: 0.5rem;
+.dark .filtros-sidebar,
+.dark .producto-card,
+.dark .productos-toolbar,
+.dark .modal-contacto,
+.dark .sin-productos,
+.dark .productos-contador {
+  background-color: #1e293b;
+  border-color: #334155;
 }
 
-.pregunta-titulo {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem;
-  cursor: pointer;
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: #333;
-  transition: background-color 0.2s ease;
+.dark .negocio-nombre,
+.dark .filtro-grupo-header h4,
+.dark .producto-nombre,
+.dark .contacto-contenido h3,
+.dark .campo-grupo label,
+.dark .btn-paginacion:not(:disabled),
+.dark .btn-numero-pagina,
+.dark .productos-contador {
+  color: #f8fafc;
 }
 
-.pregunta-titulo:hover {
-  background-color: #f8f8f8;
+.dark .negocio-descripcion,
+.dark .contacto-item,
+.dark .filtro-opcion,
+.dark .btn-limpiar-top,
+.dark .tienda-footer {
+  color: #94a3b8;
 }
 
-.pregunta-titulo i {
-  color: #666;
-  font-size: 0.8rem;
+.dark .contacto-item {
+  background-color: #0f172a;
 }
 
-.pregunta-respuesta {
-  padding: 0 1rem 1rem 1rem;
-  color: #666;
-  line-height: 1.5;
-  font-size: 0.9rem;
+.dark .contacto-item:hover {
+  background-color: #334155;
+  color: #f8fafc;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
+.dark .precio-input-wrapper {
+  background-color: #0f172a;
+  border-color: #334155;
+}
+
+.dark .precio-prefix {
+  background-color: #1e293b;
+  border-right-color: #334155;
+  color: #94a3b8;
+}
+
+.dark .precio-input,
+.dark .campo-grupo input,
+.dark .campo-grupo textarea {
+  color: #f8fafc;
+}
+
+.dark .precio-input-wrapper:focus-within {
+  border-color: var(--primary-color);
+}
+
+.dark .search-container {
+  background-color: #1e293b;
+  border-color: #334155;
+}
+
+.dark .search-container:focus-within {
+  border-color: #475569;
+}
+
+.dark .buscador-input {
+  color: #f8fafc;
+}
+
+.dark .btn-paginacion,
+.dark .btn-numero-pagina {
+  background-color: #1e293b;
+  color: #cbd5e1;
+}
+
+.dark .btn-paginacion:hover:not(:disabled),
+.dark .btn-numero-pagina:hover {
+  background-color: #334155;
+}
+
+.dark .btn-paginacion:disabled {
+  background-color: #1e293b;
+  color: #475569;
+  opacity: 0.5;
+}
+
+.dark .btn-cerrar-modal,
+.dark .btn-cerrar-filtros {
+  background-color: #0f172a;
+  color: #94a3b8;
+}
+
+.dark .btn-cerrar-modal:hover,
+.dark .btn-cerrar-filtros:hover {
+  background-color: #334155;
+  color: #f8fafc;
+}
+
+.dark .sin-productos-icono {
+  background-color: #0f172a;
+}
+
+.dark .btn-ver-detalle {
+  background-color: #1e293b;
+  color: #cbd5e1;
+  border-color: #475569;
+}
+
+.dark .btn-ver-detalle:hover {
+  background-color: #cbd5e1;
+  color: #1e293b;
+  border-color: #cbd5e1;
+}
+
+/* Responsive Overrides */
+@media (max-width: 992px) {
+  .contenido-principal {
+    grid-template-columns: 1fr;
+    padding: 1rem;
+    gap: 1.5rem;
+  }
+
   .negocio-info {
     flex-direction: column;
     text-align: center;
+    align-items: center;
     gap: 1rem;
+  }
+
+  .negocio-logo img {
+    margin-top: 0;
   }
 
   .negocio-contacto {
     justify-content: center;
-    flex-direction: column;
-    gap: 0.75rem;
   }
 
-  .contenido-principal {
-    flex-direction: column;
-    padding: 1rem;
-    gap: 1rem;
+  .carrito-icono {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    transform: none;
+  }
+
+  .carrito-icono:hover {
+    transform: scale(1.05);
   }
 
   .filtros-sidebar {
     position: fixed;
     top: 0;
     left: -100%;
-    width: 280px;
+    width: 300px;
     height: 100vh;
-    z-index: 999;
-    transition: left 0.3s ease;
+    z-index: 1001;
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     border-radius: 0;
-    border-right: 1px solid #e5e5e5;
-    border-left: none;
-    border-top: none;
-    border-bottom: none;
+    border: none;
+    border-right: 1px solid #e2e8f0;
+    max-height: 100vh;
   }
 
   .filtros-sidebar.filtros-activos {
     left: 0;
   }
 
-  .btn-cerrar-filtros {
-    display: flex;
-  }
-
   .btn-filtros-mobile {
     display: flex;
   }
 
-  .filtros-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.3);
-    z-index: 998;
-  }
-
-  .productos-grid {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1rem;
+  .btn-cerrar-filtros {
+    display: flex;
   }
 
   .productos-toolbar {
     flex-direction: column;
-    gap: 1rem;
     align-items: stretch;
+    gap: 1rem;
+  }
+
+  .search-container {
+    width: 100%;
+  }
+
+  .productos-contador {
+    justify-content: center;
   }
 
   .paginacion {
     flex-direction: column;
     gap: 1rem;
   }
-
-  .numeros-pagina {
-    justify-content: center;
-    margin: 0;
-  }
 }
 
 @media (max-width: 480px) {
+  .negocio-header {
+    padding: 3.5rem 1.25rem 2rem 1.25rem;
+    margin: 0.5rem;
+  }
+
   .negocio-nombre {
-    font-size: 1.5rem;
+    font-size: 1.75rem;
+  }
+
+  .contacto-item {
+    width: 100%;
+    justify-content: center;
   }
 
   .productos-grid {
     grid-template-columns: 1fr;
+    gap: 1.25rem;
   }
 
   .filtros-sidebar {
     width: 100%;
   }
+}
+</style>
 
-  .btn-paginacion {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .contacto-contenido {
-    padding: 1.5rem;
-  }
+<style>
+/* Reset global body and html margins/paddings when viewing the store page */
+html, body {
+  margin: 0 !important;
+  padding: 0 !important;
+  background-color: #f4f6f9 !important;
 }
 </style>

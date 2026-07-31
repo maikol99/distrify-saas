@@ -5,6 +5,7 @@ import {
   IsNotEmpty,
   IsString,
 } from 'class-validator';
+import { PartialType } from '@nestjs/mapped-types';
 import {
   ShopsCategoriesEnum,
   ShopsPaymentStatusEnum,
@@ -54,3 +55,19 @@ export class CreateShopDto {
   @IsDate()
   lastPayment: Date;
 }
+
+export class UpdateShopDto extends PartialType(CreateShopDto) {
+  storeActive?: boolean;
+  delivery?: boolean;
+  deliveryCharge?: boolean;
+  deliveryPrice?: number;
+  shopImage?: {
+    secure_url: string;
+    public_id: string;
+  };
+  isFirstLogin?: boolean;
+  isCentral?: boolean;
+  centralId?: string;
+  description?: string;
+}
+

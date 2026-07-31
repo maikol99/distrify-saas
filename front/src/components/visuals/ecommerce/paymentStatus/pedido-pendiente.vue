@@ -25,7 +25,7 @@
           compra directamente en su correo electrónico.
         </p>
         <p class="card-text">
-          ¡Muchas gracias por confiar en <span class="highlight-text">Distrify.com.ar</span> para realizar
+          ¡Muchas gracias por confiar en <span class="highlight-text">Alevia Pay.com.ar</span> para realizar
           sus compras!
         </p>
         

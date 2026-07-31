@@ -173,11 +173,13 @@
 
       <div class="search-container">
         <div class="search-bar">
-          <span class="material-symbols-outlined">barcode_scanner</span>
+          <span class="material-symbols-outlined" style="color: #9ca3af; font-size: 1.3rem;">barcode_scanner</span>
           <input
             v-model="salesStore.searchQuery"
             @input="checkInput"
             @keypress.enter="salesStore.searchProducts()"
+            class="flex-1 py-3 px-1 bg-transparent border-0 outline-none font-bold text-sm text-slate-800 dark:text-white"
+            style="border: none !important; box-shadow: none !important; outline: none !important; background: transparent !important;"
             :placeholder="
               salesStore.searchType === 'name'
                 ? 'Buscar producto por nombre'
@@ -186,7 +188,12 @@
                   : 'Buscar producto por nombre o código de barras'
             "
           />
-          <select v-model="salesStore.searchType" name="" id="">
+          <div class="w-px h-6 bg-slate-200 dark:bg-slate-700"></div>
+          <select 
+            v-model="salesStore.searchType" 
+            class="bg-transparent border-none outline-none font-bold text-xs text-slate-600 dark:text-slate-300 cursor-pointer pr-6 py-2"
+            style="border: none !important; box-shadow: none !important; outline: none !important;"
+          >
             <option value="name">Buscar por nombre</option>
             <option value="code">Buscar por código</option>
           </select>
@@ -199,12 +206,20 @@
           </button>
         </div>
       </div>
-      <div class="quick-action-buttons">
-        <button @click="showQuickInput = true" class="px-3 py-1.5 bg-green-500 text-white rounded-lg text-sm hover:bg-green-600">
-          + Ingreso
+      <div class="quick-action-buttons flex items-center gap-2">
+        <button
+          @click="showQuickInput = true"
+          class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-bold rounded-xl text-xs shadow-md shadow-emerald-500/20 hover:shadow-lg hover:shadow-emerald-500/30 hover:scale-[1.03] active:scale-[0.97] transition-all cursor-pointer"
+        >
+          <span class="material-symbols-outlined text-base">add_circle</span>
+          <span>Ingreso</span>
         </button>
-        <button @click="showQuickOutput = true" class="px-3 py-1.5 bg-red-500 text-white rounded-lg text-sm hover:bg-red-600 ml-2">
-          - Egreso
+        <button
+          @click="showQuickOutput = true"
+          class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-gradient-to-r from-rose-500 to-rose-600 text-white font-bold rounded-xl text-xs shadow-md shadow-rose-500/20 hover:shadow-lg hover:shadow-rose-500/30 hover:scale-[1.03] active:scale-[0.97] transition-all cursor-pointer"
+        >
+          <span class="material-symbols-outlined text-base">remove_circle</span>
+          <span>Egreso</span>
         </button>
       </div>
       <!-- <button @click="showingModalCreate = true" class="btn-create">
@@ -214,32 +229,46 @@
 
     <!-- Resultados de búsqueda de productos -->
     <div v-if="salesStore.searchResults.length > 0" class="search-results">
-      <h3>Resultados de búsqueda de productos</h3>
+      <div class="flex items-center gap-2 mb-4">
+        <span class="material-symbols-outlined text-primary" style="font-size:1.2rem;">inventory_2</span>
+        <h3 class="text-sm font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">
+          Resultados <span class="text-primary">{{ salesStore.searchResults.length }}</span> productos
+        </h3>
+      </div>
       <ul class="results-list">
         <li
           v-for="product in salesStore.searchResults"
           :key="product._id"
-          class="result-item"
+          class="result-item group"
           @click="salesStore.addToCart(product)"
         >
+          <!-- Ícono con fondo coloreado -->
           <div class="result-icon-placeholder">
             <span class="material-symbols-outlined">{{ getCategoryIcon(product.category) }}</span>
           </div>
-          <div v-if="product.sellPrice" class="result-details">
-            <span class="result-category">{{
-              product.category || "General"
-            }}</span>
-            <h4>{{ product.name }}</h4>
-            <div class="result-info">
-              <span class="price">{{ formatPrice(product.sellPrice) }}</span>
-            </div>
+
+          <!-- Info del producto -->
+          <div v-if="product.sellPrice" class="result-details flex-1">
+            <span class="result-category">{{ product.category || 'General' }}</span>
+            <h4 class="result-name">{{ product.name }}</h4>
+          </div>
+
+          <!-- Precio + Stock + botón -->
+          <div class="result-right">
+            <span class="result-price">{{ formatPrice(product.sellPrice) }}</span>
             <span
-              class="stock mobile-hidden"
-              :class="{ 'low-stock': product.quantity <= 0 }"
+              class="result-stock-badge"
+              :class="product.quantity <= 0 ? 'out-of-stock' : product.quantity <= 5 ? 'low-stock-badge' : 'in-stock'"
             >
-              Stock: {{ product.quantity.toFixed(2) }}
+              <span class="material-symbols-outlined" style="font-size:0.85rem;">{{ product.quantity <= 0 ? 'block' : 'package_2' }}</span>
+              {{ product.quantity <= 0 ? 'Sin stock' : `Stock: ${product.quantity.toFixed(0)}` }}
             </span>
           </div>
+
+          <!-- Botón agregar (aparece en hover) -->
+          <button class="result-add-btn" @click.stop="salesStore.addToCart(product)">
+            <span class="material-symbols-outlined">add_shopping_cart</span>
+          </button>
         </li>
       </ul>
     </div>
@@ -257,68 +286,125 @@
       </div>
       <!-- Lista de productos en carrito -->
       <div class="cart-section">
-        <h2>Productos en Carrito</h2>
-        <transition-group name="fade" tag="ul" class="cart-list">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-base font-bold text-slate-800 dark:text-white">
+            Carrito de productos
+          </h2>
+          <span v-if="salesStore.cartItems.length > 0" class="px-2.5 py-0.5 rounded-full bg-primary/10 text-primary font-bold text-xs">
+            {{ cartItemCount }} {{ cartItemCount === 1 ? 'item' : 'items' }}
+          </span>
+        </div>
+
+        <transition-group name="fade" tag="ul" class="cart-list space-y-2.5">
           <li
             v-for="item in salesStore.cartItems"
             :key="item.cartItemId"
-            class="cart-item"
+            class="cart-item-card group"
           >
-            <div class="item-details">
-              <h3>{{ item.name }}</h3>
-              <!-- Mostrar variantes si existen -->
-              <p
-                v-if="
-                  item.variants && (item.variants.size || item.variants.color)
-                "
-                class="variant-info"
-              >
-                <span v-if="item.variants.size"
-                  >Talla: {{ item.variants.size }}</span
-                >
-                <span v-if="item.variants.color && item.variants.size">
-                  -
-                </span>
-                <span v-if="item.variants.color"
-                  >Color: {{ item.variants.color }}</span
-                >
-              </p>
-              <p>Precio unitario: {{ formatPrice(item.sellPrice) }}</p>
-              <p class="total-price">
-                Total: {{ formatPrice(item.sellPrice * item.quantity) }}
-              </p>
+            <!-- Left: Avatar Icon + Details -->
+            <div class="flex items-center gap-3 min-w-0 flex-1">
+              <div class="cart-item-icon">
+                <span class="material-symbols-outlined" style="font-size:1.25rem;">{{ getCategoryIcon(item.category) }}</span>
+              </div>
+              <div class="item-details min-w-0 flex-1">
+                <h3 class="cart-item-name">{{ item.name }}</h3>
+                <div class="flex items-center gap-2 mt-1">
+                  <!-- Precio editable inline -->
+                  <div class="price-edit-wrapper" :class="{ 'price-edited': item.sellPrice !== item.originalPrice }">
+                    <span class="price-edit-prefix">$</span>
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      class="price-edit-input"
+                      :value="item.sellPrice"
+                      @change="salesStore.updateItemPrice(item, $event.target.value)"
+                      @keydown.enter="$event.target.blur()"
+                      title="Click para editar el precio"
+                    />
+                    <span class="price-edit-label">c/u</span>
+                    <span
+                      v-if="item.originalPrice && item.sellPrice !== item.originalPrice"
+                      class="price-original-badge"
+                      :title="`Precio original: $${item.originalPrice}`"
+                    >orig. {{ formatPrice(item.originalPrice) }}</span>
+                    <span class="material-symbols-outlined price-edit-icon">edit</span>
+                  </div>
+                  <span
+                    v-if="item.variants && (item.variants.size || item.variants.color)"
+                    class="variant-info truncate"
+                  >
+                    <span v-if="item.variants.size">Talla: {{ item.variants.size }}</span>
+                    <span v-if="item.variants.color && item.variants.size"> · </span>
+                    <span v-if="item.variants.color">Color: {{ item.variants.color }}</span>
+                  </span>
+                </div>
+              </div>
             </div>
-            <div class="item-actions">
-              <button
-                @click="salesStore.decreaseQuantity(item)"
-                class="btn-quantity"
-              >
-                <span class="material-symbols-outlined">remove</span>
-              </button>
-              <input
-                v-model.number="item.quantity"
-                type="number"
-                min="1"
-                class="quantity-input"
-                @input="salesStore.updateQuantity(item)"
-                :max="item.stock"
-              />
-              <button
-                @click="salesStore.increaseQuantity(item)"
-                :disabled="item.quantity >= item.stock"
-                class="btn-quantity"
-              >
-                <span class="material-symbols-outlined">add</span>
-              </button>
-              <button @click="salesStore.removeItem(item)" class="btn-remove">
-                <span class="material-symbols-outlined">delete</span>
+
+            <!-- Right: Item Total + Stepper + Remove -->
+            <div class="cart-item-right">
+              <!-- Total -->
+              <div class="cart-item-total">
+                <span class="cart-item-total-label">Total</span>
+                <span class="cart-item-total-value">{{ formatPrice(item.sellPrice * item.quantity) }}</span>
+              </div>
+
+              <!-- Quantity Stepper -->
+              <div class="cart-stepper">
+                <button @click="salesStore.decreaseQuantity(item)" class="stepper-btn">
+                  <span class="material-symbols-outlined" style="font-size:1rem;">remove</span>
+                </button>
+                <input
+                  v-model.number="item.quantity"
+                  type="number"
+                  min="1"
+                  class="stepper-input"
+                  @input="salesStore.updateQuantity(item)"
+                  :max="item.stock"
+                />
+                <button
+                  @click="salesStore.increaseQuantity(item)"
+                  :disabled="item.quantity >= item.stock"
+                  class="stepper-btn stepper-btn-add"
+                >
+                  <span class="material-symbols-outlined" style="font-size:1rem;">add</span>
+                </button>
+              </div>
+
+              <!-- Remove button -->
+              <button @click="salesStore.removeItem(item)" class="cart-remove-btn" title="Eliminar">
+                <span class="material-symbols-outlined" style="font-size:1.1rem;">delete</span>
               </button>
             </div>
           </li>
         </transition-group>
-        <div v-if="salesStore.cartItems.length === 0" class="empty-cart">
-          <span class="material-symbols-outlined">shopping_cart</span>
-          <p>El carrito está vacío</p>
+
+        <div v-if="salesStore.cartItems.length === 0" class="empty-cart py-12 text-center w-full">
+          <div class="w-36 h-36 rounded-full bg-slate-50 dark:bg-slate-800/40 flex items-center justify-center mx-auto mb-6">
+            <svg viewBox="0 0 100 100" class="w-28 h-28 mx-auto" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Orange Sparks -->
+              <line x1="50" y1="12" x2="50" y2="20" stroke="#f97316" stroke-width="3.5" stroke-linecap="round" />
+              <line x1="58" y1="17" x2="66" y2="24" stroke="#f97316" stroke-width="3.5" stroke-linecap="round" />
+
+              <!-- Box inside cart -->
+              <rect x="40" y="27" width="14" height="12" rx="2" fill="#1e293b" class="dark:fill-slate-200" />
+
+              <!-- Cart Basket -->
+              <path d="M40 33H74L71 55H46L40 33Z" fill="#cbd5e1" class="dark:fill-slate-600" opacity="0.8" />
+
+              <!-- Cart Frame / Chassis -->
+              <path d="M28 23H32L39 63H72" stroke="#475569" class="dark:stroke-slate-300" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+
+              <!-- Wheels -->
+              <circle cx="47" cy="71" r="5" fill="#475569" class="dark:fill-slate-300" />
+              <circle cx="67" cy="71" r="5" fill="#475569" class="dark:fill-slate-300" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-slate-800 dark:text-slate-100">Tu carrito está vacío</h3>
+          <p class="text-sm text-slate-400 dark:text-slate-500 mt-2 max-w-xs mx-auto">
+            Escaneá un código de barras o buscá un producto para comenzar
+          </p>
         </div>
       </div>
 
@@ -427,53 +513,106 @@
             </div>
           </div>
 
-          <div class="summary-row subtotal">
+          <div class="flex justify-between items-center text-sm text-slate-500 font-medium py-1 px-1">
             <span>Subtotal:</span>
-            <span>{{ formatPrice(salesStore.subtotal) }}</span>
+            <span class="font-bold text-slate-700 dark:text-slate-200">{{ formatPrice(salesStore.subtotal) }}</span>
           </div>
-          <div class="summary-row total">
-            <span>Total:</span>
-            <span>{{ formatPrice(salesStore.total) }}</span>
+
+          <!-- Total Card Banner -->
+          <div class="total-banner-card bg-gradient-to-r from-[#23190f] via-[#2f1f12] to-[#3d2715] dark:from-slate-900 dark:to-slate-800 text-white rounded-2xl p-4 my-3 shadow-lg shadow-black/15 border border-primary/30 flex items-center justify-between">
+            <div>
+              <span class="text-[11px] uppercase tracking-widest text-primary font-bold block mb-0.5">Total a Cobrar</span>
+              <span class="text-3xl font-black text-white tracking-tight leading-none">{{ formatPrice(salesStore.total) }}</span>
+            </div>
+            <div class="w-11 h-11 rounded-xl bg-primary/20 border border-primary/40 flex items-center justify-center text-primary shadow-inner">
+              <span class="material-symbols-outlined text-2xl">payments</span>
+            </div>
           </div>
         </div>
 
-        <div class="payment-section">
-          <div class="payment-method">
-            <label for="paymentMethod">Método de Pago:</label>
-            <select v-model="salesStore.paymentMethod" id="paymentMethod">
-              <option value="Efectivo">Efectivo</option>
-              <option value="Transferencia">Transferencia</option>
-              <option value="Cuenta corriente">Cuenta corriente</option>
-              <option value="Credito">Crédito</option>
-              <option value="Debito">Débito</option>
-            </select>
+        <div class="payment-section mt-4">
+          <div class="payment-method mb-3">
+            <label for="paymentMethod" class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">
+              Método de Pago:
+            </label>
+            <div class="relative">
+              <select
+                v-model="salesStore.paymentMethod"
+                id="paymentMethod"
+                class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-bold text-slate-800 dark:text-white outline-none focus:ring-2 focus:ring-primary focus:bg-white dark:focus:bg-slate-900 transition-all cursor-pointer appearance-none"
+              >
+                <option value="Efectivo">💵 Efectivo</option>
+                <option value="Transferencia">🏦 Transferencia</option>
+                <option value="Cuenta corriente">📋 Cuenta corriente</option>
+                <option value="Credito">💳 Crédito</option>
+                <option value="Debito">💳 Débito</option>
+              </select>
+              <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xl">expand_more</span>
+            </div>
           </div>
 
-          <div class="print-checkbox-container">
-            <label class="checkbox-label">
+          <div class="print-checkbox-container mb-3">
+            <label class="checkbox-label flex items-center gap-2 cursor-pointer text-xs font-medium text-slate-600 dark:text-slate-300">
               <input
                 type="checkbox"
                 v-model="salesStore.autoPrintTicket"
-                class="print-checkbox"
+                class="print-checkbox w-4 h-4 rounded text-primary focus:ring-primary accent-primary"
               />
               <span class="checkbox-text">Imprimir ticket automáticamente</span>
             </label>
           </div>
 
-          <!-- Calculadora de vueltos -->
-          <div v-if="salesStore.paymentMethod === 'Efectivo'" class="mt-3">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Monto Recibido ($)</label>
-            <input
-              v-model="receivedAmount"
-              type="number"
-              min="0"
-              step="0.01"
-              class="w-full p-2 border border-gray-300 rounded-lg"
-              placeholder="Ingrese el monto recibido"
-              @input="calculateChange"
-            />
-            <div v-if="receivedAmount > 0" class="mt-2 p-3 rounded-lg" :class="change >= 0 ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'">
-              <p class="text-sm font-medium">Cambio: <span class="text-lg font-bold">{{ formatPrice(change) }}</span></p>
+          <!-- Calculadora de vueltos con botones rápidos -->
+          <div v-if="salesStore.paymentMethod === 'Efectivo'" class="mt-3 bg-slate-50 dark:bg-slate-800/60 p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-700">
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">
+              Monto Recibido ($)
+            </label>
+            <div class="flex items-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus-within:ring-2 focus-within:ring-primary transition-all shadow-inner overflow-hidden mb-2.5">
+              <span class="pl-3.5 pr-1 text-slate-500 dark:text-slate-400 font-medium text-base select-none">$</span>
+              <input
+                v-model.number="receivedAmount"
+                type="number"
+                min="0"
+                step="0.01"
+                class="w-full py-2 pr-4 bg-transparent font-black text-lg text-slate-900 dark:text-white"
+                style="border: none !important; box-shadow: none !important; outline: none !important; background: transparent !important;"
+                placeholder="0"
+                @input="calculateChange"
+              />
+            </div>
+
+            <!-- Fast Cash Preset Buttons -->
+            <div class="flex flex-wrap gap-1.5 mb-3">
+              <button
+                type="button"
+                @click="receivedAmount = salesStore.total; calculateChange()"
+                class="px-3 py-1.5 text-xs font-black bg-primary text-white hover:brightness-110 active:scale-95 rounded-lg shadow-sm transition-all"
+              >
+                Exacto
+              </button>
+              <button
+                v-for="preset in getCashPresets()"
+                :key="preset"
+                type="button"
+                @click="receivedAmount = preset; calculateChange()"
+                class="px-2.5 py-1.5 text-xs font-bold bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-600 border border-slate-200 dark:border-slate-600 active:scale-95 rounded-lg shadow-sm transition-all"
+              >
+                ${{ formatNumberWithThousandSeparator(preset) }}
+              </button>
+            </div>
+
+            <!-- Cambio / Vuelto Dynamic Card -->
+            <div
+              v-if="receivedAmount > 0"
+              class="p-3 rounded-xl transition-all flex items-center justify-between border"
+              :class="change >= 0 ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-400' : 'bg-rose-500/10 border-rose-500/30 text-rose-700 dark:text-rose-400'"
+            >
+              <span class="text-xs font-bold uppercase tracking-wider">
+                {{ change >= 0 ? 'Vuelto a entregar:' : 'Falta dinero:' }}
+              </span>
+              <span class="text-xl font-black tracking-tight">
+                {{ formatPrice(Math.abs(change)) }}
+              </span>
             </div>
           </div>
 
@@ -483,21 +622,30 @@
               class="btn-multiple-payments"
               :disabled="salesStore.cartItems.length === 0"
             >
-              <span class="material-symbols-outlined">credit_card</span> Múltiples medios de pago
+              <span class="material-symbols-outlined text-xl">credit_card</span>
+              <span>Múltiples medios de pago</span>
             </button>
             <button
               @click="createSale"
               class="btn-complete-sale"
               :disabled="salesStore.cartItems.length === 0"
             >
-              <span class="material-symbols-outlined">check_circle</span> F4 - VENTA
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-xl">task_alt</span>
+                <span>VENTA</span>
+              </div>
+              <kbd class="shortcut-tag">F4</kbd>
             </button>
             <button
               @click="salesStore.cancelSale()"
               class="btn-cancel"
               :disabled="salesStore.cartItems.length === 0"
             >
-              <span class="material-symbols-outlined">cancel</span> ESC - CANCELAR
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-xl">cancel</span>
+                <span>CANCELAR</span>
+              </div>
+              <kbd class="shortcut-tag shortcut-tag-cancel">ESC</kbd>
             </button>
           </div>
         </div>
@@ -901,6 +1049,12 @@
       </div>
     </div>
   </div>
+  <toastComponent
+    v-if="salesStore.toast.showing"
+    :message="salesStore.toast.message"
+    :state="salesStore.toast.state"
+    @close="salesStore.toast.showing = false"
+  ></toastComponent>
 </template>
 
 <script>
@@ -912,6 +1066,7 @@ import paymentMethods from "@/components/visuals/sales/paymentMethods.vue";
 import spinnerComponent from "@/components/visuals/spinnerComponent.vue";
 import variantsSelectorModal from "@/components/visuals/sales/variantsSelectorModal.vue";
 import sentTicketByEmail from "@/components/visuals/sales/sentTicketByEmail.vue";
+import toastComponent from "@/components/visuals/toast/toastComponent.vue";
 import numeral from "numeral";
 import { useGlobalStore } from "@/stores/globalStore";
 import { useSettingsStore } from "@/stores/settingsStore";
@@ -930,6 +1085,7 @@ export default {
     spinnerComponent,
     variantsSelectorModal,
     sentTicketByEmail,
+    toastComponent,
 
     clientSelectorModal: defineAsyncComponent(
       () => import("@/components/visuals/sales/clientSelectorModal.vue"),
@@ -1005,6 +1161,21 @@ export default {
       "clearSelectedClient",
     ]),
 
+    getCashPresets() {
+      const total = this.salesStore.total || 0;
+      const presets = [1000, 2000, 5000, 10000, 20000];
+      return presets.filter(p => p >= total).slice(0, 4);
+    },
+    formatNumberWithThousandSeparator(val) {
+      if (!val) return '0';
+      return numeral(val).format('0,0').replace(/,/g, '.');
+    },
+    showToast(message, state = 'success') {
+      this.salesStore.toast.message = message;
+      this.salesStore.toast.state = state;
+      this.salesStore.toast.showing = true;
+    },
+
     // Método modificado para crear venta
     async createSale() {
       // Bloquear venta si el módulo de turnos está activo y no hay turno abierto
@@ -1015,7 +1186,7 @@ export default {
 
       // Validar monto recibido para pago en efectivo
       if (this.salesStore.paymentMethod === 'Efectivo' && this.receivedAmount < this.salesStore.total) {
-        alert('El monto recibido es menor al total de la venta');
+        this.showToast('El monto recibido es menor al total de la venta', 'danger');
         return;
       }
 
@@ -1039,6 +1210,7 @@ export default {
         if (!this.salesStore.autoPrintTicket) {
           // Solo completar la venta sin mostrar modales ni imprimir
           this.salesStore.completeSale();
+          this.showToast("Venta completada exitosamente", "success");
           return;
         }
 
@@ -1053,6 +1225,7 @@ export default {
 
           // Emitir ticket directamente
           await this.salesStore.emitirTicket();
+          this.showToast("Venta completada exitosamente", "success");
           return;
         }
 
@@ -1064,7 +1237,7 @@ export default {
         }
       } catch (error) {
         console.error("Error al crear venta:", error);
-        alert("Error al crear la venta");
+        this.showToast("Error al crear la venta", "danger");
       }
     },
 
@@ -1084,13 +1257,13 @@ export default {
         await this.salesStore.emitirTicket();
 
         if (data.sentByEmail) {
-          alert(`Ticket enviado exitosamente a ${data.email}`);
+          this.showToast(`Ticket enviado exitosamente a ${data.email}`, 'success');
         } else {
-          alert("Venta completada exitosamente");
+          this.showToast("Venta completada exitosamente", 'success');
         }
       } catch (error) {
         console.error("Error al procesar ticket:", error);
-        alert("Error al procesar el ticket");
+        this.showToast("Error al procesar el ticket", 'danger');
       }
     },
 
@@ -1207,9 +1380,9 @@ export default {
         await api.post("/inputs/post/create-input", incomeData);
         this.showQuickInput = false;
         this.quickInput = { description: '', total: 0, category: 'Ventas', paymentMethod: 'Efectivo' };
-        alert('Ingreso registrado correctamente');
+        this.showToast('Ingreso registrado correctamente', 'success');
       } catch (e) {
-        alert('Error al registrar ingreso');
+        this.showToast('Error al registrar ingreso', 'danger');
       }
     },
 
@@ -1229,9 +1402,9 @@ export default {
         await api.post("/outputs/post/create-output", expenseData);
         this.showQuickOutput = false;
         this.quickOutput = { description: '', total: 0, category: 'Otros', paymentMethod: 'Efectivo' };
-        alert('Egreso registrado correctamente');
+        this.showToast('Egreso registrado correctamente', 'success');
       } catch (e) {
-        alert('Error al registrar egreso');
+        this.showToast('Error al registrar egreso', 'danger');
       }
     },
   },
@@ -1381,24 +1554,35 @@ export default {
 .btn-search {
   background: linear-gradient(135deg, #f9931e 0%, #f76707 100%);
   color: white;
-  padding: 0.75rem 1rem;
+  padding: 0.65rem 1rem;
   border: none;
   font-size: 0.875rem;
-  border-radius: 1rem;
+  border-radius: 9999px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  min-width: 48px;
-  box-shadow: 0 4px 6px rgba(249, 147, 30, 0.3);
+  min-width: 44px;
+  margin: 3px;
+  box-shadow: 0 4px 10px rgba(249, 147, 30, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-search:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(249, 147, 30, 0.4);
+  transform: scale(1.06);
+  box-shadow: 0 6px 18px rgba(249, 147, 30, 0.45);
+  filter: brightness(1.08);
+}
+
+.btn-search:active:not(:disabled) {
+  transform: scale(0.97);
 }
 
 .btn-search:disabled {
-  background-color: #d1d5db;
-  color: #9ca3af;
+  background: linear-gradient(135deg, #f9931e 0%, #f76707 100%);
+  color: white;
   cursor: not-allowed;
+  box-shadow: none;
+  opacity: 0.45;
 }
 
 /* Nuevo estilo para indicador de variantes */
@@ -1614,28 +1798,29 @@ textarea:focus {
 .search-bar {
   display: flex;
   align-items: center;
-  background-color: white;
-  border-radius: 1rem;
-  box-shadow:
-    0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  gap: 0.75rem;
-  border: 2px solid transparent;
-  transition: all 0.2s ease;
+  gap: 0.5rem;
+  padding: 0 0.25rem 0 1rem;
+  background: white;
+  border-radius: 9999px;
+  border: 1.5px solid #e5e7eb;
+  box-shadow: 0 2px 8px -2px rgba(0,0,0,0.08);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.dark .search-bar {
+  background: #1e293b;
+  border-color: #334155;
 }
 
 .search-bar:hover {
-  border-color: rgba(249, 147, 30, 0.3);
-  box-shadow:
-    0 6px 12px -1px rgba(0, 0, 0, 0.15),
-    0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border-color: rgba(249, 147, 30, 0.4);
+  box-shadow: 0 4px 16px -4px rgba(249, 147, 30, 0.18);
 }
 
 .search-bar:focus-within {
   border-color: #f9931e;
-  box-shadow:
-    0 0 0 3px rgba(249, 147, 30, 0.2),
-    0 6px 12px -1px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0 0 3px rgba(249, 147, 30, 0.15), 0 4px 12px -2px rgba(0,0,0,0.1);
 }
 
 .search-bar i {
@@ -1647,10 +1832,15 @@ textarea:focus {
 .search-bar input {
   flex: 1;
   border: none;
-  font-size: 1rem;
+  font-size: 0.9rem;
   background: transparent;
   color: #1f2937;
   font-weight: 500;
+  padding: 0.8rem 0;
+}
+
+.dark .search-bar input {
+  color: white;
 }
 
 .search-bar input::placeholder {
@@ -1664,25 +1854,30 @@ textarea:focus {
 }
 
 .search-bar select {
-  background-color: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  font-size: 0.875rem;
-  color: #374151;
-  min-width: 140px;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0.5rem 1.5rem 0.5rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #6b7280;
   cursor: pointer;
-  transition: all 0.2s ease;
+  appearance: auto;
+  min-width: 120px;
+  transition: color 0.2s;
+}
+
+.dark .search-bar select {
+  color: #94a3b8;
 }
 
 .search-bar select:hover {
-  background-color: #f3f4f6;
-  border-color: #d1d5db;
+  color: #f9931e;
 }
 
 .search-bar select:focus {
-  border-color: #f9931e;
-  box-shadow: 0 0 0 2px rgba(249, 147, 30, 0.2);
+  outline: none;
+  box-shadow: none;
 }
 
 .btn-create {
@@ -1784,72 +1979,183 @@ textarea:focus {
 
 /* Resultados de búsqueda */
 .search-results {
-  background-color: white;
+  background: white;
   border-radius: 1.5rem;
-  padding: 1.5rem;
+  padding: 1.25rem 1.5rem;
   margin-bottom: 1.5rem;
   border: 1px solid #f1f5f9;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+}
+
+.dark .search-results {
+  background: #1e293b;
+  border-color: #334155;
 }
 
 .results-list {
   list-style: none;
   padding: 0;
   margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .result-item {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
   gap: 1rem;
-  padding: 0.75rem 0;
-  border-bottom: 1px solid #e5e7eb;
+  padding: 0.875rem 1rem;
+  border-radius: 1rem;
+  border: 1.5px solid #f1f5f9;
+  background: #fafafa;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
 }
 
-.result-item:last-child {
-  border-bottom: none;
+.dark .result-item {
+  background: #0f172a;
+  border-color: #1e293b;
 }
 
-.result-details h4 {
-  margin: 0 0 0.25rem 0;
-  font-size: 1rem;
+.result-item:hover {
+  background: white;
+  border-color: rgba(249, 147, 30, 0.35);
+  box-shadow: 0 4px 16px -4px rgba(249, 147, 30, 0.2);
+  transform: translateY(-1px);
 }
 
-.result-info {
+.dark .result-item:hover {
+  background: #1e293b;
+}
+
+/* Ícono del producto */
+.result-icon-placeholder {
+  width: 44px;
+  height: 44px;
+  border-radius: 0.875rem;
+  background: linear-gradient(135deg, rgba(249, 147, 30, 0.12), rgba(247, 103, 7, 0.08));
+  border: 1.5px solid rgba(249, 147, 30, 0.2);
   display: flex;
-  gap: 1rem;
-  font-size: 0.875rem;
-  color: #6b7280;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #f9931e;
+  transition: all 0.2s ease;
 }
 
-.price {
-  font-weight: 600;
-  color: #1f2937;
+.result-item:hover .result-icon-placeholder {
+  background: linear-gradient(135deg, rgba(249, 147, 30, 0.2), rgba(247, 103, 7, 0.15));
+  transform: scale(1.05);
 }
 
-.stock {
-  color: #10b981;
+/* Detalles del producto */
+.result-details {
+  flex: 1;
+  min-width: 0;
 }
 
-.low-stock {
-  color: #ef4444;
+.result-category {
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #f9931e;
+  display: block;
+  margin-bottom: 0.15rem;
 }
 
-.btn-add {
-  background-color: #f9931e;
+.result-name {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1e293b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dark .result-name {
   color: white;
-  padding: 0.5rem 1rem;
+}
+
+/* Columna derecha: precio + stock */
+.result-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+.result-price {
+  font-size: 1rem;
+  font-weight: 900;
+  color: #1e293b;
+  letter-spacing: -0.02em;
+}
+
+.dark .result-price {
+  color: white;
+}
+
+/* Stock badges */
+.result-stock-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+}
+
+.in-stock {
+  background: rgba(16, 185, 129, 0.1);
+  color: #059669;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.low-stock-badge {
+  background: rgba(245, 158, 11, 0.1);
+  color: #d97706;
+  border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+.out-of-stock {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+/* Botón agregar en hover */
+.result-add-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 0.75rem;
+  background: linear-gradient(135deg, #f9931e 0%, #f76707 100%);
   border: none;
-  font-size: 0.875rem;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(0.8) translateX(8px);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 10px rgba(249, 147, 30, 0.4);
+  flex-shrink: 0;
+  cursor: pointer;
 }
 
-.btn-add:hover {
-  background-color: #e8821a;
+.result-item:hover .result-add-btn {
+  opacity: 1;
+  transform: scale(1) translateX(0);
 }
 
-.btn-add.no-stock {
-  background-color: #f59e0b;
+.result-add-btn:hover {
+  filter: brightness(1.1);
+  transform: scale(1.08) !important;
 }
 
 /* Contenido principal */
@@ -1885,28 +2191,286 @@ textarea:focus {
   overflow-y: auto;
 }
 
-.cart-item {
+/* ── Cart Item Card ───────────────────────────── */
+.cart-item-card {
   display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap;
   align-items: center;
-  padding: 1rem 0;
-  border-bottom: 1px solid #e5e7eb;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 1rem 1.1rem;
+  border-radius: 1.25rem;
+  background: white;
+  border: 1.5px solid #f1f5f9;
+  box-shadow: 0 2px 8px -2px rgba(0,0,0,0.07);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-bottom: 0.5rem;
 }
 
-.cart-item:last-child {
-  border-bottom: none;
+.dark .cart-item-card {
+  background: #0f172a;
+  border-color: #1e293b;
 }
 
-.item-details h3 {
-  margin: 0 0 0.25rem 0;
-  font-size: 1rem;
+.cart-item-card:hover {
+  border-color: rgba(249, 147, 30, 0.3);
+  box-shadow: 0 6px 20px -4px rgba(249, 147, 30, 0.15);
+  transform: translateY(-1px);
 }
 
-.item-details p {
-  margin: 0.25rem 0;
+.dark .cart-item-card:hover {
+  background: #1e293b;
+}
+
+/* Ícono del item */
+.cart-item-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 0.875rem;
+  background: linear-gradient(135deg, rgba(249,147,30,0.14), rgba(247,103,7,0.08));
+  border: 1.5px solid rgba(249,147,30,0.22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #f9931e;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.cart-item-card:hover .cart-item-icon {
+  transform: scale(1.07);
+}
+
+/* Nombre */
+.cart-item-name {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #1e293b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+
+.dark .cart-item-name {
+  color: white;
+}
+
+/* Precio por unidad */
+/* ── Precio editable inline ─────────────────────────────────── */
+.price-edit-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  background: rgba(249,147,30,0.08);
+  border: 1px solid rgba(249,147,30,0.22);
+  border-radius: 9999px;
+  padding: 0.12rem 0.45rem 0.12rem 0.35rem;
+  cursor: text;
+  transition: border-color 0.18s, background 0.18s, box-shadow 0.18s;
+  position: relative;
+}
+.price-edit-wrapper:hover,
+.price-edit-wrapper:focus-within {
+  border-color: #f9931e;
+  background: rgba(249,147,30,0.14);
+  box-shadow: 0 0 0 2px rgba(249,147,30,0.15);
+}
+.price-edit-wrapper.price-edited {
+  border-color: #f9931e;
+  background: rgba(249,147,30,0.18);
+}
+.price-edit-prefix {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #f9931e;
+  line-height: 1;
+}
+.price-edit-input {
+  width: 5ch;
+  min-width: 4ch;
+  max-width: 8ch;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #f9931e;
+  text-align: right;
+  -moz-appearance: textfield;
+  padding: 0;
+}
+.price-edit-input::-webkit-outer-spin-button,
+.price-edit-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.price-edit-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #f9931e;
+  opacity: 0.75;
+  margin-left: 2px;
+}
+.price-edit-icon {
+  font-size: 0.65rem !important;
+  color: #f9931e;
+  opacity: 0;
+  margin-left: 2px;
+  transition: opacity 0.15s;
+  pointer-events: none;
+}
+.price-edit-wrapper:hover .price-edit-icon,
+.price-edit-wrapper:focus-within .price-edit-icon {
+  opacity: 0.6;
+}
+.price-original-badge {
+  font-size: 0.6rem;
+  font-weight: 500;
+  color: #999;
+  text-decoration: line-through;
+  white-space: nowrap;
+  margin-left: 4px;
+}
+.dark .price-edit-wrapper {
+  background: rgba(249,147,30,0.12);
+  border-color: rgba(249,147,30,0.3);
+}
+.dark .price-edit-input,
+.dark .price-edit-prefix,
+.dark .price-edit-label,
+.dark .price-edit-icon {
+  color: #fbbf77;
+}
+
+
+/* Columna derecha */
+.cart-item-right {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  flex-shrink: 0;
+}
+
+/* Total del item */
+.cart-item-total {
+  text-align: right;
+}
+
+.cart-item-total-label {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.cart-item-total-value {
+  font-size: 1.05rem;
+  font-weight: 900;
+  color: #1e293b;
+  letter-spacing: -0.02em;
+}
+
+.dark .cart-item-total-value {
+  color: white;
+}
+
+/* Stepper */
+.cart-stepper {
+  display: flex;
+  align-items: center;
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 0.875rem;
+  padding: 0.25rem;
+  gap: 0.1rem;
+}
+
+.dark .cart-stepper {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+.stepper-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 0.6rem;
+  background: white;
+  border: 1px solid #e2e8f0;
+  color: #475569;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+
+.dark .stepper-btn {
+  background: #1e293b;
+  border-color: #334155;
+  color: #94a3b8;
+}
+
+.stepper-btn:hover:not(:disabled) {
+  background: #f9931e;
+  border-color: #f9931e;
+  color: white;
+}
+
+.stepper-btn:active:not(:disabled) {
+  transform: scale(0.92);
+}
+
+.stepper-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.stepper-input {
+  width: 36px;
+  text-align: center;
+  font-weight: 800;
   font-size: 0.875rem;
-  color: #6b7280;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #1e293b;
 }
+
+.dark .stepper-input {
+  color: white;
+}
+
+/* Botón eliminar */
+.cart-remove-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 0.875rem;
+  background: rgba(239,68,68,0.08);
+  border: 1.5px solid rgba(239,68,68,0.15);
+  color: #ef4444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.cart-remove-btn:hover {
+  background: #ef4444;
+  border-color: #ef4444;
+  color: white;
+  transform: scale(1.08);
+  box-shadow: 0 4px 10px rgba(239,68,68,0.3);
+}
+
+.cart-remove-btn:active {
+  transform: scale(0.95);
+}
+
 
 .total-price {
   font-weight: 600;
@@ -2086,61 +2650,106 @@ textarea:focus {
 .payment-actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.75rem;
+  gap: 0.85rem;
+  margin-top: 0.75rem;
 }
 
 .btn-multiple-payments {
-  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 50%, #7c3aed 100%);
   color: white;
-  padding: 0.75rem;
-  border: none;
-  border-radius: 1rem;
+  padding: 0.85rem 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.875rem;
   grid-column: span 2;
-  font-weight: bold;
-  box-shadow: 0 4px 6px rgba(139, 92, 246, 0.3);
-  transition: all 0.3s ease;
+  font-weight: 700;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: 0 6px 16px -2px rgba(139, 92, 246, 0.45);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
 }
 .btn-multiple-payments:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(139, 92, 246, 0.4);
+  box-shadow: 0 10px 20px -2px rgba(139, 92, 246, 0.55);
+  filter: brightness(1.08);
 }
-
-.btn-multiple-payments:hover {
-  background-color: #7d3c98;
+.btn-multiple-payments:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .btn-complete-sale {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  background: linear-gradient(135deg, #34d399 0%, #10b981 50%, #059669 100%);
   color: white;
-  padding: 0.75rem;
-  border: none;
-  border-radius: 1rem;
-  font-weight: bold;
-  box-shadow: 0 4px 6px rgba(16, 185, 129, 0.3);
-  transition: all 0.3s ease;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.875rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 6px 16px -2px rgba(16, 185, 129, 0.45);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
 }
 .btn-complete-sale:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(16, 185, 129, 0.4);
+  box-shadow: 0 10px 20px -2px rgba(16, 185, 129, 0.55);
+  filter: brightness(1.08);
 }
-
-.btn-complete-sale:hover {
-  background-color: #0e9f6e;
+.btn-complete-sale:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .btn-cancel {
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  background: linear-gradient(135deg, #f87171 0%, #ef4444 50%, #dc2626 100%);
   color: white;
-  padding: 0.75rem;
-  border: none;
-  border-radius: 1rem;
-  font-weight: bold;
-  box-shadow: 0 4px 6px rgba(239, 68, 68, 0.3);
-  transition: all 0.3s ease;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.875rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 6px 16px -2px rgba(239, 68, 68, 0.45);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
 }
 .btn-cancel:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(239, 68, 68, 0.4);
+  box-shadow: 0 10px 20px -2px rgba(239, 68, 68, 0.55);
+  filter: brightness(1.08);
+}
+.btn-cancel:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.shortcut-tag {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(4px);
+  color: white;
+  font-family: inherit;
+  font-size: 0.725rem;
+  font-weight: 900;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.375rem;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  letter-spacing: 0.05em;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.3);
+}
+
+.btn-multiple-payments:disabled,
+.btn-complete-sale:disabled,
+.btn-cancel:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+  filter: grayscale(30%);
 }
 
 .btn-cancel:hover {
@@ -2334,7 +2943,7 @@ textarea:focus {
 
   .mobile-pay-btn {
     background-color: #f9931e;
-    /* Distrify Orange */
+    /* Alevia Pay Orange */
     box-shadow: 0 4px 12px rgba(249, 147, 30, 0.4);
     border-radius: 12px;
   }

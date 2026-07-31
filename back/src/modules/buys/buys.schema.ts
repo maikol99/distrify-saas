@@ -127,3 +127,5 @@ export class Buys {
 }
 
 export const BuysSchema = SchemaFactory.createForClass(Buys);
+
+BuysSchema.index({ shopId: 1 });

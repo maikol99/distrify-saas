@@ -6,7 +6,7 @@
       :class="{ 'form-success': formSubmitted }"
     >
       <div class="form-logo">
-        <img style="width: 100px" src="/public/distrify-nav.png" alt="Logo" />
+        <img style="width: 100px" src="/alevia-logo.png" alt="Logo" />
       </div>
 
       <div class="form-title">

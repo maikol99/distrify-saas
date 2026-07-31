@@ -20,7 +20,7 @@ export class Promotions {
   @Prop({ enum: ['percentage', 'fixed'], default: 'percentage' })
   discountType: string;
 
-  @Prop({ required: true })
+  @Prop({ required: false, default: 0 })
   discountValue: number;
 
   @Prop({ default: null })
@@ -37,3 +37,5 @@ export class Promotions {
 }
 
 export const PromotionsSchema = SchemaFactory.createForClass(Promotions);
+
+PromotionsSchema.index({ shopId: 1 });

@@ -13,19 +13,26 @@ import {
 } from '@nestjs/common';
 import { TurnsService } from './turns.service';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
+import { PlanGuard } from 'src/guards/plan.guard';
+import { TurnsEnabledGuard } from 'src/guards/turns-enabled.guard';
+import { RequirePlan } from 'src/decorators/plan.decorator';
+import { ShopPlanEnum } from 'src/modules/shops/enum/shops.enum';
 import { CreateTurnDto, CloseTurnDto } from './dto/turns.dto';
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, PlanGuard)
+@RequirePlan(ShopPlanEnum.MEDIUM)
 @Controller('turns')
 export class TurnsController {
   constructor(private readonly turnsService: TurnsService) {}
 
   @Post()
+  @UseGuards(TurnsEnabledGuard)
   async create(@Request() req, @Body() body: CreateTurnDto) {
     return this.turnsService.openTurn({ ...body, userId: req.user.id });
   }
 
   @Put('/close')
+  @UseGuards(TurnsEnabledGuard)
   async closeTurn(@Request() req, @Body() body: CloseTurnDto) {
     return this.turnsService.closeTurn({ ...body, userId: req.user.id });
   }

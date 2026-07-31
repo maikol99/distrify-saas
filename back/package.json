@@ -1,8 +1,8 @@
 {
-  "name": "distrify-back",
+  "name": "alevia-pay-back",
   "version": "0.0.1",
-  "description": "API backend del ERP Distrify (gestión de ventas, compras, stock, clientes y pagos), construida con NestJS y MongoDB.",
-  "author": "Distrify by Cuyocode",
+  "description": "API backend del ERP Alevia Pay (gestión de ventas, compras, stock, clientes y pagos), construida con NestJS y MongoDB.",
+  "author": "Alevia Pay",
   "private": false,
   "license": "MIT",
   "homepage": "https://cuyocode.com.ar",

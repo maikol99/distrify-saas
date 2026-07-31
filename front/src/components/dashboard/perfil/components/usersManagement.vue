@@ -323,6 +323,12 @@ export default {
         "ingresos",
         "reportes",
         "notificaciones",
+        "turnos",
+        "asistente",
+        "movimientos-stock",
+        "promociones",
+        "movimientos",
+        "sucursales",
       ],
     };
   },
@@ -429,6 +435,12 @@ export default {
         ingresos: "Ingresos",
         reportes: "Reportes",
         notificaciones: "Notificaciones",
+        turnos: "Turnos",
+        asistente: "Asistente IA",
+        "movimientos-stock": "Movimientos de Stock",
+        promociones: "Promociones",
+        movimientos: "Movimientos",
+        sucursales: "Sucursales",
       };
       return routes[route] || route;
     },

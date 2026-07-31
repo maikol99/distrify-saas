@@ -89,8 +89,8 @@ export const useProfileStore = defineStore("profile", {
           updatedShopData
         );
         const data = response.data;
-        if (data.ok) {
-          this.shop = { ...this.shop, ...updatedShopData };
+        if (data.success) {
+          this.shop = { ...this.shop, ...data.data };
         } else {
           alert(
             data.message || "Error al actualizar la configuración de la tienda."
@@ -111,11 +111,12 @@ export const useProfileStore = defineStore("profile", {
           accessToken,
         });
         const data = response.data;
-        if (data.ok) {
+        // El backend retorna un objeto con 'message' cuando vincula correctamente
+        if (data && (data.ok || data.success || data.mercadoPagoData || data.message)) {
           alert("Cuenta de Mercado Pago vinculada exitosamente.");
           return true; // Indica éxito
         } else {
-          alert(data.message || "Error al vincular la cuenta de Mercado Pago.");
+          alert(data?.message || "Error al vincular la cuenta de Mercado Pago.");
           return false; // Indica fallo
         }
       } catch (error) {

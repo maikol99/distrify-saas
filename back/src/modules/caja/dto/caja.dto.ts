@@ -17,14 +17,17 @@ export class CreateCajaDto {
   @IsNotEmpty()
   userIdApertura: string;
 
-  @IsDefined()
-  @IsNotEmpty()
-  @IsDate()
-  fechaApertura: Date;
+  @IsOptional()
+  @IsString()
+  title?: string;
 
-  @IsDefined()
+  @IsOptional()
+  @IsDate()
+  fechaApertura?: Date;
+
+  @IsOptional()
   @IsNotEmpty()
-  estado: string;
+  estado?: string;
 
   @IsDefined()
   @IsNotEmpty()

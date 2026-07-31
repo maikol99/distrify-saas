@@ -104,3 +104,5 @@ export class Returns {
 }
 
 export const ReturnsSchema = SchemaFactory.createForClass(Returns);
+
+ReturnsSchema.index({ shopId: 1 });

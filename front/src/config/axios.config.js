@@ -1,17 +1,13 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 
-const BASE_URL =
-  window.location.hostname === "localhost"
-    ? "http://localhost:3000"
-    : "https://distrify-api-v1.up.railway.app";
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 const api = axios.create({
   baseURL: BASE_URL,
   timeout: 10000,
   withCredentials: true, // envía la cookie httpOnly access_token automáticamente
 });
-
 // ─── Helpers de sesión ──────────────────────────────────────────────────────
 
 export function clearSession() {
@@ -98,17 +94,44 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (error.response?.status === 401) {
-      const msg = error.response.data?.message || "";
-      const isLoginRequest = error.config?.url?.includes("/auth/post/login-user");
+    const originalRequest = error.config;
 
-      if (!isLoginRequest) {
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      const isLoginRequest = originalRequest.url?.includes("/auth/post/login-user");
+      const isRefreshRequest = originalRequest.url?.includes("/auth/refresh");
+
+      if (!isLoginRequest && !isRefreshRequest) {
+        originalRequest._retry = true;
+        try {
+          // Intentar refresh silencioso
+          const response = await axios.post(
+            `${BASE_URL}/auth/refresh`,
+            {},
+            { withCredentials: true }
+          );
+
+          if (response.data?.expires_in) {
+            const expiresInMs = response.data.expires_in * 1000;
+            localStorage.setItem("token_expiration", Date.now() + expiresInMs);
+            localStorage.removeItem("session_warning_shown");
+            scheduleAutoLogout(expiresInMs);
+
+            // Reintentar la petición original
+            return api(originalRequest);
+          }
+        } catch (refreshError) {
+          console.error("Silent refresh failed:", refreshError);
+        }
+
+        // Si falla el refresh, hacer logout normal
+        const msg = error.response.data?.message || "";
         let reason = "expired";
         if (msg.includes("período de prueba") || msg.includes("prueba de 7 días")) {
           reason = "trial";
         } else if (msg.includes("verificar tu correo") || msg.includes("correo electrónico")) {
           reason = "email";
         }
+
         if (reason === "email") {
           if (!window.location.pathname.startsWith("/email-pendiente")) {
             window.location.href = "/email-pendiente";

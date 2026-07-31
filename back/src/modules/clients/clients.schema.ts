@@ -17,7 +17,7 @@ export class Clients {
   address: string;
 
   @Prop()
-  phone: number;
+  phone: string;
 
   @Prop()
   email: string;
@@ -50,3 +50,5 @@ export class Clients {
 }
 
 export const ClientsSchema = SchemaFactory.createForClass(Clients);
+
+ClientsSchema.index({ shopId: 1 });

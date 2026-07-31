@@ -28,7 +28,7 @@ export class SuppliersController {
     @Param('shopId') shopId: string,
     @Query('page') page: number,
     @Query('limit') limit: number,
-  ) {
+  ): Promise<any> {
     page = Number(page);
     limit = Number(limit);
 
@@ -36,7 +36,7 @@ export class SuppliersController {
   }
 
   @Get('/get/get-supplier/by-id/:id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: string): Promise<any> {
     return this.suppliersService.findOne(id);
   }
 
@@ -51,13 +51,13 @@ export class SuppliersController {
   }
 
   @Get('/get/search-supplier/by-name')
-  findByName(@Query('name') name: string, @Query('shopId') shopId: string) {
+  findByName(@Query('name') name: string, @Query('shopId') shopId: string): Promise<any> {
     return this.suppliersService.findByName(name, shopId);
   }
 
   //Obtener proveedores seleccionando solo nombre e id
   @Get('/get/all-suppliers-with-select/:shopId')
-  findAllWithSelect(@Param('shopId') shopId: string) {
+  findAllWithSelect(@Param('shopId') shopId: string): Promise<any> {
     return this.suppliersService.findAllNames(shopId);
   }
 
@@ -67,7 +67,7 @@ export class SuppliersController {
     @Param('supplierId') supplierId: string,
     @Query('page') page: number,
     @Query('limit') limit: number,
-  ) {
+  ): Promise<any> {
     return this.suppliersService.getSupplierBuys(supplierId, page, limit);
   }
 

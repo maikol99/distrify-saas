@@ -14,6 +14,7 @@ import helmet from 'helmet';
 import { GlobalExceptionFilter } from './filters/global-exception.filter';
 import { ConfigService } from '@nestjs/config';
 import * as express from 'express';
+import { LoggingInterceptor } from './interceptors/logging.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -33,7 +34,7 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
-      forbidNonWhitelisted: true,
+      forbidNonWhitelisted: false,
       transform: true,
       transformOptions: {
         enableImplicitConversion: true,
@@ -43,6 +44,7 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
   app.useGlobalFilters(new GlobalExceptionFilter(configService));
+  app.useGlobalInterceptors(new LoggingInterceptor());
 
   const allowedOrigins = (process.env.CORS_ORIGINS || 'http://localhost:5173')
     .split(',')

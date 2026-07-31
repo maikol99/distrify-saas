@@ -30,3 +30,5 @@ export class Outputs {
 }
 
 export const OutputsSchema = SchemaFactory.createForClass(Outputs);
+
+OutputsSchema.index({ shopId: 1 });

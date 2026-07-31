@@ -30,7 +30,7 @@
           el potencial completo de la plataforma, necesitas actualizar tu cuenta.
         </p>
         <p class="card-text">
-          ¡Únete a <span class="highlight-text">Distrify Premium</span> 
+          ¡Únete a <span class="highlight-text">Alevia Pay Premium</span> 
           y disfruta de todas las funcionalidades sin restricciones!
         </p>
       </div>

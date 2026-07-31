@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -32,6 +31,14 @@ export class SalesService {
       // Enriquecer productDetails con snapshot de nombre y precio al momento de la venta
       const enrichedProductDetails = await Promise.all(
         (body.productDetails as any[]).map(async (item) => {
+          if (item.isCombo) {
+            return {
+              ...item,
+              productName: item.name || item.productName || 'Combo',
+              salePrice: item.salePrice !== undefined ? item.salePrice : item.sellPrice || 0,
+            };
+          }
+
           const product = await this.productsModel
             .findById(item.productId)
             .session(session);
@@ -78,12 +85,21 @@ export class SalesService {
 
       // Procesar cada producto y sus variantes
       for (const product of enrichedProductDetails as any) {
-        // Actualizar cantidad principal del producto
-        await this.productsModel.findByIdAndUpdate(
-          product.productId,
-          { $inc: { quantity: -product.quantity } },
-          { session },
-        );
+        if (product.isCombo && product.comboProducts && product.comboProducts.length > 0) {
+          for (const comboProductId of product.comboProducts) {
+            await this.productsModel.findByIdAndUpdate(
+              comboProductId,
+              { $inc: { quantity: -product.quantity } },
+              { session },
+            );
+          }
+        } else if (!product.isCombo) {
+          // Actualizar cantidad principal del producto
+          await this.productsModel.findByIdAndUpdate(
+            product.productId,
+            { $inc: { quantity: -product.quantity } },
+            { session },
+          );
 
         // Si el producto tiene variantes, actualizarlas
         if (product.variants && product.variants.length > 0) {
@@ -111,7 +127,8 @@ export class SalesService {
             );
           }
         }
-      }
+        } // close else if (!product.isCombo)
+      } // close for
 
       if (body.clientId) {
         if (body.paymentMethod === PaymentMethodsEnum.CUENTA) {
@@ -416,16 +433,25 @@ export class SalesService {
 
       // Procesar productos y variantes
       for (const product of sale.productDetails) {
-        const { productId, quantity, variants } = product;
+        const { productId, quantity, variants, isCombo, comboProducts } = product;
 
-        // Restaurar stock principal
-        await this.productsModel.findByIdAndUpdate(
-          productId,
-          {
-            $inc: { quantity },
-          },
-          { session },
-        );
+        if (isCombo && comboProducts && comboProducts.length > 0) {
+          for (const comboProductId of comboProducts) {
+            await this.productsModel.findByIdAndUpdate(
+              comboProductId,
+              { $inc: { quantity } },
+              { session },
+            );
+          }
+        } else if (!isCombo) {
+          // Restaurar stock principal
+          await this.productsModel.findByIdAndUpdate(
+            productId,
+            {
+              $inc: { quantity },
+            },
+            { session },
+          );
 
         // Restaurar variantes si existen
         if (variants && variants.length > 0) {
@@ -449,6 +475,7 @@ export class SalesService {
             );
           }
         }
+        } // close else if (!isCombo)
 
         productsRestored.push({
           productId,

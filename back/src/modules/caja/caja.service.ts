@@ -320,10 +320,6 @@ export class CajaService {
         .limit(limitNumber)
         .sort({ fechaApertura: -1 });
 
-      if (cajas.length === 0) {
-        throw new Error('No hay cajas para esta tienda');
-      }
-
       return {
         success: true,
         message: 'Cajas encontradas correctamente',

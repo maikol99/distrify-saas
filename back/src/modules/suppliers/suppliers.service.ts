@@ -41,14 +41,14 @@ export class SuppliersService {
   }
 
   // TRAER TODOS LOS PROVEEDORES
-  async findAll(shopId: string, page?: number, limit?: number) {
+  async findAll(shopId: string, page?: number, limit?: number): Promise<any> {
     try {
       if (!shopId) {
         throw new BadRequestException('shopId is required');
       }
 
       if (!page || !limit) {
-        const suppliers = await this.suppliersModel.find({ shopId });
+        const suppliers = await this.suppliersModel.find({ shopId }).lean();
         if (suppliers.length === 0) {
           throw new NotFoundException('No suppliers found for this shopId');
         }
@@ -67,7 +67,8 @@ export class SuppliersService {
         .find({ shopId })
         .skip(skip)
         .limit(numberLimit)
-        .sort({ createdAt: -1 });
+        .sort({ createdAt: -1 })
+        .lean();
 
       const total = await this.suppliersModel.countDocuments({ shopId });
 
@@ -95,12 +96,12 @@ export class SuppliersService {
   }
 
   // TRAER PROVEEDOR POR ID
-  async findOne(id: string) {
+  async findOne(id: string): Promise<any> {
     try {
       if (!id) {
         throw new BadRequestException('ID is required');
       }
-      const supplier = await this.suppliersModel.findById(id);
+      const supplier = await this.suppliersModel.findById(id).lean();
 
       if (!supplier) {
         throw new NotFoundException();
@@ -163,7 +164,7 @@ export class SuppliersService {
   }
 
   //Buscar proveedores por nombre
-  async findByName(name: string, shopId: string) {
+  async findByName(name: string, shopId: string): Promise<any> {
     try {
       if (!name || !shopId) {
         return {
@@ -174,7 +175,8 @@ export class SuppliersService {
 
       const suppliers = await this.suppliersModel
         .find({ name: { $regex: name, $options: 'i' }, shopId })
-        .sort({ createdAt: -1 });
+        .sort({ createdAt: -1 })
+        .lean();
 
       if (suppliers.length === 0) {
         return {
@@ -194,7 +196,7 @@ export class SuppliersService {
   }
 
   //Obtener proveedores seleccionando solo nombre e id
-  async findAllNames(shopId: string) {
+  async findAllNames(shopId: string): Promise<any> {
     try {
       if (!shopId) {
         throw new BadRequestException('shopId is required');
@@ -202,7 +204,8 @@ export class SuppliersService {
 
       const suppliers = await this.suppliersModel
         .find({ shopId }, { name: 1, _id: 1 })
-        .sort({ createdAt: -1 });
+        .sort({ createdAt: -1 })
+        .lean();
 
       if (suppliers.length === 0) {
         return {
@@ -222,7 +225,7 @@ export class SuppliersService {
   }
 
   //Obtener compras de un proveedor
-  async getSupplierBuys(supplierId: string, page: number, limit: number) {
+  async getSupplierBuys(supplierId: string, page: number, limit: number): Promise<any> {
     try {
       if (!supplierId) {
         throw new BadRequestException('Supplier ID is required');
@@ -237,7 +240,8 @@ export class SuppliersService {
         .find({ supplierId })
         .skip(skip)
         .limit(limitNumber)
-        .sort({ createdAt: -1 });
+        .sort({ createdAt: -1 })
+        .lean();
 
       const total = await this.buysModel.countDocuments({
         supplierId: supplierId,

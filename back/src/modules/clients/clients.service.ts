@@ -1,12 +1,12 @@
-/* eslint-disable */
 import {
   Injectable,
   NotFoundException,
   InternalServerErrorException,
   BadRequestException,
+  HttpException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import mongoose, { Model, Types } from 'mongoose';
 import { Clients } from './clients.schema';
 import { CreateClientDto } from './dto/clients.dto';
 import { Pedidos } from '../pedidos/pedidos.schema';
@@ -65,10 +65,13 @@ export class ClientsService {
 
       const filter: any = { shopId };
 
-      if (minDebt !== undefined || maxDebt !== undefined) {
+      const hasMin = typeof minDebt === 'number' && !isNaN(minDebt);
+      const hasMax = typeof maxDebt === 'number' && !isNaN(maxDebt);
+
+      if (hasMin || hasMax) {
         filter.debt = {};
-        if (minDebt) filter.debt.$gte = minDebt;
-        if (maxDebt) filter.debt.$lte = maxDebt;
+        if (hasMin) filter.debt.$gte = minDebt;
+        if (hasMax) filter.debt.$lte = maxDebt;
       }
 
       if (hasDebt === 'true') {
@@ -93,15 +96,15 @@ export class ClientsService {
           .find(filter)
           .skip(skip)
           .limit(limitNumber)
-          .sort({ createdAt: -1 });
-
-        if (clients.length === 0) {
-          throw new NotFoundException('No clients found');
-        }
+          .sort({ createdAt: -1 })
+          .lean();
 
         return {
           success: true,
-          message: 'Clientes encontrados',
+          message:
+            clients.length === 0
+              ? 'No se encontraron clientes'
+              : 'Clientes encontrados',
           data: clients,
           pagination: {
             page: pageNumber,
@@ -111,19 +114,22 @@ export class ClientsService {
           },
         };
       } else {
-        const clients = await this.clientsModel.find(filter);
-
-        if (clients.length === 0) {
-          throw new NotFoundException('No clients found');
-        }
+        const clients = await this.clientsModel.find(filter).lean();
 
         return {
           success: true,
-          message: 'Clientes encontrados',
+          message:
+            clients.length === 0
+              ? 'No se encontraron clientes'
+              : 'Clientes encontrados',
           data: clients,
         };
       }
     } catch (error) {
+      console.error('Error fetching clients detail:', error);
+      if (error instanceof HttpException) {
+        throw error;
+      }
       throw new InternalServerErrorException('Error fetching clients');
     }
   }
@@ -134,7 +140,7 @@ export class ClientsService {
       if (!id) {
         throw new BadRequestException('id is required');
       }
-      const client = await this.clientsModel.findById(id);
+      const client = await this.clientsModel.findById(id).lean();
 
       if (!client) {
         throw new NotFoundException();
@@ -320,7 +326,7 @@ export class ClientsService {
       const clients = await this.clientsModel.find({
         shopId,
         name: { $regex: query, $options: 'i' },
-      });
+      }).lean();
 
       return {
         success: true,
@@ -333,13 +339,13 @@ export class ClientsService {
   }
 
   //Traer clientes completos
-  async getCompleteClient(id: string) {
+  async getCompleteClient(id: string): Promise<any> {
     try {
       if (!id) {
         throw new BadRequestException('id is required');
       }
 
-      const client = await this.clientsModel.findById(id);
+      const client = await this.clientsModel.findById(id).lean();
       if (!client) {
         return {
           success: false,
@@ -347,7 +353,7 @@ export class ClientsService {
         };
       }
 
-      const payments = await this.clientPaymentsModel.find({ clientId: id });
+      const payments = await this.clientPaymentsModel.find({ clientId: id }).lean();
       if (!payments) {
         return {
           success: false,
@@ -358,7 +364,7 @@ export class ClientsService {
       const sales = await this.salesModel.find({ clientId: id }).populate({
         path: 'productDetails.productId',
         select: 'name sellPrice',
-      });
+      }).lean();
       if (!sales) {
         return {
           success: false,
@@ -369,7 +375,7 @@ export class ClientsService {
       const pedidos = await this.pedidosModel.find({ clientId: id }).populate({
         path: 'productDetails.productId',
         select: 'name sellPrice',
-      });
+      }).lean();
       if (!pedidos) {
         return {
           success: false,

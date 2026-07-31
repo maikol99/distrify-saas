@@ -15,3 +15,5 @@ export class MercadoPago {
 }
 
 export const MercadoPagoSchema = SchemaFactory.createForClass(MercadoPago);
+
+MercadoPagoSchema.index({ shopId: 1 });

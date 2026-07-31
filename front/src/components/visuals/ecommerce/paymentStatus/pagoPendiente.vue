@@ -30,7 +30,7 @@
           la confirmación junto con todas las instrucciones y detalles de su compra.
         </p>
         <p class="card-text">
-          Gracias por elegir <span class="highlight-text">Distrify.com.ar</span>. 
+          Gracias por elegir <span class="highlight-text">Alevia Pay.com.ar</span>. 
           Le notificaremos tan pronto como se complete el proceso.
         </p>
       </div>

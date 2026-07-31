@@ -22,6 +22,8 @@ const DEFAULT_ROUTES_ALLOWED = [
   'promociones',
   'movimientos-stock',
   'movimientos',
+  'turnos',
+  'sucursales',
 ];
 
 @Schema({
@@ -46,7 +48,7 @@ export class Users extends Document {
   role: UserRolesEnum;
 
   @Prop()
-  phone: number;
+  phone: string;
 
   @Prop()
   address: string;
@@ -95,3 +97,5 @@ export class Users extends Document {
 }
 
 export const UsersSchema = SchemaFactory.createForClass(Users);
+
+UsersSchema.index({ shopId: 1 });

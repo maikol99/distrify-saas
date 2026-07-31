@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Categories } from './categories.schema';
+import { Products } from '../products/products.schema';
 import { Model } from 'mongoose';
 import { createCategoryDto } from './categories.dto';
 
@@ -8,6 +9,7 @@ import { createCategoryDto } from './categories.dto';
 export class CategoriesService {
   constructor(
     @InjectModel(Categories.name) private categoriesModel: Model<Categories>,
+    @InjectModel(Products.name) private productsModel: Model<Products>,
   ) {}
 
   //?Crear nueva categoria
@@ -39,17 +41,31 @@ export class CategoriesService {
   //?Obtener todas las categorias
   async getAllCategories() {
     try {
-      const categories = await this.categoriesModel.find();
+      const categories = await this.categoriesModel.find().lean();
       if (!categories || categories.length === 0) {
         return {
           success: false,
           message: 'No se encontraron categorias',
         };
       }
+      const categoriesWithCount = await Promise.all(
+        categories.map(async (category) => {
+          const productCount = await this.productsModel.countDocuments({
+            $or: [
+              { categoryId: category._id },
+              { categoryId: category._id.toString() },
+            ],
+          });
+          return {
+            ...category,
+            productCount,
+          };
+        }),
+      );
       return {
         success: true,
         message: 'Categorias obtenidas correctamente',
-        categories,
+        categories: categoriesWithCount,
       };
     } catch (error) {
       throw error;
@@ -105,17 +121,32 @@ export class CategoriesService {
         .find({ shopId })
         .skip(skip)
         .limit(limit)
-        .sort({ name: 1 });
+        .sort({ name: 1 })
+        .lean();
       if (!categories || categories.length === 0) {
         return {
           success: false,
           message: 'No se encontraron categorias para esta tienda',
         };
       }
+      const categoriesWithCount = await Promise.all(
+        categories.map(async (category) => {
+          const productCount = await this.productsModel.countDocuments({
+            $or: [
+              { categoryId: category._id },
+              { categoryId: category._id.toString() },
+            ],
+          });
+          return {
+            ...category,
+            productCount,
+          };
+        }),
+      );
       return {
         success: true,
         message: 'Categorias obtenidas correctamente',
-        categories,
+        categories: categoriesWithCount,
         pagination: {
           page: page,
           total: await this.categoriesModel.countDocuments({ shopId }),

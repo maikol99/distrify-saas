@@ -1,6 +1,6 @@
 import { Injectable, BadRequestException, NotFoundException, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Promotions } from './promotions.schema';
 
 @Injectable()
@@ -16,6 +16,16 @@ export class PromotionsService {
     try {
       if (!body.shopId) {
         throw new BadRequestException('shopId no definido');
+      }
+      if (typeof body.shopId === 'string' && Types.ObjectId.isValid(body.shopId)) {
+        body.shopId = new Types.ObjectId(body.shopId);
+      }
+      if (body.productIds && Array.isArray(body.productIds)) {
+        body.productIds = body.productIds.map((id) =>
+          typeof id === 'string' && Types.ObjectId.isValid(id)
+            ? new Types.ObjectId(id)
+            : id,
+        );
       }
       const promotion = await this.promotionsModel.create(body);
       return {
@@ -39,7 +49,10 @@ export class PromotionsService {
     search?: string,
   ) {
     try {
-      const filter: any = { shopId };
+      if (!shopId || !Types.ObjectId.isValid(shopId)) {
+        throw new BadRequestException('shopId no es un ObjectId válido');
+      }
+      const filter: any = { shopId: new Types.ObjectId(shopId) };
 
       if (isActive !== undefined && isActive !== '') {
         filter.isActive = isActive === 'true';
@@ -50,7 +63,8 @@ export class PromotionsService {
       }
 
       if (search) {
-        filter.name = { $regex: search, $options: 'i' };
+        const escapedSearch = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+        filter.name = { $regex: escapedSearch, $options: 'i' };
       }
 
       if (startDate || endDate) {
@@ -134,9 +148,12 @@ export class PromotionsService {
   async getActive(shopId: string) {
     try {
       const now = new Date();
+      if (!shopId || !Types.ObjectId.isValid(shopId)) {
+        throw new BadRequestException('shopId no es un ObjectId válido');
+      }
       const promotions = await this.promotionsModel
         .find({
-          shopId,
+          shopId: new Types.ObjectId(shopId),
           isActive: true,
           startDate: { $lte: now },
           endDate: { $gte: now },

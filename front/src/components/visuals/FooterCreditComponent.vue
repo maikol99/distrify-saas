@@ -6,7 +6,7 @@
       rel="noopener noreferrer"
       class="footer-credit-link"
     >
-      Powered by Distrify — cuyocode.com.ar
+      Powered by Alevia Pay — cuyocode.com.ar
     </a>
   </footer>
 </template>

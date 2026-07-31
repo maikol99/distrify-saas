@@ -6,7 +6,7 @@
         <span class="admin-logo">⚙</span>
         <div>
           <h1>Panel de Administración</h1>
-          <p>Control total del sistema Distrify</p>
+          <p>Control total del sistema Alevia Pay</p>
         </div>
       </div>
       <div class="admin-header-right">

@@ -26,6 +26,7 @@ import {
   ProductUpdateActionEnum,
   ProductUpdateTypeEnum,
 } from './product.enum';
+import { UpdateProductDto } from './dto/update-product.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -121,7 +122,7 @@ export class ProductsController {
   }
 
   @Patch('patch/update-product/:id')
-  async update(@Param('id') id: string, @Body() body) {
+  async update(@Param('id') id: string, @Body() body: UpdateProductDto) {
     return this.productsService.update(id, body);
   }
 

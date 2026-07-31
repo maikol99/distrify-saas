@@ -6,7 +6,7 @@
         <div class="logo-section">
           <h1 class="marketplace-title">
             <i class="fas fa-store"></i>
-            Distrify Marketplace
+            Alevia Pay Marketplace
           </h1>
           <p class="marketplace-subtitle">
             Descubre negocios increíbles cerca de ti

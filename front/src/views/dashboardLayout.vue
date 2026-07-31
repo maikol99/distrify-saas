@@ -3,7 +3,7 @@
     <!-- Modal de primera vez -->
     <div v-if="showingFirstTimeModal" class="initial-dialog-overlay">
       <div class="initial-dialog">
-        <h2>¡Bienvenido a Distrify!</h2>
+        <h2>¡Bienvenido a Alevia Pay!</h2>
         <p>
           Para continuar usando todas las funcionalidades, necesitamos que
           completes algunos datos adicionales en tu perfil.

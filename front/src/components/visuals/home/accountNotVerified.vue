@@ -7,7 +7,7 @@
       <div class="banner-content">
         <h3>¡Valida tu cuenta de email!</h3>
         <p>
-          Para acceder a todas las funcionalidades de Distrify, necesitas
+          Para acceder a todas las funcionalidades de Alevia Pay, necesitas
           validar tu dirección de correo electrónico.
           <strong>Revisa tu bandeja de entrada</strong> y busca el email de
           confirmación.

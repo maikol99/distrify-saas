@@ -15,3 +15,5 @@ export class Categories {
 }
 
 export const CategoriesSchema = SchemaFactory.createForClass(Categories);
+
+CategoriesSchema.index({ shopId: 1 });

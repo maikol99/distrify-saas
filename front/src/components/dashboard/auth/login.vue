@@ -1,9 +1,9 @@
 <template>
-  <div
-    class="min-h-screen flex font-display"
-  >
+  <div class="min-h-screen flex font-display">
     <!-- Left: Form Panel -->
-    <div class="flex-1 flex items-center justify-center bg-slate-50 dark:bg-slate-950 relative overflow-hidden px-6 py-3">
+    <div
+      class="flex-1 flex items-center justify-center bg-slate-50 dark:bg-slate-950 relative overflow-hidden px-6 py-3"
+    >
       <!-- Background Decor -->
       <div
         class="absolute top-0 -left-4 w-96 h-96 bg-primary/20 rounded-full mix-blend-multiply filter blur-3xl animate-pulse-slow"
@@ -12,211 +12,241 @@
         class="absolute bottom-0 -right-4 w-96 h-96 bg-blue-500/20 rounded-full mix-blend-multiply filter blur-3xl animate-pulse-slow delay-700"
       ></div>
 
-    <div class="w-full max-w-md reveal-active relative z-10 transition-all">
-      <div
-        class="animate-fade-in-down relative"
-      >
-        <button
-          @click="$router.push('/')"
-          class="flex items-center gap-1 text-slate-400 hover:text-primary transition-colors font-bold text-sm group mb-3"
-        >
-          <span
-            class="material-symbols-outlined text-lg group-hover:-translate-x-1 transition-transform"
-            >arrow_back</span
-          >
-          Volver
-        </button>
-        <div class="flex flex-col items-center mb-4">
-          <img
-            src="/distrify-orange.png"
-            alt="Distrify"
-            width="80px"
-            class="cursor-pointer mb-1"
+      <div class="w-full max-w-md reveal-active relative z-10 transition-all">
+        <div class="animate-fade-in-down relative">
+          <button
             @click="$router.push('/')"
-          />
-          <h2
-            class="text-xl font-black tracking-tighter text-slate-800 dark:text-white"
+            class="flex items-center gap-1 text-slate-400 hover:text-primary transition-colors font-bold text-sm group mb-3"
           >
-            Bienvenido
-          </h2>
-          <p class="text-slate-500 text-xs mt-0.5">
-            Ingresa tus credenciales para continuar
-          </p>
-        </div>
-
-        <!-- Panel: Email no verificado -->
-        <div
-          v-if="emailNotVerified"
-          class="mb-6 p-5 rounded-2xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/30 animate-fade-in"
-        >
-          <div class="flex items-start gap-3 mb-4">
-            <span class="material-symbols-outlined text-amber-500 text-2xl mt-0.5">mark_email_unread</span>
-            <div>
-              <p class="font-black text-amber-800 dark:text-amber-300 text-sm">Verificá tu correo electrónico</p>
-              <p class="text-amber-700 dark:text-amber-400 text-sm mt-1">
-                Enviamos un link de verificación a <strong>{{ email }}</strong>. Revisá tu bandeja de entrada y también la carpeta de spam.
-              </p>
-            </div>
-          </div>
-          <button
-            type="button"
-            @click="resendVerificationEmail"
-            :disabled="resendCooldown > 0 || resendLoading"
-            class="w-full py-3 rounded-xl font-bold text-sm transition-all"
-            :class="resendCooldown > 0
-              ? 'bg-amber-100 text-amber-400 cursor-not-allowed'
-              : 'bg-amber-500 hover:bg-amber-600 text-white active:scale-95'"
-          >
-            <span v-if="resendLoading">Enviando...</span>
-            <span v-else-if="resendCooldown > 0">Reenviar en {{ resendCooldown }}s</span>
-            <span v-else>
-              <span class="material-symbols-outlined text-sm align-middle mr-1">send</span>
-              Reenviar email de verificación
-            </span>
-          </button>
-          <p v-if="resendSuccess" class="text-center text-xs text-green-600 dark:text-green-400 font-bold mt-2 animate-fade-in">
-            ✓ Email reenviado correctamente
-          </p>
-        </div>
-
-        <form @submit.prevent="login" class="space-y-3">
-          <!-- Error Alerts -->
-          <div
-            v-if="errorMessage && !emailNotVerified"
-            class="p-4 rounded-2xl flex items-center gap-3 text-sm animate-fade-in"
-            :class="getErrorClass()"
-          >
-            <span class="material-symbols-outlined text-lg">{{
-              getErrorIcon()
-            }}</span>
-            <span>{{ errorMessage }}</span>
-          </div>
-
-          <!-- Email Field -->
-          <div
-            class="space-y-1 group animate-slide-up"
-            style="animation-delay: 100ms"
-          >
-            <label
-              for="email"
-              class="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1"
-              >Email</label
-            >
-            <div class="relative">
-              <span
-                class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors text-[18px]"
-                >mail</span
-              >
-              <input
-                type="email"
-                id="email"
-                v-model="email"
-                required
-                placeholder="ejemplo@email.com"
-                class="w-full pl-10 pr-3 py-2 bg-white/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:text-white text-sm"
-              />
-            </div>
-          </div>
-
-          <!-- Password Field -->
-          <div
-            class="space-y-1 group animate-slide-up"
-            style="animation-delay: 200ms"
-          >
-            <label
-              for="password"
-              class="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1"
-              >Contraseña</label
-            >
-            <div class="relative">
-              <span
-                class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors text-[18px]"
-                >lock</span
-              >
-              <input
-                :type="showPassword ? 'text' : 'password'"
-                id="password"
-                v-model="password"
-                required
-                placeholder="••••••••"
-                class="w-full pl-10 pr-9 py-2 bg-white/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:text-white text-sm"
-              />
-              <button
-                type="button"
-                @click="showPassword = !showPassword"
-                class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary transition-colors focus:outline-none"
-              >
-                <span class="material-symbols-outlined text-xl">{{
-                  showPassword ? "visibility_off" : "visibility"
-                }}</span>
-              </button>
-            </div>
-          </div>
-
-          <div class="flex justify-end">
-            <a
-              href="#"
-              @click.prevent="forgotPassword"
-              class="text-sm font-bold text-slate-500 hover:text-primary transition-colors"
-              >¿Olvidaste tu contraseña?</a
-            >
-          </div>
-
-          <button
-            type="submit"
-            class="w-full py-2.5 bg-primary text-white font-black rounded-xl hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-primary/25 disabled:opacity-50 disabled:scale-100 flex items-center justify-center gap-2 text-sm"
-            :disabled="loading || !isFormValid"
-          >
-            <span v-if="!loading">Ingresar</span>
-            <span v-else class="material-symbols-outlined animate-spin"
-              >progress_activity</span
-            >
-          </button>
-        </form>
-
-        <div class="mt-3">
-          <div class="relative flex items-center justify-center py-2">
-            <div
-              class="w-full border-t border-slate-200 dark:border-slate-800"
-            ></div>
             <span
-              class="bg-slate-50 dark:bg-slate-950 px-3 text-xs font-bold text-slate-400 absolute"
-              >O CONTINUAR CON</span
+              class="material-symbols-outlined text-lg group-hover:-translate-x-1 transition-transform"
+              >arrow_back</span
             >
+            Volver
+          </button>
+          <div class="flex flex-col items-center mb-4">
+            <img
+              src="/alevia-logo.png"
+              alt="Alevia Pay"
+              width="80px"
+              class="cursor-pointer mb-1"
+              @click="$router.push('/')"
+            />
+            <h2
+              class="text-xl font-black tracking-tighter text-slate-800 dark:text-white"
+            >
+              Bienvenido
+            </h2>
+            <p class="text-slate-500 text-xs mt-0.5">
+              Ingresa tus credenciales para continuar
+            </p>
           </div>
 
-          <button
-            @click="loginWithGoogle"
-            class="w-full py-2 glass border border-slate-200 dark:border-slate-800 rounded-xl flex items-center justify-center gap-2 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all active:scale-95 shadow-sm"
+          <!-- Panel: Email no verificado -->
+          <div
+            v-if="emailNotVerified"
+            class="mb-6 p-5 rounded-2xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/30 animate-fade-in"
           >
-            <img src="/public/google.png" alt="Google" class="w-4 h-4" />
-            <span class="font-bold text-sm">Google</span>
-          </button>
-        </div>
+            <div class="flex items-start gap-3 mb-4">
+              <span
+                class="material-symbols-outlined text-amber-500 text-2xl mt-0.5"
+                >mark_email_unread</span
+              >
+              <div>
+                <p
+                  class="font-black text-amber-800 dark:text-amber-300 text-sm"
+                >
+                  Verificá tu correo electrónico
+                </p>
+                <p class="text-amber-700 dark:text-amber-400 text-sm mt-1">
+                  Enviamos un link de verificación a <strong>{{ email }}</strong
+                  >. Revisá tu bandeja de entrada y también la carpeta de spam.
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              @click="resendVerificationEmail"
+              :disabled="resendCooldown > 0 || resendLoading"
+              class="w-full py-3 rounded-xl font-bold text-sm transition-all"
+              :class="
+                resendCooldown > 0
+                  ? 'bg-amber-100 text-amber-400 cursor-not-allowed'
+                  : 'bg-amber-500 hover:bg-amber-600 text-white active:scale-95'
+              "
+            >
+              <span v-if="resendLoading">Enviando...</span>
+              <span v-else-if="resendCooldown > 0"
+                >Reenviar en {{ resendCooldown }}s</span
+              >
+              <span v-else>
+                <span
+                  class="material-symbols-outlined text-sm align-middle mr-1"
+                  >send</span
+                >
+                Reenviar email de verificación
+              </span>
+            </button>
+            <p
+              v-if="resendSuccess"
+              class="text-center text-xs text-green-600 dark:text-green-400 font-bold mt-2 animate-fade-in"
+            >
+              ✓ Email reenviado correctamente
+            </p>
+          </div>
 
-        <p class="mt-4 text-center text-sm text-slate-500">
-          ¿No tenés cuenta?
-          <a
-            href="/registro"
-            class="text-primary font-black hover:underline ml-1"
-          >
-            Registrate gratis
-          </a>
-        </p>
+          <form @submit.prevent="login" class="space-y-3">
+            <!-- Error Alerts -->
+            <div
+              v-if="errorMessage && !emailNotVerified"
+              class="p-4 rounded-2xl flex items-center gap-3 text-sm animate-fade-in"
+              :class="getErrorClass()"
+            >
+              <span class="material-symbols-outlined text-lg">{{
+                getErrorIcon()
+              }}</span>
+              <span>{{ errorMessage }}</span>
+            </div>
+
+            <!-- Email Field -->
+            <div
+              class="space-y-1 group animate-slide-up"
+              style="animation-delay: 100ms"
+            >
+              <label
+                for="email"
+                class="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1"
+                >Email</label
+              >
+              <div class="relative">
+                <span
+                  class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors text-[18px]"
+                  >mail</span
+                >
+                <input
+                  type="email"
+                  id="email"
+                  v-model="email"
+                  required
+                  placeholder="ejemplo@email.com"
+                  class="w-full pl-10 pr-3 py-2 bg-white/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:text-white text-sm"
+                />
+              </div>
+            </div>
+
+            <!-- Password Field -->
+            <div
+              class="space-y-1 group animate-slide-up"
+              style="animation-delay: 200ms"
+            >
+              <label
+                for="password"
+                class="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1"
+                >Contraseña</label
+              >
+              <div class="relative">
+                <span
+                  class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors text-[18px]"
+                  >lock</span
+                >
+                <input
+                  :type="showPassword ? 'text' : 'password'"
+                  id="password"
+                  v-model="password"
+                  required
+                  placeholder="••••••••"
+                  class="w-full pl-10 pr-9 py-2 bg-white/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder:text-slate-400 dark:text-white text-sm"
+                />
+                <button
+                  type="button"
+                  @click="showPassword = !showPassword"
+                  class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary transition-colors focus:outline-none"
+                >
+                  <span class="material-symbols-outlined text-xl">{{
+                    showPassword ? "visibility_off" : "visibility"
+                  }}</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="flex justify-end">
+              <a
+                href="#"
+                @click.prevent="forgotPassword"
+                class="text-sm font-bold text-slate-500 hover:text-primary transition-colors"
+                >¿Olvidaste tu contraseña?</a
+              >
+            </div>
+
+            <button
+              type="submit"
+              class="w-full py-2.5 bg-primary text-white font-black rounded-xl hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-primary/25 disabled:opacity-50 disabled:scale-100 flex items-center justify-center gap-2 text-sm"
+              :disabled="loading || !isFormValid"
+            >
+              <span v-if="!loading">Ingresar</span>
+              <span v-else class="material-symbols-outlined animate-spin"
+                >progress_activity</span
+              >
+            </button>
+          </form>
+
+          <div class="mt-3">
+            <div class="relative flex items-center justify-center py-2">
+              <div
+                class="w-full border-t border-slate-200 dark:border-slate-800"
+              ></div>
+              <span
+                class="bg-slate-50 dark:bg-slate-950 px-3 text-xs font-bold text-slate-400 absolute"
+                >O CONTINUAR CON</span
+              >
+            </div>
+
+            <button
+              @click="loginWithGoogle"
+              class="w-full py-2 glass border border-slate-200 dark:border-slate-800 rounded-xl flex items-center justify-center gap-2 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all active:scale-95 shadow-sm"
+            >
+              <img src="/public/google.png" alt="Google" class="w-4 h-4" />
+              <span class="font-bold text-sm">Google</span>
+            </button>
+          </div>
+
+          <p class="mt-4 text-center text-sm text-slate-500">
+            ¿No tenés cuenta?
+            <a
+              href="/registro"
+              class="text-primary font-black hover:underline ml-1"
+            >
+              Registrate gratis
+            </a>
+          </p>
+        </div>
       </div>
-    </div>
     </div>
 
     <!-- Right: Marketing Panel (desktop only) -->
-    <div class="hidden lg:flex w-1/2 relative overflow-hidden bg-slate-900 flex-col items-center justify-center p-16">
+    <div
+      class="hidden lg:flex w-1/2 relative overflow-hidden bg-slate-900 flex-col items-center justify-center p-16"
+    >
       <!-- Gradient overlay -->
-      <div class="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900"></div>
-      <div class="absolute top-0 right-0 w-96 h-96 bg-primary/20 rounded-full filter blur-3xl animate-pulse-slow"></div>
-      <div class="absolute bottom-0 left-0 w-80 h-80 bg-blue-600/15 rounded-full filter blur-3xl animate-pulse-slow delay-700"></div>
+      <div
+        class="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900"
+      ></div>
+      <div
+        class="absolute top-0 right-0 w-96 h-96 bg-primary/20 rounded-full filter blur-3xl animate-pulse-slow"
+      ></div>
+      <div
+        class="absolute bottom-0 left-0 w-80 h-80 bg-blue-600/15 rounded-full filter blur-3xl animate-pulse-slow delay-700"
+      ></div>
 
       <div class="relative z-10 text-center max-w-md">
-        <img src="/distrify-orange.png" alt="Distrify" class="w-28 mx-auto mb-10 opacity-90" />
-        <h2 class="text-4xl font-black tracking-tighter text-white leading-tight mb-4">
+        <img
+          src="/alevia-logo.png"
+          alt="Alevia Pay"
+          class="w-28 mx-auto mb-10 opacity-90"
+        />
+        <h2
+          class="text-4xl font-black tracking-tighter text-white leading-tight mb-4"
+        >
           Tomá decisiones con datos en tiempo real.
         </h2>
         <p class="text-slate-400 text-base leading-relaxed mb-12">
@@ -238,7 +268,6 @@
           </div>
         </div>
       </div>
-
     </div>
 
     <!-- Recovery Modal -->
@@ -325,7 +354,7 @@ export default {
   },
   methods: {
     async loginWithGoogle() {
-      window.open("https://distrify.com.ar/inicio-sesion-google", "_blank");
+      this.$router.push("/inicio-sesion-google");
     },
     getErrorClass() {
       switch (this.errorType) {
@@ -393,7 +422,9 @@ export default {
           const expirationTime = Date.now() + expiresInMs;
           const cookieExpireDays = expiresInMs / (1000 * 60 * 60 * 24);
 
-          Cookies.set("user_info", JSON.stringify(data.user), { expires: cookieExpireDays });
+          Cookies.set("user_info", JSON.stringify(data.user), {
+            expires: cookieExpireDays,
+          });
 
           localStorage.setItem("token_expiration", expirationTime);
           localStorage.removeItem("session_warning_shown");
@@ -417,10 +448,16 @@ export default {
           // Personalizar mensajes según el tipo de error
           if (error.response.status === 401) {
             const msg = error.response.data?.message || "";
-            if (msg.includes("período de prueba") || msg.includes("prueba de 7 días")) {
+            if (
+              msg.includes("período de prueba") ||
+              msg.includes("prueba de 7 días")
+            ) {
               this.$router.push("/prueba-expirada");
               return;
-            } else if (msg.includes("verificar tu correo") || msg.includes("correo electrónico")) {
+            } else if (
+              msg.includes("verificar tu correo") ||
+              msg.includes("correo electrónico")
+            ) {
               this.emailNotVerified = true;
               this.errorMessage = "";
             } else {
@@ -457,7 +494,9 @@ export default {
       this.resendLoading = true;
       this.resendSuccess = false;
       try {
-        await api.post(`/auth/post/resend-verification-token?email=${encodeURIComponent(this.email)}`);
+        await api.post(
+          `/auth/post/resend-verification-token?email=${encodeURIComponent(this.email)}`,
+        );
         this.resendSuccess = true;
         this.resendCooldown = 60;
         this.resendTimer = setInterval(() => {

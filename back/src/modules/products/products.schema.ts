@@ -122,6 +122,9 @@ export class Products {
 
 export const ProductsSchema = SchemaFactory.createForClass(Products);
 
+ProductsSchema.index({ shopId: 1 });
+ProductsSchema.index({ shopId: 1, code: 1 });
+
 ProductsSchema.pre('save', function (next) {
   const product = this as any;
 

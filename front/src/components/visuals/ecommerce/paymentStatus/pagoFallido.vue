@@ -33,7 +33,7 @@
         </p>
         <p class="card-text">
           Para cualquier consulta, comuníquese con el negocio.
-          <span class="highlight-text">Distrify.com.ar</span>
+          <span class="highlight-text">Alevia Pay.com.ar</span>
         </p>
       </div>
     </div>

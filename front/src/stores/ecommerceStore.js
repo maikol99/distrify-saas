@@ -82,13 +82,19 @@ export const useEcommerceStore = defineStore("ecommerceStore", {
           `/products/get/get-products/${this.shopId}?page=${this.pagination.page}&limit=${this.pagination.limit}`
         );
         const data = response.data;
-        this.products = data.products;
-        this.pagination.total = data.pagination.total;
-        this.pagination.totalPages = data.pagination.totalPages;
-        this.pagination.page = data.pagination.page;
-        this.pagination.limit = data.pagination.limit;
+        this.products = data.products || [];
+        if (data.pagination) {
+          this.pagination.total = data.pagination.total || 0;
+          this.pagination.totalPages = data.pagination.totalPages || 1;
+          this.pagination.page = data.pagination.page || 1;
+          this.pagination.limit = data.pagination.limit || 10;
+        } else {
+          this.pagination.total = this.products.length;
+          this.pagination.totalPages = 1;
+        }
       } catch (error) {
         console.error("Failed to fetch products:", error);
+        this.products = [];
       } finally {
         this.loading = false;
       }
@@ -149,24 +155,32 @@ export const useEcommerceStore = defineStore("ecommerceStore", {
         if (this.filtros.minAmount && this.filtros.minAmount > 0)
           urlParams.append("minAmount", this.filtros.minAmount);
 
-        const response = await api.get(
-          `/products/get/filter-products?shopId=${this.shopId}&page=${
+        const url = `/products/get/filter-products?shopId=${this.shopId}&page=${
             this.pagination.page
-          }&limit=${this.pagination.limit}&${urlParams.toString()}`
-        );
+          }&limit=${this.pagination.limit}&${urlParams.toString()}`;
+
+        console.log("[filterProducts] URL:", url);
+        console.log("[filterProducts] filtros:", JSON.stringify(this.filtros));
+
+        const response = await api.get(url);
 
         const data = response.data;
+        console.log("[filterProducts] response success:", data.success, "products count:", data.data?.length ?? 0, "message:", data.message);
         if (data.success) {
-          this.products = data.data;
-          this.pagination.total = data.pagination.total;
-          this.pagination.totalPages = data.pagination.totalPages;
-          this.pagination.page = data.pagination.page;
-          this.pagination.limit = data.pagination.limit;
+          this.products = data.data || [];
+          if (data.pagination) {
+            this.pagination.total = data.pagination.total || 0;
+            this.pagination.totalPages = data.pagination.totalPages || 1;
+            this.pagination.page = data.pagination.page || 1;
+            this.pagination.limit = data.pagination.limit || 10;
+          } else {
+            this.pagination.total = this.products.length;
+            this.pagination.totalPages = 1;
+          }
         } else {
           this.products = [];
           this.message = data.message;
           this.pagination.total = 0;
-          this.pagination.currentPage = 1;
           this.pagination.page = 1;
           this.pagination.limit = 10;
         }

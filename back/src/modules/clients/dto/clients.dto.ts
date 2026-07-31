@@ -1,7 +1,9 @@
 import {
+  IsBoolean,
   IsDefined,
   IsEmail,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString,
 } from 'class-validator';
@@ -12,6 +14,9 @@ export class CreateClientDto {
   @IsNotEmpty()
   shopId: string;
 
+  @IsDefined()
+  @IsString()
+  @IsNotEmpty()
   name: string;
 
   @IsString()
@@ -20,21 +25,26 @@ export class CreateClientDto {
 
   @IsOptional()
   @IsString()
-  phone: number;
+  phone: string;
 
   @IsOptional()
   @IsEmail()
   email: string;
 
-
+  @IsOptional()
+  @IsNumber()
+  debt: number;
 
   @IsOptional()
+  @IsString()
   password: string;
 
   @IsOptional()
+  @IsBoolean()
   createdOffline: boolean;
 
   @IsOptional()
+  @IsBoolean()
   updatedOffline: boolean;
 
   @IsOptional()
@@ -42,8 +52,10 @@ export class CreateClientDto {
   typeOfClient: string;
 
   @IsOptional()
+  @IsString()
   isAuthorized: string;
 
   @IsOptional()
+  @IsString()
   clientList: string;
 }

@@ -9,7 +9,7 @@
           </div>
           <div class="header-text">
             <h2>Ayuda e Información</h2>
-            <p>Todo lo que necesitas saber sobre Distrify</p>
+            <p>Todo lo que necesitas saber sobre Alevia Pay</p>
           </div>
         </div>
         <button class="close-button" @click="$emit('close')">
@@ -39,7 +39,7 @@
           <div v-if="activeTab === 'quick-start'" class="tab-panel">
             <div class="quick-start-content">
               <div class="welcome-message">
-                <h3><i class="fas fa-rocket"></i> ¡Comienza con Distrify!</h3>
+                <h3><i class="fas fa-rocket"></i> ¡Comienza con Alevia Pay!</h3>
                 <p>
                   Sigue estos pasos para configurar tu sistema y comenzar a
                   gestionar tu negocio.
@@ -110,20 +110,8 @@
                     </div>
                     <div class="contact-info">
                       <h4>Teléfono</h4>
-                      <p>+54 351-7706985</p>
-                      <p>+54 2657-201291</p>
+                      <p>+54 9 3534 29-6008</p>
                       <span>Lunes a Viernes, 9:00 - 18:00</span>
-                    </div>
-                  </div>
-
-                  <div class="contact-card">
-                    <div class="contact-icon email">
-                      <i class="fas fa-envelope"></i>
-                    </div>
-                    <div class="contact-info">
-                      <h4>Email</h4>
-                      <p>distrify@cuyocode.com.ar</p>
-                      <span>Respuesta en 24 horas</span>
                     </div>
                   </div>
 
@@ -133,8 +121,7 @@
                     </div>
                     <div class="contact-info">
                       <h4>WhatsApp</h4>
-                      <p>+54 351-7706985</p>
-                      <p>+54 2657-201291</p>
+                      <p>+54 9 3534 29-6008</p>
 
                       <span>Lunes a Viernes, 9:00 - 18:00</span>
                     </div>
@@ -182,7 +169,7 @@
                     <i class="fas fa-store"></i>
                   </div>
                   <div class="logo-text">
-                    <h3>Distrify</h3>
+                    <h3>Alevia Pay</h3>
                     <span>Versión 1.0.0 Beta</span>
                   </div>
                 </div>
@@ -199,7 +186,7 @@
                 </div>
 
                 <div class="about-section">
-                  <h4><i class="fas fa-heart"></i> ¿Por qué Distrify?</h4>
+                  <h4><i class="fas fa-heart"></i> ¿Por qué Alevia Pay?</h4>
                   <ul class="benefits-list">
                     <li>Interfaz intuitiva y fácil de usar</li>
                     <li>Gestión completa de inventario</li>
@@ -380,7 +367,7 @@ export default {
         {
           question: "¿Puedo registrar ventas sin conexión a internet?",
           answer:
-            "Actualmente Distrify requiere conexión a internet para funcionar correctamente. Estamos trabajando en una funcionalidad offline para futuras versiones.",
+            "Actualmente Alevia Pay requiere conexión a internet para funcionar correctamente. Estamos trabajando en una funcionalidad offline para futuras versiones.",
         },
         {
           question: "¿Cómo genero reportes de mis ventas?",
@@ -396,7 +383,7 @@ export default {
         {
           question: "¿Cómo puedo contactar soporte técnico?",
           answer:
-            "Puedes contactarnos por teléfono al +54 2657-201291 o al +54 351-7706985, por WhatsApp al mismo número, o enviarnos un email a cuyosoftware@gmail.com o a distrify@cuyocode.com.ar",
+            "Puedes contactarnos por teléfono o WhatsApp al +54 9 3534 29-6008, de lunes a viernes de 9:00 a 18:00.",
         },
         {
           question: "¿Mis datos están seguros en la plataforma?",

@@ -6,6 +6,8 @@ import { Turns, TurnsSchema } from 'src/modules/turns/turns.Schema';
 import { Sales, SalesSchema } from 'src/modules/sales/sales.schema';
 import { Inputs, InputsSchema } from 'src/modules/inputs/inputs.schema';
 import { Outputs, OutputsSchema } from 'src/modules/outputs/outputs.schema';
+import { PlanLimitsModule } from '../plan-limits/plan-limits.module';
+import { SettingsModule } from '../settings/settings.module';
 
 @Module({
   imports: [
@@ -15,6 +17,8 @@ import { Outputs, OutputsSchema } from 'src/modules/outputs/outputs.schema';
       { name: Inputs.name, schema: InputsSchema },
       { name: Outputs.name, schema: OutputsSchema },
     ]),
+    PlanLimitsModule,
+    SettingsModule,
   ],
   controllers: [TurnsController],
   providers: [TurnsService],

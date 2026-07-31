@@ -59,6 +59,8 @@ export default {
     },
   },
 
+  emits: ["submit", "close"],
+
   data() {
     return {
       loading: false,

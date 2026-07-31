@@ -7,7 +7,7 @@
           <span class="material-symbols-outlined">smart_toy</span>
         </div>
         <div>
-          <h1 class="header-title">Distri <span class="badge-ia">IA</span></h1>
+          <h1 class="header-title">Alevia <span class="badge-ia">IA</span></h1>
           <p class="header-subtitle">Tu asistente de negocio — hablá o escribí</p>
         </div>
       </div>
@@ -41,7 +41,7 @@
       </div>
       <h2 class="premium-gate-title">Función exclusiva Premium</h2>
       <p class="premium-gate-text">
-        El asistente IA Distri está disponible únicamente en el <strong>plan Premium</strong>.<br>
+        El asistente IA Alevia está disponible únicamente en el <strong>plan Premium</strong>.<br>
         Actualizá tu plan para acceder a todas las funciones de inteligencia artificial.
       </p>
       <div class="premium-gate-features">
@@ -49,7 +49,7 @@
         <div class="premium-feature"><span class="material-symbols-outlined">check_circle</span> Creación de ventas, compras y productos por voz o texto</div>
         <div class="premium-feature"><span class="material-symbols-outlined">check_circle</span> Análisis automático del negocio</div>
       </div>
-      <a href="mailto:soporte@distrify.com" class="btn-upgrade">
+      <a href="https://wa.me/5493534296008?text=Hola,%20quiero%20actualizar%20mi%20plan%20a%20Premium" target="_blank" rel="noopener noreferrer" class="btn-upgrade">
         <span class="material-symbols-outlined">rocket_launch</span>
         Actualizar a Premium
       </a>
@@ -62,7 +62,7 @@
         <div class="empty-avatar">
           <span class="material-symbols-outlined">smart_toy</span>
         </div>
-        <h2 class="empty-title">Hola, soy Distri 👋</h2>
+        <h2 class="empty-title">Hola, soy Alevia 👋</h2>
         <p class="empty-text">
           Puedo ayudarte a consultar tus ventas, inventario, clientes y más,<br>
           o crear ventas, productos, compras y clientes con tu voz o texto.

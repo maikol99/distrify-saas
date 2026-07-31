@@ -24,8 +24,8 @@
       <div class="flex items-center gap-3">
         <img
           v-if="!globalStore.isSidebarCollapsed"
-          src="/distrify-orange.png"
-          alt="Distrify"
+          src="/alevia-logo.png"
+          alt="Alevia Pay"
           width="150px"
         />
         <span
@@ -205,9 +205,9 @@
       </div>
 
       <!-- Desktop: botón con popover -->
-      <div v-else class="relative">
+      <div v-else class="relative" ref="userInfo">
         <button
-          @click="toggleUserMenu"
+          @click.stop="toggleUserMenu"
           class="w-full flex items-center gap-4 px-3 py-2 rounded-2xl transition-all bg-white/5 dark:bg-white/5 hover:bg-white/10 border border-white/10 group"
         >
           <div
@@ -265,7 +265,7 @@
       >
         <span class="material-symbols-outlined text-2xl">menu</span>
       </button>
-      <img src="/distrify-orange.png" alt="Distrify" class="h-6 object-contain" />
+      <img src="/alevia-logo.png" alt="Alevia Pay" class="h-6 object-contain" />
     </div>
 
     <div class="flex items-center gap-1">
@@ -456,7 +456,7 @@ export default {
         {
           id: 13,
           label: "Turnos",
-          plan: "FREE",
+          plan: "MEDIUM",
           route: "/turnos",
           icon: "schedule",
           requiresTurns: true,

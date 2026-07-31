@@ -182,3 +182,5 @@ export class Caja {
 }
 
 export const CajaSchema = SchemaFactory.createForClass(Caja);
+
+CajaSchema.index({ shopId: 1 });

@@ -174,7 +174,7 @@ export class MercadoPagoService {
           },
           items: [
             {
-              title: 'Compra en Distrify',
+              title: 'Compra en Alevia Pay',
               quantity: 1,
               unit_price: total,
               currency_id: 'ARS',

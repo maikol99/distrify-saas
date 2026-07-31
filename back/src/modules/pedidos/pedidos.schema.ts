@@ -92,3 +92,5 @@ export class Pedidos {
 }
 
 export const PedidosSchema = SchemaFactory.createForClass(Pedidos);
+
+PedidosSchema.index({ shopId: 1 });

@@ -10,6 +10,7 @@ import {
   Patch,
   Res,
   ForbiddenException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
 import { Response } from 'express';
@@ -55,6 +56,29 @@ export class AuthController {
     return this.authService.veryfyGoogleUser(token);
   }
 
+  //?Login o registro automático con Google
+  @Public()
+  @Throttle({ default: { limit: 10, ttl: 60000 } })
+  @HttpCode(HttpStatus.OK)
+  @Post('/post/login-google')
+  async loginWithGoogle(@Body('token') token: string, @Res({ passthrough: true }) res: Response) {
+    const result = await this.authService.loginWithGoogle(token);
+
+    const isProduction = this.configService.get<string>('NODE_ENV') === 'production';
+    const expiresInMs = (result.expires_in || 28800) * 1000;
+
+    res.cookie('access_token', result.access_token, {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
+      maxAge: expiresInMs,
+      path: '/',
+    });
+
+    const { access_token: _, ...safeResult } = result;
+    return safeResult;
+  }
+
   //? Crear usuario de google (deshabilitado — registro solo por administrador)
   @Public()
   @HttpCode(HttpStatus.CREATED)
@@ -98,10 +122,15 @@ export class AuthController {
   }
 
 
+  @Public()
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   async refresh(@Request() req, @Res({ passthrough: true }) res: Response) {
-    const result = await this.authService.refreshToken(req.user.id);
+    const token = req?.cookies?.['access_token'] || req?.headers?.authorization?.split(' ')[1];
+    if (!token) {
+      throw new UnauthorizedException('Token no proporcionado');
+    }
+    const result = await this.authService.refreshExpiredToken(token);
 
     const isProduction = this.configService.get<string>('NODE_ENV') === 'production';
     const expiresInMs = (result.expires_in || 28800) * 1000;

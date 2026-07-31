@@ -1330,7 +1330,7 @@ export default {
           pdf.setFontSize(8);
           pdf.setTextColor(128, 128, 128);
           pdf.setFont("helvetica", "normal");
-          pdf.text("Distrify - Gestión & e-commerce ", 20, pageHeight - 12);
+          pdf.text("Alevia Pay - Gestión & e-commerce ", 20, pageHeight - 12);
           pdf.text(
             `Generado el: ${moment().format("DD/MM/YYYY HH:mm")}`,
             20,

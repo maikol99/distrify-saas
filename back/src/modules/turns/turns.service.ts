@@ -1,5 +1,4 @@
-/* eslint-disable */
-import { Injectable, NotFoundException, Logger } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Sales } from 'src/modules/sales/sales.schema';
@@ -33,6 +32,14 @@ export class TurnsService {
 
   async openTurn(body: CreateTurnDto): Promise<Turns> {
     const { efectivoRecibido, descriptionApertura, userName, userId, shopId } = body;
+
+    const existingOpenTurn = await this.turnsModel.findOne({
+      userId,
+      status: TurnStatusEnum.ABIERTO,
+    });
+    if (existingOpenTurn) {
+      throw new BadRequestException('Ya tenés un turno abierto. Cerralo antes de abrir uno nuevo.');
+    }
 
     const createdTurn = await this.turnsModel.create({
       descriptionApertura: descriptionApertura ?? '',
