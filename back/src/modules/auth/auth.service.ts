@@ -78,6 +78,7 @@ export class AuthService {
 
   //?Login o registro automático con Google
   async loginWithGoogle(token: string): Promise<LoginResponse> {
+    // 1. Verificar token de Google
     let payload: any;
     try {
       const clientId = this.configService.get<string>('GOOGLE_CLIENT_ID');
@@ -96,49 +97,61 @@ export class AuthService {
       throw new UnauthorizedException('Token de Google inválido o expirado');
     }
 
-    const googleEmail = payload['email'].toLowerCase().trim();
-    const googleId = payload['sub'];
-    const googleName = payload['name'] || googleEmail.split('@')[0];
+    // 2. Buscar o crear usuario
+    try {
+      const googleEmail = payload['email'].toLowerCase().trim();
+      const googleId = payload['sub'];
+      const googleName = payload['name'] || googleEmail.split('@')[0];
 
-    // 2. Buscar si el usuario ya existe
-    let user = await this.usersModel
-      .findOne({ email: googleEmail })
-      .select('+password')
-      .exec();
+      let user = await this.usersModel
+        .findOne({ email: googleEmail })
+        .select('+password')
+        .exec();
 
-    // 3. Si no existe, crearlo automáticamente
-    if (!user) {
-      const saltRounds = this.configService.get<number>('BCRYPT_SALT_ROUNDS', 12);
-      const hashedPassword = await bcrypt.hash(googleId, Number(saltRounds));
+      if (!user) {
+        // Usuario nuevo: crear shop + user
+        const saltRounds = this.configService.get<number>('BCRYPT_SALT_ROUNDS', 12);
+        const hashedPassword = await bcrypt.hash(googleId, Number(saltRounds));
 
-      const newShop = new this.shopsModel({
-        name: 'Mi Nuevo Negocio',
-        email: googleEmail,
-        isFirstLogin: true,
-        isCentral: true,
-      });
-      const savedShop = await newShop.save();
+        const newShop = new this.shopsModel({
+          name: 'Mi Nuevo Negocio',
+          email: googleEmail,
+          isFirstLogin: true,
+          isCentral: true,
+        });
+        const savedShop = await newShop.save();
 
-      const newUser = new this.usersModel({
-        username: googleName,
-        email: googleEmail,
-        password: hashedPassword,
-        isEmailVerified: true,
-        lastLogin: new Date(),
-        shopId: savedShop._id,
-        role: 'ADMIN',
-        trialStartDate: new Date(),
-        isPremium: false,
-        createdAt: new Date(),
-      });
-      user = await newUser.save();
+        const newUser = new this.usersModel({
+          username: googleName,
+          email: googleEmail,
+          password: hashedPassword,
+          isEmailVerified: true,
+          lastLogin: new Date(),
+          shopId: savedShop._id,
+          trialStartDate: new Date(),
+          isPremium: false,
+          createdAt: new Date(),
+        });
+        user = await newUser.save();
+      } else {
+        // Usuario existente: reparar campos que pueden faltar
+        const updates: any = {};
+        if (!user.isEmailVerified) updates.isEmailVerified = true;
+        if (!user.trialStartDate) updates.trialStartDate = new Date();
+        if (Object.keys(updates).length > 0) {
+          await this.usersModel.findByIdAndUpdate(user._id, { $set: updates });
+          user = await this.usersModel.findById(user._id).select('+password').exec();
+        }
+      }
+
+      const userObj = user.toObject();
+      const { password: _, ...safeUser } = userObj as any;
+      return this.login(safeUser);
+    } catch (error) {
+      this.logger.error(`Error en loginWithGoogle: ${error.message}`, error.stack);
+      if (error?.status) throw error;
+      throw new UnauthorizedException('Error al iniciar sesión con Google');
     }
-
-    // 4. Generar JWT y retornar sesión
-    const userObj = user.toObject();
-    const { password: _, ...safeUser } = userObj as any;
-
-    return this.login(safeUser);
   }
 
   //?Crear usuario de google

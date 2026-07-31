@@ -4,6 +4,10 @@ import {
   IsEmail,
   IsNotEmpty,
   IsString,
+  IsBoolean,
+  IsNumber,
+  IsObject,
+  IsOptional,
 } from 'class-validator';
 import { PartialType } from '@nestjs/mapped-types';
 import {
@@ -57,17 +61,43 @@ export class CreateShopDto {
 }
 
 export class UpdateShopDto extends PartialType(CreateShopDto) {
+  @IsBoolean()
+  @IsOptional()
   storeActive?: boolean;
+
+  @IsBoolean()
+  @IsOptional()
   delivery?: boolean;
+
+  @IsBoolean()
+  @IsOptional()
   deliveryCharge?: boolean;
+
+  @IsNumber()
+  @IsOptional()
   deliveryPrice?: number;
+
+  @IsObject()
+  @IsOptional()
   shopImage?: {
     secure_url: string;
     public_id: string;
   };
+
+  @IsBoolean()
+  @IsOptional()
   isFirstLogin?: boolean;
+
+  @IsBoolean()
+  @IsOptional()
   isCentral?: boolean;
+
+  @IsString()
+  @IsOptional()
   centralId?: string;
+
+  @IsString()
+  @IsOptional()
   description?: string;
 }
 
