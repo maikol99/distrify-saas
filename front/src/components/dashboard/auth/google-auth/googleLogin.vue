@@ -85,6 +85,7 @@
 import api from "@/config/axios.config";
 import Cookies from "js-cookie";
 
+// Client ID de Google para iniciar sesion
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 export default {
