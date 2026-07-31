@@ -32,11 +32,21 @@ export class PlanGuard implements CanActivate {
     if (!requiredPlans || requiredPlans.length === 0) return true;
 
     const request = context.switchToHttp().getRequest();
-    const shopId = request.user?.shopId;
+    const user = request.user;
+    const shopId = user?.shopId;
     if (!shopId) throw new ForbiddenException('No se pudo determinar el negocio.');
 
-    const plan = await this.planLimitsService.getShopPlanPublic(shopId);
+    let plan = await this.planLimitsService.getShopPlanPublic(shopId);
     if (!plan) throw new ForbiddenException('Negocio no encontrado.');
+
+    // Si el usuario está en su período de prueba activo de 7 días, le damos acceso a nivel PREMIUM
+    if (user && !user.isPremium && user.trialStartDate) {
+      const trialEnd = new Date(user.trialStartDate);
+      trialEnd.setDate(trialEnd.getDate() + 7);
+      if (new Date() <= trialEnd) {
+        plan = ShopPlanEnum.PREMIUM;
+      }
+    }
 
     const shopLevel = PLAN_HIERARCHY[plan] ?? 0;
     const minRequired = Math.min(...requiredPlans.map((p) => PLAN_HIERARCHY[p]));

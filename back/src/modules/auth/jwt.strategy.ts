@@ -26,6 +26,8 @@ export interface AuthenticatedUser {
   shopId: string;
   routesAllowed: string[];
   isAdmin: boolean;
+  isPremium?: boolean;
+  trialStartDate?: Date;
 }
 
 @Injectable()
@@ -89,6 +91,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         shopId: payload.shopId ?? user.shopId?.toString(),
         routesAllowed: user.routesAllowed || [],
         isAdmin: payload.isAdmin === true,
+        isPremium: user.isPremium === true,
+        trialStartDate: user.trialStartDate,
       };
     } catch (error) {
       if (error instanceof UnauthorizedException) {

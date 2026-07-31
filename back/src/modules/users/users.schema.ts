@@ -30,7 +30,7 @@ const DEFAULT_ROUTES_ALLOWED = [
   timestamps: true,
 })
 export class Users extends Document {
-  @Prop({ required: true, unique: true })
+  @Prop({ required: true })
   username: string;
 
   @Prop({ required: true, unique: true })

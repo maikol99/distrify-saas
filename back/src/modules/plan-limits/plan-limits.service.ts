@@ -40,7 +40,23 @@ export class PlanLimitsService {
 
   private async getShopPlan(shopId: string): Promise<ShopPlanEnum> {
     const shop = await this.shopsModel.findById(shopId).select('plan').lean();
-    return (shop?.plan as ShopPlanEnum) ?? ShopPlanEnum.FREE;
+    let plan = (shop?.plan as ShopPlanEnum) ?? ShopPlanEnum.FREE;
+
+    // Si algún usuario del shop tiene un trial de 7 días activo, tratamos al negocio como PREMIUM
+    const userInTrial = await this.usersModel
+      .findOne({ shopId, trialStartDate: { $exists: true } })
+      .lean()
+      .exec();
+
+    if (userInTrial && !userInTrial.isPremium && userInTrial.trialStartDate) {
+      const trialEnd = new Date(userInTrial.trialStartDate);
+      trialEnd.setDate(trialEnd.getDate() + 7);
+      if (new Date() <= trialEnd) {
+        plan = ShopPlanEnum.PREMIUM;
+      }
+    }
+
+    return plan;
   }
 
   /** Versión pública para uso desde guards externos */
