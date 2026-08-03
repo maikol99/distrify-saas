@@ -290,94 +290,159 @@
       </div>
     </div>
 
-    <!-- Right: Marketing Panel (desktop only) -->
-    <div
-      class="hidden lg:flex w-1/2 relative overflow-hidden bg-slate-900 flex-col items-center justify-center p-16"
-    >
-      <div
-        class="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900"
-      ></div>
-      <div
-        class="absolute top-0 right-0 w-96 h-96 bg-primary/20 rounded-full filter blur-3xl animate-pulse-slow"
-      ></div>
-      <div
-        class="absolute bottom-0 left-0 w-80 h-80 bg-blue-600/15 rounded-full filter blur-3xl animate-pulse-slow delay-700"
-      ></div>
+    <!-- Right: Dashboard Mockup Panel (desktop only) -->
+    <div class="hidden lg:flex w-1/2 relative overflow-hidden bg-slate-900 flex-col items-center justify-center p-10">
+      <!-- Background gradients -->
+      <div class="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900"></div>
+      <div class="absolute top-0 right-0 w-96 h-96 bg-primary/15 rounded-full filter blur-3xl animate-pulse-slow"></div>
+      <div class="absolute bottom-0 left-0 w-80 h-80 bg-blue-600/10 rounded-full filter blur-3xl animate-pulse-slow delay-700"></div>
 
-      <div class="relative z-10 text-center max-w-md">
-        <img
-          src="/alevia-logo.png"
-          alt="Alevia Pay"
-          class="w-28 mx-auto mb-10 opacity-90"
-        />
-        <h2
-          class="text-4xl font-black tracking-tighter text-white leading-tight mb-4"
-        >
-          Tu negocio, bajo control desde el día uno.
+      <div class="relative z-10 w-full max-w-lg animate-fade-in-down">
+        <!-- Security badge -->
+        <div class="flex justify-center mb-6">
+          <span class="inline-flex items-center gap-2 bg-slate-800/80 border border-slate-700 text-slate-300 text-xs font-bold px-4 py-1.5 rounded-full">
+            <svg class="w-3.5 h-3.5 text-primary" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+            Seguro, rápido y confiable
+          </span>
+        </div>
+
+        <!-- Headline -->
+        <h2 class="text-4xl font-black tracking-tighter text-white leading-tight mb-3 text-center">
+          Tu negocio, bajo control<br/>
+          desde <span class="text-primary">el día uno.</span>
         </h2>
-        <p class="text-slate-400 text-base leading-relaxed mb-12">
-          Registrate gratis y empezá a gestionar ventas, caja y productos en
-          minutos.
+        <p class="text-slate-400 text-sm text-center mb-8">
+          Registrate gratis y empezá a gestionar ventas, caja y productos en minutos.
         </p>
 
-        <div class="flex flex-col gap-4 text-left">
-          <div class="flex items-center gap-4">
-            <div
-              class="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center flex-shrink-0"
-            >
-              <span class="material-symbols-outlined text-primary text-lg"
-                >storefront</span
-              >
-            </div>
-            <div>
-              <p class="text-white font-bold text-sm">
-                Gestión de tienda completa
-              </p>
-              <p class="text-slate-400 text-xs">
-                Productos, stock, precios y más.
-              </p>
-            </div>
+        <!-- Dashboard mockup -->
+        <div class="bg-slate-800/80 border border-slate-700/60 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-sm">
+          <!-- Mockup top bar -->
+          <div class="flex items-center gap-1.5 px-4 py-2.5 border-b border-slate-700/60">
+            <div class="w-2.5 h-2.5 rounded-full bg-red-500/70"></div>
+            <div class="w-2.5 h-2.5 rounded-full bg-yellow-500/70"></div>
+            <div class="w-2.5 h-2.5 rounded-full bg-green-500/70"></div>
+            <span class="ml-2 text-slate-500 text-xs">Alevia Pay — Resumen general</span>
           </div>
-          <div class="flex items-center gap-4">
-            <div
-              class="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center flex-shrink-0"
-            >
-              <span class="material-symbols-outlined text-primary text-lg"
-                >point_of_sale</span
-              >
+
+          <div class="flex">
+            <!-- Mini sidebar -->
+            <div class="w-10 bg-slate-900/60 border-r border-slate-700/40 flex flex-col items-center py-4 gap-4">
+              <div class="w-6 h-6 bg-primary/90 rounded-md flex items-center justify-center">
+                <span class="text-white text-[10px] font-black">A</span>
+              </div>
+              <div class="w-6 h-6 bg-primary rounded-md flex items-center justify-center mt-2">
+                <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
+              </div>
+              <div class="w-6 h-6 bg-slate-700/60 rounded-md flex items-center justify-center">
+                <svg class="w-3 h-3 text-slate-400" fill="currentColor" viewBox="0 0 20 20"><path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3z"/></svg>
+              </div>
+              <div class="w-6 h-6 bg-slate-700/60 rounded-md flex items-center justify-center">
+                <svg class="w-3 h-3 text-slate-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/></svg>
+              </div>
+              <div class="w-6 h-6 bg-slate-700/60 rounded-md flex items-center justify-center">
+                <svg class="w-3 h-3 text-slate-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 0l-2 2a1 1 0 101.414 1.414L8 10.414l1.293 1.293a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+              </div>
+              <div class="w-6 h-6 bg-slate-700/60 rounded-md flex items-center justify-center">
+                <svg class="w-3 h-3 text-slate-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/></svg>
+              </div>
             </div>
-            <div>
-              <p class="text-white font-bold text-sm">
-                Punto de venta integrado
-              </p>
-              <p class="text-slate-400 text-xs">
-                Vendé rápido con caja y turnos.
-              </p>
-            </div>
-          </div>
-          <div class="flex items-center gap-4">
-            <div
-              class="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center flex-shrink-0"
-            >
-              <span class="material-symbols-outlined text-primary text-lg"
-                >bar_chart</span
-              >
-            </div>
-            <div>
-              <p class="text-white font-bold text-sm">
-                Reportes en tiempo real
-              </p>
-              <p class="text-slate-400 text-xs">
-                Tomá decisiones basadas en datos.
-              </p>
+
+            <!-- Main content -->
+            <div class="flex-1 p-4">
+              <!-- KPI cards -->
+              <div class="grid grid-cols-4 gap-2 mb-4">
+                <div class="bg-slate-900/60 rounded-xl p-2.5 border border-slate-700/40">
+                  <p class="text-slate-400 text-[9px] mb-1">Ventas hoy</p>
+                  <p class="text-white text-sm font-black">$284.000</p>
+                  <p class="text-green-400 text-[9px] font-bold mt-0.5">↑ 12,5%</p>
+                  <div class="mt-1.5 h-5 w-full">
+                    <svg viewBox="0 0 50 20" class="w-full h-full">
+                      <polyline points="0,15 10,10 20,12 30,6 40,8 50,3" fill="none" stroke="#f97316" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </div>
+                </div>
+                <div class="bg-slate-900/60 rounded-xl p-2.5 border border-slate-700/40">
+                  <p class="text-slate-400 text-[9px] mb-1">Órdenes</p>
+                  <p class="text-white text-sm font-black">128</p>
+                  <p class="text-green-400 text-[9px] font-bold mt-0.5">↑ 8,3%</p>
+                  <div class="mt-1.5 h-5 w-full">
+                    <svg viewBox="0 0 50 20" class="w-full h-full">
+                      <polyline points="0,18 10,14 20,15 30,9 40,11 50,7" fill="none" stroke="#f97316" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </div>
+                </div>
+                <div class="bg-slate-900/60 rounded-xl p-2.5 border border-slate-700/40">
+                  <p class="text-slate-400 text-[9px] mb-1">Clientes</p>
+                  <p class="text-white text-sm font-black">356</p>
+                  <p class="text-green-400 text-[9px] font-bold mt-0.5">↑ 6,7%</p>
+                  <div class="mt-1.5 h-5 w-full">
+                    <svg viewBox="0 0 50 20" class="w-full h-full">
+                      <polyline points="0,16 10,13 20,14 30,8 40,10 50,5" fill="none" stroke="#f97316" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </div>
+                </div>
+                <div class="bg-slate-900/60 rounded-xl p-2.5 border border-slate-700/40">
+                  <p class="text-slate-400 text-[9px] mb-1">Productos</p>
+                  <p class="text-white text-sm font-black">1.245</p>
+                  <p class="text-green-400 text-[9px] font-bold mt-0.5">↑ 9,2%</p>
+                  <div class="mt-1.5 h-5 w-full">
+                    <svg viewBox="0 0 50 20" class="w-full h-full">
+                      <polyline points="0,17 10,15 20,11 30,10 40,7 50,4" fill="none" stroke="#f97316" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Charts row -->
+              <div class="grid grid-cols-5 gap-2">
+                <!-- Line chart -->
+                <div class="col-span-3 bg-slate-900/60 rounded-xl p-3 border border-slate-700/40">
+                  <p class="text-slate-300 text-[10px] font-bold mb-2">Ventas de los últimos 7 días</p>
+                  <div class="relative h-20">
+                    <svg viewBox="0 0 200 70" class="w-full h-full" preserveAspectRatio="none">
+                      <line x1="0" y1="17" x2="200" y2="17" stroke="#334155" stroke-width="0.5" stroke-dasharray="2,2"/>
+                      <line x1="0" y1="35" x2="200" y2="35" stroke="#334155" stroke-width="0.5" stroke-dasharray="2,2"/>
+                      <line x1="0" y1="53" x2="200" y2="53" stroke="#334155" stroke-width="0.5" stroke-dasharray="2,2"/>
+                      <defs>
+                        <linearGradient id="chartGradReg" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stop-color="#f97316" stop-opacity="0.3"/>
+                          <stop offset="100%" stop-color="#f97316" stop-opacity="0"/>
+                        </linearGradient>
+                      </defs>
+                      <polygon points="0,60 33,50 66,45 100,30 133,35 166,20 200,10 200,70 0,70" fill="url(#chartGradReg)"/>
+                      <polyline points="0,60 33,50 66,45 100,30 133,35 166,20 200,10" fill="none" stroke="#f97316" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      <circle cx="200" cy="10" r="2.5" fill="#f97316"/>
+                    </svg>
+                    <div class="flex justify-between mt-1 px-0.5">
+                      <span v-for="day in ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom']" :key="day" class="text-slate-500 text-[8px]">{{day}}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Donut chart -->
+                <div class="col-span-2 bg-slate-900/60 rounded-xl p-3 border border-slate-700/40">
+                  <p class="text-slate-300 text-[10px] font-bold mb-2">Ventas por categoría</p>
+                  <div class="flex items-center gap-2">
+                    <svg viewBox="0 0 36 36" class="w-16 h-16 shrink-0">
+                      <circle cx="18" cy="18" r="15.915" fill="transparent" stroke="#f97316" stroke-width="4" stroke-dasharray="40 60" stroke-dashoffset="25" transform="rotate(-90 18 18)"/>
+                      <circle cx="18" cy="18" r="15.915" fill="transparent" stroke="#3b82f6" stroke-width="4" stroke-dasharray="30 70" stroke-dashoffset="-15" transform="rotate(-90 18 18)"/>
+                      <circle cx="18" cy="18" r="15.915" fill="transparent" stroke="#22d3ee" stroke-width="4" stroke-dasharray="20 80" stroke-dashoffset="-45" transform="rotate(-90 18 18)"/>
+                      <circle cx="18" cy="18" r="15.915" fill="transparent" stroke="#a78bfa" stroke-width="4" stroke-dasharray="10 90" stroke-dashoffset="-65" transform="rotate(-90 18 18)"/>
+                    </svg>
+                    <div class="space-y-0.5">
+                      <div class="flex items-center gap-1"><div class="w-1.5 h-1.5 rounded-full bg-primary shrink-0"></div><span class="text-slate-400 text-[8px]">Bebidas 40%</span></div>
+                      <div class="flex items-center gap-1"><div class="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0"></div><span class="text-slate-400 text-[8px]">Almacén 30%</span></div>
+                      <div class="flex items-center gap-1"><div class="w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0"></div><span class="text-slate-400 text-[8px]">Limpieza 20%</span></div>
+                      <div class="flex items-center gap-1"><div class="w-1.5 h-1.5 rounded-full bg-violet-400 shrink-0"></div><span class="text-slate-400 text-[8px]">Otros 10%</span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-
-      <p class="absolute bottom-6 text-slate-600 text-xs z-10">
-        Alevia Pay Analytics
-      </p>
     </div>
   </div>
   <SpinnerComponent v-if="loading"></SpinnerComponent>
