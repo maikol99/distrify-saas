@@ -105,398 +105,211 @@
 
     <main class="pt-16">
       <!-- Hero Section -->
-      <section id="hero" class="hero-section relative overflow-hidden bg-[#0c0a09] text-white pt-10 pb-20">
-        <!-- Background ambient glow effects -->
+      <section id="hero" class="hero-section relative overflow-hidden">
+        <!-- Background ambient glow -->
         <div class="absolute inset-0 pointer-events-none overflow-hidden">
-          <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-primary/10 rounded-full blur-[180px] animate-pulse-slow"></div>
-          <div class="absolute top-1/3 -left-40 w-[600px] h-[600px] bg-orange-600/10 rounded-full blur-[160px]"></div>
-          <div class="absolute bottom-0 right-0 w-[500px] h-[500px] bg-amber-600/10 rounded-full blur-[160px]"></div>
-          <div class="absolute inset-0 hero-grid-bg opacity-[0.04]"></div>
+          <div class="absolute top-1/3 left-1/4 w-[500px] h-[500px] bg-primary/8 rounded-full blur-[160px] animate-pulse-slow"></div>
+          <div class="absolute bottom-1/4 right-1/3 w-[350px] h-[350px] bg-primary/5 rounded-full blur-[130px] animate-pulse-slow" style="animation-delay: 2s"></div>
+          <!-- Subtle grid pattern -->
+          <div class="absolute inset-0 hero-grid-bg opacity-[0.03]"></div>
+          <!-- Bottom gradient fade -->
+          <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#1a0f05] to-transparent"></div>
         </div>
 
-        <div class="max-w-7xl mx-auto px-6 w-full relative z-10">
-          
-          <!-- TOP HERO LAYOUT: LEFT TEXT & CENTER/RIGHT MOCKUP COMPOSITION -->
-          <div class="grid lg:grid-cols-12 gap-8 items-start mb-16">
+        <div class="max-w-7xl mx-auto px-6 w-full grid lg:grid-cols-2 gap-12 lg:gap-16 items-center min-h-[calc(100vh-64px)] py-16 lg:py-0 relative z-10">
 
-            <!-- LEFT COLUMN (Span 5) -->
-            <div class="lg:col-span-5 pt-4 animate-slide-up">
-              <!-- Demo Badge -->
-              <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/90 border border-slate-800 text-xs font-medium text-slate-300 mb-6 backdrop-blur-md">
-                <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-                <span>Demo gratis · Sin tarjeta · Activo en minutos</span>
-              </div>
-
-              <!-- Headline -->
-              <h1 class="text-4xl sm:text-5xl lg:text-[2.8rem] xl:text-[3.2rem] font-black leading-[1.12] mb-6 tracking-tight">
-                Cobrá más rápido<br/>
-                y controlá tu negocio.<br/>
-                <span class="bg-gradient-to-r from-orange-400 via-primary to-amber-500 bg-clip-text text-transparent">
-                  Gestión por voz<br/>
-                  en una sola pantalla.
-                </span>
-              </h1>
-
-              <!-- Subtitle -->
-              <p class="text-slate-400 text-base leading-relaxed mb-8 max-w-md">
-                POS, inventario, caja y delivery para negocios de Argentina.
-                Implementación rápida, soporte humano y ventas ordenadas desde el primer día.
-              </p>
-
-              <!-- CTAs -->
-              <div class="flex flex-wrap items-center gap-4 mb-10">
-                <a
-                  href="/registro"
-                  class="px-7 py-3.5 bg-primary hover:bg-orange-600 text-white font-bold rounded-xl flex items-center gap-2 shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-[1.02] active:scale-95 transition-all"
-                >
-                  Probar gratis →
-                </a>
-                <a
-                  @click="scrollToSection('pricing')"
-                  class="px-6 py-3.5 bg-slate-900/80 hover:bg-slate-800 text-slate-200 font-bold rounded-xl cursor-pointer border border-slate-800 backdrop-blur-md transition-all"
-                >
-                  Ver precios
-                </a>
-              </div>
-
-              <!-- Feature mini-badges -->
-              <div class="flex flex-wrap gap-x-6 gap-y-3 text-xs font-medium text-slate-400 mb-10">
-                <span class="flex items-center gap-2">
-                  <span class="material-symbols-outlined text-primary text-base">credit_card_off</span>
-                  Sin tarjeta
-                </span>
-                <span class="flex items-center gap-2">
-                  <span class="material-symbols-outlined text-primary text-base">sync_alt</span>
-                  Migración asistida
-                </span>
-                <span class="flex items-center gap-2">
-                  <span class="material-symbols-outlined text-primary text-base">headset_mic</span>
-                  Soporte humano
-                </span>
-              </div>
-
-              <!-- Scanner Mockup Card (Bottom Left) -->
-              <div class="bg-slate-900/90 border border-slate-800/80 rounded-2xl p-4 max-w-sm backdrop-blur-md shadow-2xl">
-                <div class="flex items-center justify-between mb-3">
-                  <div class="flex items-center gap-2 text-xs font-bold text-slate-300">
-                    <span class="material-symbols-outlined text-orange-400 text-base">barcode_scanner</span>
-                    Escáner de productos
-                  </div>
-                  <span class="flex items-center gap-1.5 text-[10px] text-green-400 font-medium bg-green-500/10 px-2 py-0.5 rounded-full border border-green-500/20">
-                    <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-ping"></span>
-                    Cámara activa
-                  </span>
-                </div>
-                <!-- Scanner viewport mockup -->
-                <div class="relative h-20 bg-slate-950 rounded-xl overflow-hidden mb-3 border border-slate-800/60 flex items-center justify-center">
-                  <!-- Product Image / Mock -->
-                  <div class="absolute inset-0 bg-cover bg-center opacity-40 filter blur-[1px]" style="background-image: url('https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300&q=80')"></div>
-                  <!-- Laser Line -->
-                  <div class="absolute inset-x-0 top-1/2 h-[2px] bg-red-500 shadow-[0_0_8px_#ef4444]"></div>
-                </div>
-                <!-- Scanned Result -->
-                <div class="flex items-center justify-between bg-slate-950/80 rounded-xl p-2.5 border border-slate-800/80">
-                  <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-lg bg-slate-800 overflow-hidden flex items-center justify-center shrink-0">
-                      <img src="https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=100&q=80" class="w-full h-full object-cover" />
-                    </div>
-                    <div>
-                      <p class="text-xs font-bold text-white">Coca Cola 2.25L</p>
-                      <p class="text-[11px] font-black text-orange-400">$ 1.200 <span class="text-[9px] font-normal text-slate-400 ml-1">Stock: 14 unidades</span></p>
-                    </div>
-                  </div>
-                  <div class="w-6 h-6 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center border border-green-500/30">
-                    <span class="material-symbols-outlined text-sm font-black">check</span>
-                  </div>
-                </div>
-              </div>
-
+          <!-- LEFT: Text Content -->
+          <div class="animate-slide-up">
+            <!-- Badge -->
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/25 mb-8 animate-fade-in">
+              <span class="relative flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+              </span>
+              <span class="text-xs font-bold tracking-wider text-primary">Demo gratis · Sin tarjeta · Activo en minutos</span>
             </div>
 
-            <!-- RIGHT COLUMN: RICH DASHBOARD & FLOATING COMPONENTS (Span 7) -->
-            <div class="lg:col-span-7 relative">
-              
-              <!-- GRID CONTAINING MAIN DASHBOARD & FLOATING CARDS -->
-              <div class="grid grid-cols-12 gap-3 relative">
-                
-                <!-- MAIN DASHBOARD (Span 9) -->
-                <div class="col-span-12 xl:col-span-9 bg-[#12100e] border border-slate-800/90 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-md">
-                  <!-- Header bar -->
-                  <div class="flex items-center justify-between px-4 py-2.5 border-b border-slate-800/80 bg-slate-900/50">
-                    <div class="flex items-center gap-2">
-                      <div class="w-5 h-5 bg-primary rounded-md flex items-center justify-center">
-                        <span class="text-white text-[9px] font-black">A</span>
-                      </div>
-                      <span class="text-xs font-bold text-slate-300">alevia pay</span>
-                    </div>
-                    <span class="text-[10px] text-slate-400 font-medium">Resumen de hoy</span>
-                    <div class="flex items-center gap-1 bg-slate-800 px-2 py-0.5 rounded text-[10px] text-slate-300">
-                      <span>Hoy</span>
-                      <span class="material-symbols-outlined text-xs">expand_more</span>
-                    </div>
+            <!-- Headline -->
+            <h1 class="text-4xl sm:text-5xl lg:text-[3.5rem] xl:text-6xl font-black text-white leading-[1.08] mb-6 tracking-tight animate-slide-up">
+              Cobrá más rápido<br>
+              y controlá tu<br>
+              negocio.<br>
+              <span class="hero-accent-text text-primary relative inline-block mt-1">
+                Gestión por voz
+                <span class="absolute -bottom-1 left-0 w-full h-[3px] bg-primary/50 rounded-full"></span>
+              </span><br>
+              en una sola<br>
+              pantalla.
+            </h1>
+
+            <!-- Subtitle -->
+            <p class="text-base md:text-lg text-[#a89480] mb-8 max-w-lg leading-relaxed animate-slide-up delay-150">
+              POS, inventario, caja y delivery para negocios de Argentina.
+              Implementación rápida, soporte humano y ventas ordenadas desde el
+              primer día.
+            </p>
+
+            <!-- CTAs -->
+            <div class="flex flex-wrap gap-4 mb-10 animate-slide-up delay-300">
+              <a
+                href="/registro"
+                class="hero-cta-primary px-8 py-4 bg-primary text-white font-bold rounded-xl flex items-center gap-2 shadow-lg shadow-primary/25 transition-all"
+              >
+                Probar gratis
+                <span class="material-symbols-outlined text-lg">arrow_forward</span>
+              </a>
+              <a
+                @click="scrollToSection('pricing')"
+                class="hero-cta-secondary px-8 py-4 bg-white/[0.06] text-white font-bold rounded-xl cursor-pointer backdrop-blur-sm border border-white/10 transition-all"
+              >
+                Ver precios
+              </a>
+            </div>
+
+            <!-- Feature badges -->
+            <div class="flex flex-wrap gap-x-6 gap-y-3 text-sm text-[#a89480] animate-slide-up delay-300">
+              <span class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-base">credit_card_off</span>
+                Sin tarjeta
+              </span>
+              <span class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-base">sync_alt</span>
+                Migración asistida
+              </span>
+              <span class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-base">support_agent</span>
+                Soporte humano
+              </span>
+            </div>
+          </div>
+
+          <!-- RIGHT: App Mockup -->
+          <div class="relative hidden lg:flex items-center justify-center animate-slide-up delay-200">
+            <div class="hero-mockup-wrapper relative w-full max-w-[650px]">
+
+              <!-- Main dashboard card -->
+              <div class="hero-card hero-card-main absolute top-0 left-0 w-[370px] rounded-2xl border border-white/[0.12] shadow-2xl shadow-black/60 overflow-hidden z-10">
+                <!-- Browser bar -->
+                <div class="flex items-center gap-2 px-4 py-3 border-b border-white/[0.08] bg-white/[0.04]">
+                  <div class="flex gap-1.5">
+                    <span class="w-2.5 h-2.5 rounded-full bg-[#ff5f57]"></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-[#febc2e]"></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-[#28c840]"></span>
                   </div>
-
-                  <div class="flex">
-                    <!-- Mini Sidebar -->
-                    <div class="w-24 bg-slate-950/60 border-r border-slate-800/60 py-3 flex flex-col gap-1 text-[10px]">
-                      <div class="flex items-center gap-1.5 px-3 py-1.5 bg-primary/20 text-primary border-l-2 border-primary font-bold">
-                        <span class="material-symbols-outlined text-xs">home</span>
-                        <span>Inicio</span>
-                      </div>
-                      <div v-for="nav in ['Ventas','Productos','Clientes','Inventario','Caja','Reportes','Delivery','Promociones','Configuración']" :key="nav"
-                           class="flex items-center gap-1.5 px-3 py-1 text-slate-400 hover:text-slate-200">
-                        <span class="w-1.5 h-1.5 rounded-full bg-slate-700"></span>
-                        <span>{{nav}}</span>
-                      </div>
+                  <div class="flex items-center gap-1.5 ml-4 text-[12px] text-[#8a7a6a] font-mono">
+                    <span class="material-symbols-outlined text-[13px] text-[#28c840]">lock</span>
+                    app.aleviapay.com
+                  </div>
+                </div>
+                <!-- Dashboard content -->
+                <div class="p-6">
+                  <p class="text-[12px] text-[#8a7a6a] font-medium mb-1">Ventas de hoy</p>
+                  <div class="flex items-end justify-between mb-6">
+                    <span class="text-[2.4rem] font-black text-white tracking-tight leading-none">$45.230</span>
+                    <button class="flex items-center gap-2 px-3.5 py-2 bg-primary text-white text-[12px] font-bold rounded-xl shadow-lg shadow-primary/25 hover:brightness-110 transition-all">
+                      <span class="material-symbols-outlined text-base">barcode_scanner</span>
+                      Escanear
+                    </button>
+                  </div>
+                  <!-- Mini chart -->
+                  <div class="rounded-xl p-4 bg-white/[0.04] border border-white/[0.06]">
+                    <div class="flex items-center justify-between mb-3">
+                      <span class="text-[11px] text-[#8a7a6a] font-medium">Stock bajo</span>
+                      <span class="text-base font-bold text-white bg-primary/20 text-primary px-2.5 py-0.5 rounded-full">8 alerta</span>
                     </div>
-
-                    <!-- Dashboard Core View -->
-                    <div class="flex-1 p-3.5 space-y-3">
-                      <!-- 4 KPI Cards Row -->
-                      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                        <div class="bg-slate-900/80 border border-slate-800/60 rounded-xl p-2">
-                          <p class="text-[9px] text-slate-400">Ventas de hoy</p>
-                          <p class="text-xs font-black text-white mt-0.5">$ 45.230</p>
-                          <p class="text-[8px] text-green-400 font-bold flex items-center gap-0.5 mt-0.5">
-                            <span>↑ 12,5%</span> <span class="text-slate-500 font-normal">vs ayer</span>
-                          </p>
-                        </div>
-                        <div class="bg-slate-900/80 border border-slate-800/60 rounded-xl p-2">
-                          <p class="text-[9px] text-slate-400">Ganancia neta</p>
-                          <p class="text-xs font-black text-white mt-0.5">$ 12.750</p>
-                          <p class="text-[8px] text-green-400 font-bold flex items-center gap-0.5 mt-0.5">
-                            <span>↑ 8,7%</span> <span class="text-slate-500 font-normal">vs ayer</span>
-                          </p>
-                        </div>
-                        <div class="bg-slate-900/80 border border-slate-800/60 rounded-xl p-2">
-                          <p class="text-[9px] text-slate-400">Transacciones</p>
-                          <p class="text-xs font-black text-white mt-0.5">128</p>
-                          <p class="text-[8px] text-green-400 font-bold flex items-center gap-0.5 mt-0.5">
-                            <span>↑ 15%</span> <span class="text-slate-500 font-normal">vs ayer</span>
-                          </p>
-                        </div>
-                        <div class="bg-slate-900/80 border border-slate-800/60 rounded-xl p-2">
-                          <p class="text-[9px] text-slate-400">Ticket promedio</p>
-                          <p class="text-xs font-black text-white mt-0.5">$ 353</p>
-                          <p class="text-[8px] text-green-400 font-bold flex items-center gap-0.5 mt-0.5">
-                            <span>↑ 6,3%</span> <span class="text-slate-500 font-normal">vs ayer</span>
-                          </p>
-                        </div>
-                      </div>
-
-                      <!-- Charts Grid -->
-                      <div class="grid grid-cols-5 gap-2">
-                        <!-- Line Chart -->
-                        <div class="col-span-3 bg-slate-900/80 border border-slate-800/60 rounded-xl p-2.5">
-                          <p class="text-[9px] font-bold text-slate-300 mb-2">Ventas de los últimos 7 días</p>
-                          <div class="h-20 w-full relative">
-                            <svg viewBox="0 0 200 70" class="w-full h-full" preserveAspectRatio="none">
-                              <line x1="0" y1="15" x2="200" y2="15" stroke="#1e293b" stroke-width="0.5" stroke-dasharray="2,2"/>
-                              <line x1="0" y1="35" x2="200" y2="35" stroke="#1e293b" stroke-width="0.5" stroke-dasharray="2,2"/>
-                              <line x1="0" y1="55" x2="200" y2="55" stroke="#1e293b" stroke-width="0.5" stroke-dasharray="2,2"/>
-                              <defs>
-                                <linearGradient id="heroGradMain" x1="0" y1="0" x2="0" y2="1">
-                                  <stop offset="0%" stop-color="#f97316" stop-opacity="0.4"/>
-                                  <stop offset="100%" stop-color="#f97316" stop-opacity="0"/>
-                                </linearGradient>
-                              </defs>
-                              <polygon points="0,55 33,48 66,42 100,28 133,35 166,20 200,12 200,70 0,70" fill="url(#heroGradMain)"/>
-                              <polyline points="0,55 33,48 66,42 100,28 133,35 166,20 200,12" fill="none" stroke="#f97316" stroke-width="1.5" stroke-linecap="round"/>
-                              <circle cx="200" cy="12" r="2.5" fill="#f97316"/>
-                            </svg>
-                            <div class="flex justify-between mt-1 px-1 text-[8px] text-slate-500">
-                              <span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span><span>Dom</span>
-                            </div>
-                          </div>
-                        </div>
-
-                        <!-- Donut Chart -->
-                        <div class="col-span-2 bg-slate-900/80 border border-slate-800/60 rounded-xl p-2.5">
-                          <p class="text-[9px] font-bold text-slate-300 mb-2">Ventas por categoría</p>
-                          <div class="flex items-center gap-1.5">
-                            <svg viewBox="0 0 36 36" class="w-14 h-14 shrink-0">
-                              <circle cx="18" cy="18" r="15.915" fill="transparent" stroke="#f97316" stroke-width="4" stroke-dasharray="40 60" stroke-dashoffset="25" transform="rotate(-90 18 18)"/>
-                              <circle cx="18" cy="18" r="15.915" fill="transparent" stroke="#3b82f6" stroke-width="4" stroke-dasharray="30 70" stroke-dashoffset="-15" transform="rotate(-90 18 18)"/>
-                              <circle cx="18" cy="18" r="15.915" fill="transparent" stroke="#22d3ee" stroke-width="4" stroke-dasharray="20 80" stroke-dashoffset="-45" transform="rotate(-90 18 18)"/>
-                              <circle cx="18" cy="18" r="15.915" fill="transparent" stroke="#a78bfa" stroke-width="4" stroke-dasharray="10 90" stroke-dashoffset="-65" transform="rotate(-90 18 18)"/>
-                            </svg>
-                            <div class="space-y-0.5 text-[7px] text-slate-400">
-                              <div class="flex items-center gap-1"><div class="w-1.5 h-1.5 rounded-full bg-primary"></div><span>Bebidas 40%</span></div>
-                              <div class="flex items-center gap-1"><div class="w-1.5 h-1.5 rounded-full bg-blue-500"></div><span>Almacén 30%</span></div>
-                              <div class="flex items-center gap-1"><div class="w-1.5 h-1.5 rounded-full bg-cyan-400"></div><span>Limpieza 20%</span></div>
-                              <div class="flex items-center gap-1"><div class="w-1.5 h-1.5 rounded-full bg-violet-400"></div><span>Otros 10%</span></div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
+                    <div class="flex items-end gap-1.5 h-20">
+                      <div class="flex-1 rounded-sm hero-bar" style="height: 35%; opacity: 0.5"></div>
+                      <div class="flex-1 rounded-sm hero-bar" style="height: 55%; opacity: 0.6"></div>
+                      <div class="flex-1 rounded-sm hero-bar" style="height: 42%; opacity: 0.55"></div>
+                      <div class="flex-1 rounded-sm hero-bar" style="height: 78%; opacity: 0.8"></div>
+                      <div class="flex-1 rounded-sm hero-bar" style="height: 88%; opacity: 0.9"></div>
+                      <div class="flex-1 rounded-sm hero-bar" style="height: 65%; opacity: 0.75"></div>
+                      <div class="flex-1 rounded-sm hero-bar" style="height: 100%"></div>
                     </div>
                   </div>
                 </div>
-
-                <!-- RIGHT FLOATING COLUMN (Span 3) -->
-                <div class="col-span-12 xl:col-span-3 space-y-3">
-                  <!-- Stock Bajo Card -->
-                  <div class="bg-slate-900/90 border border-slate-800/80 rounded-2xl p-3 shadow-xl backdrop-blur-md">
-                    <div class="flex items-center justify-between mb-2">
-                      <span class="text-xs font-bold text-amber-400 flex items-center gap-1">
-                        <span class="material-symbols-outlined text-sm">warning</span> Stock bajo
-                      </span>
-                    </div>
-                    <div class="space-y-2 text-[11px]">
-                      <div class="flex items-center justify-between bg-slate-950/60 p-1.5 rounded-lg border border-slate-800/40">
-                        <div class="flex items-center gap-2">
-                          <span class="w-6 h-6 rounded bg-slate-800 flex items-center justify-center text-[10px]">🥛</span>
-                          <span class="font-medium text-white">Leche Entera</span>
-                        </div>
-                        <span class="text-red-400 font-bold text-[10px]">8 unidades</span>
-                      </div>
-                      <div class="flex items-center justify-between bg-slate-950/60 p-1.5 rounded-lg border border-slate-800/40">
-                        <div class="flex items-center gap-2">
-                          <span class="w-6 h-6 rounded bg-slate-800 flex items-center justify-center text-[10px]">🌿</span>
-                          <span class="font-medium text-white">Yerba Mate</span>
-                        </div>
-                        <span class="text-red-400 font-bold text-[10px]">5 unidades</span>
-                      </div>
-                    </div>
-                    <button class="w-full mt-2 py-1 text-[10px] text-slate-400 hover:text-white text-center font-bold">Ver todos</button>
-                  </div>
-
-                  <!-- Realtime Sale Alert Badge -->
-                  <div class="bg-green-500/10 border border-green-500/30 rounded-2xl p-3 flex items-center justify-between backdrop-blur-md shadow-xl">
-                    <div class="flex items-center gap-2">
-                      <span class="w-7 h-7 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center">
-                        <span class="material-symbols-outlined text-sm font-bold">check_circle</span>
-                      </span>
-                      <div>
-                        <p class="text-xs font-bold text-white">Venta realizada</p>
-                        <p class="text-[9px] text-slate-400">Ahora</p>
-                      </div>
-                    </div>
-                    <span class="text-sm font-black text-green-400">+$4.500</span>
-                  </div>
-
-                  <!-- Delivery Widget -->
-                  <div class="bg-slate-900/90 border border-slate-800/80 rounded-2xl p-3 shadow-xl backdrop-blur-md">
-                    <div class="flex items-center justify-between mb-2 text-xs font-bold text-slate-300">
-                      <span>Delivery activo</span>
-                      <span class="material-symbols-outlined text-sm">expand_more</span>
-                    </div>
-                    <!-- Map Graphic representation -->
-                    <div class="relative h-20 bg-slate-950 rounded-xl border border-slate-800/60 overflow-hidden p-2 flex items-center justify-center mb-2">
-                      <svg class="w-full h-full text-slate-800" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 100 50">
-                        <path d="M10,40 Q30,10 50,30 T90,10" stroke="#f97316" stroke-width="2" stroke-dasharray="3,3"/>
-                        <circle cx="90" cy="10" r="4" fill="#f97316"/>
-                      </svg>
-                      <div class="absolute bottom-2 left-2 text-orange-400 font-bold text-[9px] bg-slate-900/80 px-2 py-0.5 rounded border border-orange-500/30 flex items-center gap-1">
-                        <span class="material-symbols-outlined text-xs">two_wheeler</span> En camino
-                      </div>
-                    </div>
-                    <div class="flex justify-between items-center text-[10px]">
-                      <span class="text-slate-400 font-medium">Pedido #58</span>
-                      <span class="text-orange-400 font-bold">12 min</span>
-                    </div>
-                  </div>
-                </div>
-
               </div>
 
-              <!-- LOWER ROW FLOATING WIDGETS (Voice, Receipt Ticket, Checkout Terminal) -->
-              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4">
-                
-                <!-- Voice Assistant Widget -->
-                <div class="bg-slate-900/90 border border-slate-800/80 rounded-2xl p-4 backdrop-blur-md shadow-2xl flex flex-col justify-between">
-                  <div class="flex items-center gap-2 text-xs font-bold text-orange-400 mb-3">
-                    <span class="material-symbols-outlined text-sm">graphic_eq</span> Voz activa
+              <!-- Alert cards (stacked below main) -->
+              <div class="absolute top-[300px] left-[15px] w-[280px] space-y-2.5 z-20">
+                <div class="hero-card hero-alert-card rounded-2xl p-3.5 border border-white/[0.1] flex items-center gap-3.5 shadow-xl shadow-black/30">
+                  <div class="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-primary text-xl">inventory_2</span>
                   </div>
-                  <div class="flex items-center gap-3 my-2">
-                    <div class="w-10 h-10 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center border border-green-500/30 shrink-0">
-                      <span class="material-symbols-outlined text-xl">mic</span>
-                    </div>
-                    <div>
-                      <p class="text-xs font-bold text-white">"Vendé una Coca Cola"</p>
-                      <p class="text-[10px] text-green-400 font-medium flex items-center gap-1 mt-0.5">
-                        <span class="material-symbols-outlined text-xs">check_circle</span> Producto agregado
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Printable Receipt Ticket Widget -->
-                <div class="bg-white text-slate-900 rounded-2xl p-4 shadow-2xl border border-slate-200">
-                  <div class="flex items-center justify-between border-b border-slate-200 pb-2 mb-2 text-xs font-bold">
-                    <span class="flex items-center gap-1 text-slate-700">
-                      <span class="material-symbols-outlined text-sm">print</span> Ticket de venta
-                    </span>
-                    <span class="text-[9px] text-green-600 font-bold bg-green-100 px-1.5 py-0.5 rounded">Impresora conectada</span>
-                  </div>
-                  <div class="space-y-1 text-[11px] font-mono">
-                    <div class="flex justify-between"><span class="text-slate-600">Coca Cola 2.25L</span><span class="font-bold">$1.200</span></div>
-                    <div class="flex justify-between"><span class="text-slate-600">Pan Lactal</span><span class="font-bold">$850</span></div>
-                    <div class="flex justify-between"><span class="text-slate-600">Leche Entera</span><span class="font-bold">$1.500</span></div>
-                  </div>
-                  <div class="flex justify-between items-center border-t border-slate-200 pt-2 mt-2 font-black text-sm">
-                    <span>TOTAL</span>
-                    <span class="text-base text-slate-900">$3.550</span>
-                  </div>
-                  <!-- Fake Barcode -->
-                  <div class="mt-2 h-6 bg-slate-100 rounded flex items-center justify-center gap-0.5 px-2 opacity-80">
-                    <div v-for="n in 24" :key="n" class="h-4 bg-slate-800" :style="{ width: (n % 3 === 0 ? '3px' : '1px') }"></div>
-                  </div>
-                </div>
-
-                <!-- Payment Cobro Terminal Widget -->
-                <div class="bg-slate-900/90 border border-slate-800/80 rounded-2xl p-4 backdrop-blur-md shadow-2xl flex flex-col justify-between">
                   <div>
-                    <div class="flex items-center justify-between text-xs font-bold text-slate-300 mb-1">
-                      <span>Cobro</span>
-                    </div>
-                    <p class="text-[10px] text-slate-400">Total a cobrar</p>
-                    <p class="text-2xl font-black text-white mb-3">$ 3.550</p>
-                    
-                    <!-- Payment Methods Icons -->
-                    <div class="grid grid-cols-3 gap-1.5 mb-3 text-[10px] font-medium text-slate-300 text-center">
-                      <div class="bg-slate-800/80 p-1.5 rounded-lg border border-slate-700/60 flex flex-col items-center gap-1">
-                        <span class="material-symbols-outlined text-sm text-green-400">payments</span> Efectivo
-                      </div>
-                      <div class="bg-slate-800/80 p-1.5 rounded-lg border border-slate-700/60 flex flex-col items-center gap-1">
-                        <span class="material-symbols-outlined text-sm text-blue-400">credit_card</span> Tarjeta
-                      </div>
-                      <div class="bg-slate-800/80 p-1.5 rounded-lg border border-slate-700/60 flex flex-col items-center gap-1">
-                        <span class="material-symbols-outlined text-sm text-purple-400">qr_code_2</span> QR
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="w-full py-2 bg-green-600 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-lg shadow-green-600/20">
-                    Pago aprobado
-                    <span class="material-symbols-outlined text-sm">check_circle</span>
+                    <p class="text-[12px] font-bold text-white">Stock mínimo</p>
+                    <p class="text-[10px] text-[#8a7a6a]">8 productos bajo el límite</p>
                   </div>
                 </div>
-
+                <div class="hero-card hero-alert-card rounded-2xl p-3.5 border border-white/[0.1] flex items-center gap-3.5 shadow-xl shadow-black/30">
+                  <div class="w-10 h-10 rounded-xl bg-yellow-500/15 flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-yellow-400 text-xl">event_busy</span>
+                  </div>
+                  <div>
+                    <p class="text-[12px] font-bold text-white">Vencen hoy</p>
+                    <p class="text-[10px] text-[#8a7a6a]">3 productos para revisar</p>
+                  </div>
+                </div>
+                <div class="hero-card hero-alert-card rounded-2xl p-3.5 border border-white/[0.1] flex items-center gap-3.5 shadow-xl shadow-black/30">
+                  <div class="w-10 h-10 rounded-xl bg-green-500/15 flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-green-400 text-xl">local_shipping</span>
+                  </div>
+                  <div>
+                    <p class="text-[12px] font-bold text-white">Delivery activo</p>
+                    <p class="text-[10px] text-[#8a7a6a]">5 pedidos en curso</p>
+                  </div>
+                </div>
               </div>
 
-            </div>
+              <!-- Ticket card (floating right) -->
+              <div class="hero-card hero-ticket-card absolute top-[80px] right-0 w-[220px] rounded-2xl border border-white/[0.1] shadow-2xl shadow-black/50 p-5 z-30">
+                <div class="flex items-center gap-2 mb-3 pb-2.5 border-b border-white/[0.08]">
+                  <span class="material-symbols-outlined text-primary text-base">receipt_long</span>
+                  <span class="text-[12px] font-bold text-white tracking-wide">TICKET #1234</span>
+                </div>
+                <div class="space-y-2.5">
+                  <div class="flex justify-between text-[11px]">
+                    <span class="text-[#a89480]">Coca 2.25L</span>
+                    <span class="text-white font-semibold">$1.200</span>
+                  </div>
+                  <div class="flex justify-between text-[11px]">
+                    <span class="text-[#a89480]">Pan lactal</span>
+                    <span class="text-white font-semibold">$850</span>
+                  </div>
+                  <div class="flex justify-between text-[11px]">
+                    <span class="text-[#a89480]">Leche</span>
+                    <span class="text-white font-semibold">$1.500</span>
+                  </div>
+                </div>
+                <div class="flex justify-between mt-4 pt-3 border-t border-white/[0.08]">
+                  <span class="text-[12px] font-bold text-white">Total</span>
+                  <span class="text-base font-black text-primary">$3.550</span>
+                </div>
+              </div>
 
+              <!-- Voice indicator (floating bottom-right) -->
+              <div class="hero-voice-badge absolute bottom-[30px] right-[10px] flex items-center gap-2.5 bg-primary/15 border border-primary/30 rounded-full px-5 py-2.5 z-40 backdrop-blur-md shadow-lg shadow-primary/10">
+                <span class="material-symbols-outlined text-primary text-base animate-pulse">mic</span>
+                <span class="text-[12px] font-bold text-primary">Voz activa</span>
+              </div>
+
+              <!-- Delivery count badge -->
+              <div class="absolute bottom-[40px] left-[310px] flex items-center gap-2 z-30">
+                <div class="hero-card rounded-2xl p-4 border border-white/[0.1] flex items-center gap-3.5 w-[160px] shadow-xl shadow-black/30">
+                  <div class="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-primary text-xl">schedule</span>
+                  </div>
+                  <div>
+                    <span class="text-2xl font-black text-white leading-none">5</span>
+                    <p class="text-[10px] text-[#8a7a6a] mt-0.5">en curso</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Spacer to give the absolute-positioned mockup its height -->
+              <div class="w-full" style="padding-bottom: 92%"></div>
+            </div>
           </div>
-
-          <!-- SOCIAL PROOF & TESTIMONIAL BAR (BOTTOM CENTER) -->
-          <div class="flex flex-wrap items-center justify-center gap-4 py-6 border-t border-slate-900">
-            <div class="flex items-center gap-1 text-amber-400 text-sm">
-              ★★★★★
-            </div>
-            <span class="text-xs font-medium text-slate-300">
-              Más de 1.000 negocios confían en Alevia Pay
-            </span>
-            <div class="flex items-center -space-x-2">
-              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80" class="w-7 h-7 rounded-full border-2 border-slate-950 object-cover" />
-              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80" class="w-7 h-7 rounded-full border-2 border-slate-950 object-cover" />
-              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80" class="w-7 h-7 rounded-full border-2 border-slate-950 object-cover" />
-              <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&q=80" class="w-7 h-7 rounded-full border-2 border-slate-950 object-cover" />
-              <span class="w-7 h-7 rounded-full bg-slate-800 text-white text-[10px] font-bold flex items-center justify-center border-2 border-slate-950">+120</span>
-            </div>
-          </div>
-
         </div>
       </section>
 
