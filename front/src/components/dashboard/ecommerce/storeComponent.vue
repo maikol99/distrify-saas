@@ -30,12 +30,44 @@
           </div>
         </div>
       </div>
+      <div class="catalog-metrics">
+        <div class="catalog-metric">
+          <span class="material-symbols-outlined">inventory_2</span>
+          <div><small>Productos totales</small><strong>{{ ecommerceStore.pagination?.total ?? 0 }}</strong></div>
+        </div>
+        <div class="catalog-metric">
+          <span class="material-symbols-outlined">payments</span>
+          <div><small>Valor del inventario</small><strong>{{ formatPrice(inventoryValue) }}</strong></div>
+        </div>
+        <div class="catalog-metric">
+          <span class="material-symbols-outlined">trending_up</span>
+          <div><small>Margen promedio</small><strong>{{ averageMargin }}%</strong></div>
+        </div>
+      </div>
       <!-- Icono de Carrito -->
       <div class="carrito-icono" @click="goToCarrito">
         <i class="fas fa-shopping-cart"></i>
         <span class="carrito-badge">{{ ecommerceStore.carrito.length }}</span>
       </div>
     </header>
+
+    <div class="catalog-actions">
+      <div class="search-container">
+        <i class="fas fa-search search-bar-icon"></i>
+        <input
+          type="text"
+          v-model="ecommerceStore.filtros.searchQuery"
+          @keydown.enter="ecommerceStore.filterProducts()"
+          class="buscador-input"
+          placeholder="Buscar productos..."
+          @input="ecommerceStore.checkInput()"
+        />
+        <button class="btn-buscar" @click="ecommerceStore.filterProducts()"><i class="fas fa-search"></i></button>
+      </div>
+      <button @click="toggleFiltros" class="catalog-action-button"><i class="fas fa-filter"></i> Filtros <span class="filter-count" v-if="ecommerceStore.filtersApplied">1</span></button>
+      <button @click="limpiarFiltrosYMostrarTodos" class="catalog-action-button"><i class="fas fa-rotate-right"></i> Limpiar</button>
+      <div class="productos-contador"><i class="fas fa-box text-primary"></i><span>{{ ecommerceStore.pagination?.total ?? 0 }} productos encontrados</span></div>
+    </div>
 
     <div class="contenido-principal">
       <!-- Filtros Laterales -->
@@ -125,38 +157,18 @@
       <!-- Contenido de Productos -->
       <main class="productos-contenido">
         <div class="productos-toolbar">
-          <button @click="toggleFiltros" class="btn-filtros-mobile">
-            <i class="fas fa-filter"></i>
-            Filtros
-          </button>
-
-          <div class="search-container">
-            <i class="fas fa-search search-bar-icon"></i>
-            <input
-              type="text"
-              v-model="ecommerceStore.filtros.searchQuery"
-              @keydown.enter="ecommerceStore.filterProducts()"
-              class="buscador-input"
-              placeholder="Buscar productos..."
-              @input="ecommerceStore.checkInput()"
-            />
-            <button class="btn-buscar" @click="ecommerceStore.filterProducts()">
-              <i class="fas fa-search"></i>
-            </button>
-          </div>
-
-          <div class="productos-contador">
-            <i class="fas fa-box text-primary"></i>
-            <span>{{ ecommerceStore.pagination?.total ?? 0 }} productos encontrados</span>
+          <button @click="toggleFiltros" class="btn-filtros-mobile"><i class="fas fa-filter"></i> Filtros</button>
+          <div class="catalog-view-controls">
+            <select v-model="sortOrder" class="catalog-sort"><option value="recent">Más recientes</option><option value="price-asc">Menor precio</option><option value="price-desc">Mayor precio</option><option value="name">Nombre A-Z</option></select>
+            <button class="view-button" :class="{ active: catalogView === 'grid' }" @click="catalogView = 'grid'"><i class="fas fa-th"></i></button>
+            <button class="view-button" :class="{ active: catalogView === 'list' }" @click="catalogView = 'list'"><i class="fas fa-list"></i></button>
           </div>
         </div>
 
         <!-- Grid de Productos -->
         <div class="productos-grid">
           <div
-            v-for="producto in (ecommerceStore.products || []).filter(
-              (p) => p && p.showInStore !== false
-            )"
+            v-for="producto in catalogProducts"
             :key="producto._id || producto.id"
             class="producto-card"
             :class="{ 'is-fav': isFavorite(producto._id) }"
@@ -387,6 +399,8 @@ export default {
       mostrarDetalle: false,
       mostrarContacto: false,
       productoSeleccionado: null,
+      catalogView: "grid",
+      sortOrder: "recent",
 
       // Wishlist/Favoritos
       favorites: JSON.parse(localStorage.getItem("store_favorites") || "[]"),
@@ -409,6 +423,33 @@ export default {
   },
 
   computed: {
+    catalogProducts() {
+      const products = (this.ecommerceStore.products || [])
+        .filter((product) => product && product.showInStore !== false)
+        .slice();
+
+      if (this.sortOrder === "price-asc") return products.sort((a, b) => (a.sellPrice || 0) - (b.sellPrice || 0));
+      if (this.sortOrder === "price-desc") return products.sort((a, b) => (b.sellPrice || 0) - (a.sellPrice || 0));
+      if (this.sortOrder === "name") return products.sort((a, b) => (a.name || "").localeCompare(b.name || "", "es"));
+      return products.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+    },
+    inventoryValue() {
+      return (this.ecommerceStore.products || []).reduce(
+        (total, product) => total + (Number(product?.sellPrice) || 0) * (Number(product?.quantity) || 0),
+        0,
+      );
+    },
+    averageMargin() {
+      const withCosts = (this.ecommerceStore.products || []).filter(
+        (product) => Number(product?.buyPrice) > 0 && Number(product?.sellPrice) > 0,
+      );
+      if (!withCosts.length) return 0;
+      const margin = withCosts.reduce(
+        (total, product) => total + ((Number(product.sellPrice) - Number(product.buyPrice)) / Number(product.sellPrice)) * 100,
+        0,
+      );
+      return Math.round(margin);
+    },
     totalPaginas() {
       return Math.ceil(
         this.ecommerceStore.pagination.total /
@@ -1699,8 +1740,67 @@ export default {
   border-color: #cbd5e1;
 }
 
+/* ── Catalog workspace refresh ─────────────────────────────────────────── */
+.tienda-container { background: #f7f9fd; }
+.negocio-header { padding: 1rem 3.5rem 1.25rem; margin-bottom: 0; background: linear-gradient(112deg, #06183d 0%, #092c75 100%); }
+.negocio-info { gap: 1rem; }
+.negocio-logo img, .negocio-logo-placeholder { width: 62px; height: 62px; }
+.negocio-nombre { font-size: 1.55rem; margin-bottom: .15rem; }
+.negocio-descripcion { margin-bottom: 0; font-size: .78rem; color: #d4dff6; }
+.negocio-contacto { display: none; }
+.catalog-metrics { position: relative; z-index: 2; display: grid; grid-template-columns: repeat(3, minmax(0, 210px)); gap: .85rem; margin: .8rem 0 0 5.1rem; }
+.catalog-metric { display: flex; align-items: center; gap: .8rem; min-height: 50px; padding: .65rem .9rem; border-radius: .65rem; color: #fff; background: rgba(255,255,255,.075); border: 1px solid rgba(255,255,255,.05); }
+.catalog-metric > .material-symbols-outlined { display: grid; place-items: center; width: 30px; height: 30px; border-radius: .5rem; background: rgba(255,255,255,.08); font-size: 1rem; }
+.catalog-metric small, .catalog-metric strong { display: block; }
+.catalog-metric small { font-size: .62rem; color: #b9c8e4; }
+.catalog-metric strong { margin-top: .1rem; font-size: .88rem; color: #fff; }
+.carrito-icono { top: 1.25rem; right: 3rem; transform: none; width: 48px; height: 48px; }
+.carrito-icono:hover { transform: scale(1.06); }
+
+.catalog-actions { display: flex; align-items: center; gap: .75rem; padding: 1.4rem 3.5rem 1rem; background: #fff; box-shadow: 0 7px 20px rgba(15,36,77,.035); }
+.catalog-actions .search-container { flex: 1; max-width: 310px; }
+.catalog-actions .productos-contador { margin-left: auto; }
+.catalog-action-button { display: inline-flex; align-items: center; gap: .55rem; min-height: 34px; padding: 0 .9rem; border: 1px solid #e4eaf4; border-radius: .55rem; background: #fff; color: #17294e; box-shadow: 0 3px 10px rgba(26,47,85,.06); font-size: .72rem; font-weight: 700; cursor: pointer; }
+.catalog-action-button:hover { border-color: #2e5bff; color: #2452ed; }
+.filter-count { display: grid; place-items: center; min-width: 17px; height: 17px; border-radius: 50%; background: #2856f6; color: #fff; font-size: .62rem; }
+
+.contenido-principal { gap: 1.1rem; padding: .7rem 2.5rem 3rem; grid-template-columns: 200px minmax(0, 1fr); }
+.filtros-sidebar { padding: 1.25rem 1rem; border-radius: .8rem; box-shadow: 0 6px 18px rgba(29,49,83,.05); }
+.filtros-header { margin-bottom: 1rem; padding-bottom: .75rem; }
+.filtros-header h3 { font-size: .85rem; }
+.btn-limpiar-top { display: none; }
+.filtro-grupo { margin-bottom: 1.25rem; }
+.filtro-grupo-header h4 { font-size: .62rem; }
+.filtro-opciones { gap: .5rem; }
+.filtro-opcion { gap: .5rem; font-size: .68rem; }
+.checkmark { width: 14px; height: 14px; border-width: 1.5px; }
+.precio-inputs { gap: .65rem; }
+.input-group label { font-size: .65rem; }
+.precio-prefix, .precio-input { padding: .48rem .6rem; font-size: .68rem; }
+.btn-aplicar-filtros { padding: .7rem; border-radius: .5rem; background: #2856f6; font-size: .68rem; }
+
+.productos-toolbar { min-height: 40px; margin-bottom: .8rem; justify-content: flex-end; }
+.catalog-view-controls { display: flex; align-items: center; gap: .4rem; }
+.catalog-sort { min-height: 34px; padding: 0 .8rem; border: 1px solid #e4eaf4; border-radius: .5rem; background: #fff; color: #263857; font-size: .68rem; font-weight: 700; outline: none; }
+.view-button { width: 34px; height: 34px; border: 1px solid #e4eaf4; border-radius: .5rem; color: #52647f; background: #fff; cursor: pointer; }
+.view-button.active { color: #2856f6; background: #edf2ff; border-color: #dce6ff; }
+.productos-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .8rem; }
+.producto-card { border-radius: .8rem; border-color: #e8edf5; box-shadow: 0 5px 14px rgba(32,51,83,.055); }
+.producto-imagen { height: 130px; padding: .75rem; }
+.producto-imagen img { max-height: 105px; object-fit: contain; }
+.producto-info { padding: .8rem .9rem .9rem; }
+.producto-nombre { min-height: 32px; font-size: .73rem; line-height: 1.35; }
+.producto-precio { margin: .5rem 0; font-size: .95rem; }
+.producto-stock { font-size: .66rem; }
+.btn-ver-detalle { margin-top: .8rem; padding: .55rem; border-radius: .5rem; font-size: .66rem; }
+
+@media (min-width: 1350px) { .productos-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
 /* Responsive Overrides */
 @media (max-width: 992px) {
+  .catalog-actions { padding: 1rem; flex-wrap: wrap; }
+  .catalog-actions .productos-contador { margin-left: 0; }
+  .catalog-metrics { margin-left: 0; grid-template-columns: repeat(3, 1fr); }
   .contenido-principal {
     grid-template-columns: 1fr;
     padding: 1rem;
