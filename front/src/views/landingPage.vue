@@ -183,89 +183,41 @@
             </div>
           </div>
 
-          <!-- RIGHT: App Mockup -->
+          <!-- RIGHT: Product dashboard preview -->
           <div class="relative hidden lg:flex items-center justify-center animate-slide-up delay-200">
-            <div class="hero-mockup-wrapper relative w-full max-w-[650px]">
+            <div class="hero-mockup-wrapper hero-dashboard-stage relative w-full max-w-[790px]">
 
               <!-- Main dashboard card -->
-              <div class="hero-card hero-card-main absolute top-0 left-0 w-[370px] rounded-2xl border border-white/[0.12] shadow-2xl shadow-black/60 overflow-hidden z-10">
-                <!-- Browser bar -->
-                <div class="flex items-center gap-2 px-4 py-3 border-b border-white/[0.08] bg-white/[0.04]">
-                  <div class="flex gap-1.5">
-                    <span class="w-2.5 h-2.5 rounded-full bg-[#ff5f57]"></span>
-                    <span class="w-2.5 h-2.5 rounded-full bg-[#febc2e]"></span>
-                    <span class="w-2.5 h-2.5 rounded-full bg-[#28c840]"></span>
-                  </div>
-                  <div class="flex items-center gap-1.5 ml-4 text-[12px] text-[#8a7a6a] font-mono">
-                    <span class="material-symbols-outlined text-[13px] text-[#28c840]">lock</span>
-                    app.aleviapay.com
-                  </div>
-                </div>
+              <div class="hero-card hero-card-main absolute top-0 left-0 w-[560px] rounded-[22px] border border-white/[0.12] shadow-2xl shadow-black/60 overflow-hidden z-10">
                 <!-- Dashboard content -->
-                <div class="p-6">
-                  <p class="text-[12px] text-[#8a7a6a] font-medium mb-1">Ventas de hoy</p>
-                  <div class="flex items-end justify-between mb-6">
-                    <span class="text-[2.4rem] font-black text-white tracking-tight leading-none">$45.230</span>
-                    <button class="flex items-center gap-2 px-3.5 py-2 bg-primary text-white text-[12px] font-bold rounded-xl shadow-lg shadow-primary/25 hover:brightness-110 transition-all">
-                      <span class="material-symbols-outlined text-base">barcode_scanner</span>
-                      Escanear
-                    </button>
-                  </div>
-                  <!-- Mini chart -->
-                  <div class="rounded-xl p-4 bg-white/[0.04] border border-white/[0.06]">
-                    <div class="flex items-center justify-between mb-3">
-                      <span class="text-[11px] text-[#8a7a6a] font-medium">Stock bajo</span>
-                      <span class="text-base font-bold text-white bg-primary/20 text-primary px-2.5 py-0.5 rounded-full">8 alerta</span>
+                <div class="hero-app-shell">
+                  <aside class="hero-app-sidebar">
+                    <img src="/alevia-logo.png" alt="Alevia Pay" class="h-8 w-auto object-contain mb-6" />
+                    <span v-for="item in ['home','shopping_cart','inventory_2','group','warehouse','account_balance_wallet','monitoring']" :key="item" class="material-symbols-outlined hero-side-icon" :class="{ active: item === 'home' }">{{ item }}</span>
+                  </aside>
+                  <div class="hero-app-content">
+                    <div class="flex items-center justify-between mb-4">
+                      <div><p class="text-[10px] text-[#9f9181]">Resumen de hoy</p><h3 class="text-sm font-bold text-white">Tu negocio en control</h3></div>
+                      <span class="text-[10px] text-[#d4c3b0] border border-white/10 px-2 py-1 rounded-lg">Hoy⌄</span>
                     </div>
-                    <div class="flex items-end gap-1.5 h-20">
-                      <div class="flex-1 rounded-sm hero-bar" style="height: 35%; opacity: 0.5"></div>
-                      <div class="flex-1 rounded-sm hero-bar" style="height: 55%; opacity: 0.6"></div>
-                      <div class="flex-1 rounded-sm hero-bar" style="height: 42%; opacity: 0.55"></div>
-                      <div class="flex-1 rounded-sm hero-bar" style="height: 78%; opacity: 0.8"></div>
-                      <div class="flex-1 rounded-sm hero-bar" style="height: 88%; opacity: 0.9"></div>
-                      <div class="flex-1 rounded-sm hero-bar" style="height: 65%; opacity: 0.75"></div>
-                      <div class="flex-1 rounded-sm hero-bar" style="height: 100%"></div>
+                    <div class="grid grid-cols-4 gap-2 mb-3">
+                      <div v-for="card in [{l:'Ventas de hoy',v:'$ 45.230'},{l:'Ganancia neta',v:'$ 12.750'},{l:'Transacciones',v:'128'},{l:'Ticket promedio',v:'$ 353'}]" :key="card.l" class="hero-stat-card"><span>{{ card.l }}</span><b>{{ card.v }}</b><small>↗ 12,5% vs ayer</small></div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-3">
+                      <div class="hero-chart-card col-span-2"><b>Ventas de los últimos 7 días</b><div class="hero-chart"><i v-for="height in [28,42,37,55,69,64,86]" :key="height" :style="{height: height + '%'}"></i></div><div class="flex justify-between text-[8px] text-[#817565]"><span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span><span>Dom</span></div></div>
+                      <div class="hero-chart-card"><b>Por categoría</b><div class="hero-donut"></div><div class="space-y-1 mt-2 text-[8px] text-[#c9b9a5]"><p>🟠 Bebidas 40%</p><p>🔵 Almacén 30%</p><p>🟢 Limpieza 20%</p></div></div>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <!-- Alert cards (stacked below main) -->
-              <div class="absolute top-[300px] left-[15px] w-[280px] space-y-2.5 z-20">
-                <div class="hero-card hero-alert-card rounded-2xl p-3.5 border border-white/[0.1] flex items-center gap-3.5 shadow-xl shadow-black/30">
-                  <div class="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center shrink-0">
-                    <span class="material-symbols-outlined text-primary text-xl">inventory_2</span>
-                  </div>
-                  <div>
-                    <p class="text-[12px] font-bold text-white">Stock mínimo</p>
-                    <p class="text-[10px] text-[#8a7a6a]">8 productos bajo el límite</p>
-                  </div>
-                </div>
-                <div class="hero-card hero-alert-card rounded-2xl p-3.5 border border-white/[0.1] flex items-center gap-3.5 shadow-xl shadow-black/30">
-                  <div class="w-10 h-10 rounded-xl bg-yellow-500/15 flex items-center justify-center shrink-0">
-                    <span class="material-symbols-outlined text-yellow-400 text-xl">event_busy</span>
-                  </div>
-                  <div>
-                    <p class="text-[12px] font-bold text-white">Vencen hoy</p>
-                    <p class="text-[10px] text-[#8a7a6a]">3 productos para revisar</p>
-                  </div>
-                </div>
-                <div class="hero-card hero-alert-card rounded-2xl p-3.5 border border-white/[0.1] flex items-center gap-3.5 shadow-xl shadow-black/30">
-                  <div class="w-10 h-10 rounded-xl bg-green-500/15 flex items-center justify-center shrink-0">
-                    <span class="material-symbols-outlined text-green-400 text-xl">local_shipping</span>
-                  </div>
-                  <div>
-                    <p class="text-[12px] font-bold text-white">Delivery activo</p>
-                    <p class="text-[10px] text-[#8a7a6a]">5 pedidos en curso</p>
-                  </div>
-                </div>
-              </div>
+              <div class="hero-card hero-stock-card absolute top-[38px] -right-[115px] w-[155px] rounded-2xl border border-primary/20 p-4 z-20"><p class="text-[10px] font-bold text-primary mb-3">⚠ Stock bajo</p><div class="hero-stock-row"><span>🥛 Leche Entera</span><b>8 unidades</b></div><div class="hero-stock-row"><span>🧉 Yerba Mate</span><b>5 unidades</b></div><button>Ver todos</button></div>
 
-              <!-- Ticket card (floating right) -->
-              <div class="hero-card hero-ticket-card absolute top-[80px] right-0 w-[220px] rounded-2xl border border-white/[0.1] shadow-2xl shadow-black/50 p-5 z-30">
+              <!-- Ticket card -->
+              <div class="hero-card hero-ticket-card absolute top-[355px] left-[250px] w-[185px] rounded-2xl border border-white/[0.1] shadow-2xl shadow-black/50 p-4 z-30">
                 <div class="flex items-center gap-2 mb-3 pb-2.5 border-b border-white/[0.08]">
                   <span class="material-symbols-outlined text-primary text-base">receipt_long</span>
-                  <span class="text-[12px] font-bold text-white tracking-wide">TICKET #1234</span>
+                  <span class="text-[12px] font-bold text-white tracking-wide">Ticket de venta</span>
                 </div>
                 <div class="space-y-2.5">
                   <div class="flex justify-between text-[11px]">
@@ -287,27 +239,19 @@
                 </div>
               </div>
 
-              <!-- Voice indicator (floating bottom-right) -->
-              <div class="hero-voice-badge absolute bottom-[30px] right-[10px] flex items-center gap-2.5 bg-primary/15 border border-primary/30 rounded-full px-5 py-2.5 z-40 backdrop-blur-md shadow-lg shadow-primary/10">
-                <span class="material-symbols-outlined text-primary text-base animate-pulse">mic</span>
-                <span class="text-[12px] font-bold text-primary">Voz activa</span>
-              </div>
-
-              <!-- Delivery count badge -->
-              <div class="absolute bottom-[40px] left-[310px] flex items-center gap-2 z-30">
-                <div class="hero-card rounded-2xl p-4 border border-white/[0.1] flex items-center gap-3.5 w-[160px] shadow-xl shadow-black/30">
+              <!-- Voice command -->
+              <div class="hero-card absolute top-[380px] -left-[50px] rounded-2xl p-4 border border-white/[0.1] flex items-center gap-3.5 w-[240px] shadow-xl shadow-black/30 z-30">
                   <div class="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center shrink-0">
-                    <span class="material-symbols-outlined text-primary text-xl">schedule</span>
+                    <span class="material-symbols-outlined text-primary text-xl">mic</span>
                   </div>
                   <div>
-                    <span class="text-2xl font-black text-white leading-none">5</span>
-                    <p class="text-[10px] text-[#8a7a6a] mt-0.5">en curso</p>
+                    <span class="text-[11px] font-bold text-white leading-none">Voz activa</span>
+                    <p class="text-[10px] text-[#8a7a6a] mt-0.5">“Vendé una Coca Cola”</p>
                   </div>
                 </div>
-              </div>
 
               <!-- Spacer to give the absolute-positioned mockup its height -->
-              <div class="w-full" style="padding-bottom: 92%"></div>
+              <div class="w-full" style="padding-bottom: 82%"></div>
             </div>
           </div>
         </div>
@@ -985,6 +929,72 @@ export default {
   animation: heroFloat 6s ease-in-out infinite;
 }
 
+.hero-dashboard-stage {
+  transform: translateX(20px);
+}
+
+.hero-app-shell {
+  display: grid;
+  grid-template-columns: 74px 1fr;
+  min-height: 325px;
+  background: linear-gradient(135deg, rgba(27, 21, 14, .98), rgba(17, 14, 10, .98));
+}
+
+.hero-app-sidebar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 22px 13px;
+  border-right: 1px solid rgba(255, 255, 255, .08);
+  background: rgba(255, 255, 255, .018);
+}
+
+.hero-side-icon {
+  color: #9d9183;
+  font-size: 16px;
+  padding: 9px;
+  margin-bottom: 3px;
+  border-radius: 8px;
+}
+
+.hero-side-icon.active {
+  color: #ff941f;
+  background: rgba(255, 121, 0, .16);
+}
+
+.hero-app-content { padding: 22px 18px; }
+
+.hero-stat-card, .hero-chart-card {
+  border: 1px solid rgba(255, 255, 255, .08);
+  background: rgba(255, 255, 255, .028);
+  border-radius: 10px;
+}
+
+.hero-stat-card { padding: 10px; }
+.hero-stat-card span, .hero-stat-card small { display: block; color: #988a7a; font-size: 8px; }
+.hero-stat-card b { display: block; color: #f8f5f1; font-size: 15px; margin: 6px 0; white-space: nowrap; }
+.hero-stat-card small { color: #56cf70; }
+.hero-chart-card { padding: 12px; min-height: 135px; }
+.hero-chart-card b { display: block; color: #eee8e0; font-size: 9px; margin-bottom: 8px; }
+
+.hero-chart {
+  height: 82px;
+  display: flex;
+  align-items: end;
+  gap: 7px;
+  padding: 0 5px 7px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  background: repeating-linear-gradient(to bottom, transparent 0, transparent 26px, rgba(255,255,255,.045) 27px);
+}
+.hero-chart i { flex: 1; background: linear-gradient(to top, #ff7600, #ffae48); border-radius: 6px 6px 1px 1px; opacity: .9; }
+.hero-donut { width: 70px; height: 70px; margin: 5px auto 0; border-radius: 50%; background: conic-gradient(#ff7b12 0 40%, #478eff 40% 70%, #54b96a 70% 90%, #d0ccca 90% 100%); position: relative; }
+.hero-donut::after { content: ''; position: absolute; inset: 16px; border-radius: 50%; background: #17120c; }
+
+.hero-stock-card { animation: heroFloat 5s ease-in-out infinite; animation-delay: .6s; }
+.hero-stock-row { padding: 9px 0; border-top: 1px solid rgba(255,255,255,.07); font-size: 9px; color: #e5dbd0; display: grid; gap: 4px; }
+.hero-stock-row b { color: #ff6a17; font-size: 9px; }
+.hero-stock-card button { width: 100%; margin-top: 8px; padding-top: 7px; color: #f7f3ed; font-size: 9px; border-top: 1px solid rgba(255,255,255,.07); }
+
 .hero-ticket-card {
   animation: heroFloat 6s ease-in-out infinite;
   animation-delay: 1.5s;
@@ -1002,6 +1012,10 @@ export default {
 .hero-voice-badge {
   animation: heroFloat 4s ease-in-out infinite;
   animation-delay: 3s;
+}
+
+@media (max-width: 1279px) {
+  .hero-dashboard-stage { transform: none; }
 }
 
 .hero-cta-primary:hover {
