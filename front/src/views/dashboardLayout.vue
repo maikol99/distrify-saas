@@ -32,6 +32,9 @@
         <!-- Header del contenido (opcional) -->
         <div class="content-header">
           <h1 class="page-title">{{ getPageTitle() }}</h1>
+          <p v-if="$route.path === '/ventas'" class="page-subtitle">
+            Realizá ventas y gestioná tu negocio
+          </p>
         </div>
 
         <!-- Router view para las rutas hijas con transición -->
@@ -243,6 +246,13 @@ export default {
   color: #1e293b;
   font-family: "Poppins", sans-serif;
   margin: 0;
+}
+
+.page-subtitle {
+  margin: 0.2rem 0 0;
+  color: #71809a;
+  font-size: 0.78rem;
+  font-weight: 500;
 }
 
 .breadcrumb {

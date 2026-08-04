@@ -175,6 +175,7 @@
         <div class="search-bar">
           <span class="material-symbols-outlined" style="color: #9ca3af; font-size: 1.3rem;">barcode_scanner</span>
           <input
+            ref="productSearch"
             v-model="salesStore.searchQuery"
             @input="checkInput"
             @keypress.enter="salesStore.searchProducts()"
@@ -290,9 +291,14 @@
           <h2 class="text-base font-bold text-slate-800 dark:text-white">
             Carrito de productos
           </h2>
-          <span v-if="salesStore.cartItems.length > 0" class="px-2.5 py-0.5 rounded-full bg-primary/10 text-primary font-bold text-xs">
-            {{ cartItemCount }} {{ cartItemCount === 1 ? 'item' : 'items' }}
-          </span>
+          <div class="cart-header-actions">
+            <button class="cart-header-action" title="Escanear producto" @click="$refs.productSearch?.focus()">
+              <span class="material-symbols-outlined">barcode_scanner</span>
+            </button>
+            <button class="cart-header-action danger" title="Vaciar carrito" :disabled="salesStore.cartItems.length === 0" @click="salesStore.cancelSale()">
+              <span class="material-symbols-outlined">delete</span>
+            </button>
+          </div>
         </div>
 
         <transition-group name="fade" tag="ul" class="cart-list space-y-2.5">
@@ -405,6 +411,21 @@
           <p class="text-sm text-slate-400 dark:text-slate-500 mt-2 max-w-xs mx-auto">
             Escaneá un código de barras o buscá un producto para comenzar
           </p>
+        </div>
+
+        <div class="cart-footer-stats">
+          <div class="cart-footer-stat">
+            <span class="material-symbols-outlined stat-icon products">shopping_bag</span>
+            <div><small>Productos</small><b>{{ salesStore.cartItems.length }}</b></div>
+          </div>
+          <div class="cart-footer-stat">
+            <span class="material-symbols-outlined stat-icon items">apps</span>
+            <div><small>Ítems</small><b>{{ cartItemCount }}</b></div>
+          </div>
+          <div class="cart-footer-stat">
+            <span class="material-symbols-outlined stat-icon discount">percent</span>
+            <div><small>Descuento</small><b>{{ formatPrice(salesStore.discountAmount) }}</b></div>
+          </div>
         </div>
       </div>
 
@@ -3670,6 +3691,107 @@ textarea:focus {
 
 .empty-cart { padding-top: 8rem !important; }
 .empty-cart > div:first-child { background: linear-gradient(135deg, #fff4e7, #fffaf5); box-shadow: inset 0 0 0 1px #ffe1bf; }
+
+/* POS layout inspired by the compact checkout workspace. */
+.sales-container {
+  padding-top: 1.25rem;
+  min-height: calc(100vh - 76px);
+}
+
+.header {
+  padding: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.search-container {
+  max-width: none;
+  flex: 1 1 620px;
+}
+
+.search-bar {
+  min-height: 64px;
+  padding-left: 1.15rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, .96);
+  box-shadow: 0 8px 22px rgba(31, 43, 65, .055);
+}
+
+.search-bar input { font-size: .84rem; color: #344259; }
+.search-bar select { min-height: 38px; padding-left: .9rem; }
+.btn-search { width: 44px; height: 40px; margin: 4px; border-radius: .7rem; }
+
+.quick-action-buttons button {
+  min-width: 103px;
+  min-height: 42px;
+  border-radius: .75rem;
+  background: #fff;
+  box-shadow: 0 6px 18px rgba(31, 43, 65, .07);
+}
+.quick-action-buttons button:first-child { color: #00a875; background: #fff; border: 1px solid #e7eef0; }
+.quick-action-buttons button:last-child { color: #f04463; background: #fff; border: 1px solid #e7eef0; }
+
+.main-content { align-items: stretch; margin-top: .25rem; }
+.cart-section, .summary-section { border-radius: 1.15rem; }
+.cart-section { position: relative; min-height: 538px; padding: 1.25rem; display: flex; flex-direction: column; }
+.summary-section { padding: 1.15rem; }
+.cart-section > .flex:first-child, .summary-section > h2 { padding-bottom: .9rem; }
+
+.cart-header-actions { display: flex; gap: .55rem; }
+.cart-header-action {
+  width: 38px;
+  height: 38px;
+  border: 1px solid #e7edf5;
+  border-radius: .7rem;
+  color: #1682ff;
+  background: #fff;
+  box-shadow: 0 5px 12px rgba(35, 60, 94, .06);
+}
+.cart-header-action .material-symbols-outlined { font-size: 1.12rem; }
+.cart-header-action.danger { color: #ff5268; }
+.cart-header-action:disabled { color: #cbd5e1; cursor: default; box-shadow: none; }
+
+.cart-list { flex: 1; max-height: none; }
+.empty-cart { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 2rem 0 5rem !important; }
+.empty-cart > div:first-child { width: 106px; height: 106px; margin-bottom: 1rem; }
+.empty-cart > div:first-child svg { width: 82px; height: 82px; }
+.empty-cart h3 { font-size: 1rem; margin-bottom: .5rem; color: #202b3d; }
+.empty-cart p { font-size: .78rem; line-height: 1.7; color: #74819a; }
+
+.cart-footer-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: auto;
+  border: 1px solid #e9eef5;
+  border-radius: .9rem;
+  background: linear-gradient(110deg, #fff, #fbfcfe);
+  overflow: hidden;
+}
+.cart-footer-stat { display: flex; align-items: center; gap: .65rem; padding: .78rem .95rem; }
+.cart-footer-stat + .cart-footer-stat { border-left: 1px solid #e9eef5; }
+.cart-footer-stat small, .cart-footer-stat b { display: block; }
+.cart-footer-stat small { font-size: .62rem; color: #8491a6; margin-bottom: .1rem; }
+.cart-footer-stat b { font-size: .85rem; color: #1b2638; }
+.stat-icon { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%; font-size: 1rem; }
+.stat-icon.products { color: #ff7618; background: #fff1e8; }
+.stat-icon.items { color: #3284ff; background: #eaf3ff; }
+.stat-icon.discount { color: #0aa878; background: #e6f8ef; }
+
+.summary-section > h2 { display: flex; align-items: center; justify-content: space-between; }
+.summary-section > h2::after { content: 'trending_up'; font-family: 'Material Symbols Outlined'; display: grid; place-items: center; width: 32px; height: 32px; border-radius: .65rem; color: #8b5cf6; background: #f5f0ff; font-size: 1rem; }
+.summary-section .client-search-bar-container { min-height: 46px; }
+.payment-section { padding-top: .8rem; }
+.total-banner-card { padding: 1rem; margin: .75rem 0 !important; border-radius: .9rem; }
+.total-banner-card span.text-3xl { font-size: 1.5rem; }
+.print-checkbox-container { margin: .55rem 0; padding: .58rem .75rem; }
+.payment-actions { margin-top: .55rem; }
+.btn-multiple-payments, .btn-complete-sale, .btn-cancel { min-height: 43px; font-size: .76rem; border-radius: .72rem; }
+
+@media (max-width: 900px) {
+  .cart-section { min-height: 500px; }
+}
 
 .dark .sales-container { background: radial-gradient(circle at 93% 2%, rgba(255,138,42,.10), transparent 25rem), #0e1625; }
 .dark .header, .dark .cart-section, .dark .summary-section { background: rgba(20, 30, 47, .94); border-color: #26334a; }
