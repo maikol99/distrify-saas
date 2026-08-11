@@ -20,3 +20,5 @@ coverage/
 *.key
 *.p12
 *.pfx
+.vercel
+.env*

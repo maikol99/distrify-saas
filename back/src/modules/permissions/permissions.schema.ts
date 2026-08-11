@@ -6,7 +6,7 @@ import { Document, Types } from 'mongoose';
 })
 export class UserPermissions extends Document {
   @Prop({ required: true, type: Types.ObjectId })
-  shopId: Types.ObjectId;
+  shopId: Types.ObjectId; // ← a qué kiosco pertenece
 
   @Prop({ required: true })
   userId: string; // ID del usuario
