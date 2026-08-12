@@ -379,10 +379,27 @@ export const useSalesStore = defineStore("sales", {
     // Método para actualizar arrayForSale con variantes
     updateArrayForSale() {
       this.arrayForSale = [];
-      // Agrupar items por producto
+      // Agrupar items por producto (solo los que tienen productId de catálogo)
       const productGroups = {};
 
       this.cartItems.forEach((item) => {
+        // Ítems de Venta Rápida: se agregan directamente sin agrupar
+        if (item.isCustom) {
+          this.arrayForSale.push({
+            productId: null,
+            productName: item.name,
+            name: item.name,
+            sellPrice: item.sellPrice,
+            salePrice: item.sellPrice,
+            quantity: item.quantity,
+            isCustom: true,
+            isCombo: false,
+            comboProducts: [],
+            variants: [],
+          });
+          return;
+        }
+
         if (!productGroups[item.productId]) {
           productGroups[item.productId] = {
             productId: item.productId,
@@ -406,8 +423,8 @@ export const useSalesStore = defineStore("sales", {
         }
       });
 
-      // Convertir a array
-      this.arrayForSale = Object.values(productGroups);
+      // Convertir grupos de productos a array y combinar con ítems personalizados
+      this.arrayForSale = [...this.arrayForSale, ...Object.values(productGroups)];
     },
 
     increaseQuantity(item) {

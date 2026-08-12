@@ -735,8 +735,16 @@
                   class="product-item"
                 >
                   <div class="product-header">
-                    <div class="product-name">
+                    <div class="product-name" style="display:flex;align-items:center;gap:6px;">
                       {{ item?.productName || item?.productId?.name || "Producto sin nombre" }}
+                      <span
+                        v-if="item?.isCustom"
+                        style="display:inline-flex;align-items:center;gap:3px;background:#fef3c7;color:#d97706;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;border:1px solid #fde68a;white-space:nowrap;"
+                        title="Producto sin código de barras registrado en catálogo"
+                      >
+                        <span class="material-symbols-outlined" style="font-size:12px;">bolt</span>
+                        Venta Rápida
+                      </span>
                     </div>
                     <div class="product-quantity-badge">
                       {{ item?.quantity || 0 }} unidades

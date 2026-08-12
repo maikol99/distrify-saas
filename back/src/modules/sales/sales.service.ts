@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Sales } from 'src/modules/sales/sales.schema';
 import {
   NotFoundException,
@@ -31,6 +31,15 @@ export class SalesService {
       // Enriquecer productDetails con snapshot de nombre y precio al momento de la venta
       const enrichedProductDetails = await Promise.all(
         (body.productDetails as any[]).map(async (item) => {
+          if (item.isCustom || !item.productId || !Types.ObjectId.isValid(item.productId)) {
+            return {
+              ...item,
+              productId: null,
+              productName: item.name || item.productName || 'Venta Rápida',
+              salePrice: item.salePrice !== undefined ? item.salePrice : (item.sellPrice || 0),
+            };
+          }
+
           if (item.isCombo) {
             return {
               ...item,
@@ -85,6 +94,11 @@ export class SalesService {
 
       // Procesar cada producto y sus variantes
       for (const product of enrichedProductDetails as any) {
+        if (product.isCustom || !product.productId || !Types.ObjectId.isValid(product.productId)) {
+          // Ítem de Venta Rápida / Venta Libre: se guarda en la venta pero no descuenta stock del catálogo
+          continue;
+        }
+
         if (product.isCombo && product.comboProducts && product.comboProducts.length > 0) {
           for (const comboProductId of product.comboProducts) {
             await this.productsModel.findByIdAndUpdate(

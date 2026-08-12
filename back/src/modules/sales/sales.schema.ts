@@ -18,11 +18,12 @@ export class Sales {
   @Prop({
     type: [
       {
-        productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Products' },
+        productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Products', default: null },
         productName: { type: String },
         salePrice: { type: Number },
         quantity: { type: Number },
         isCombo: { type: Boolean, default: false },
+        isCustom: { type: Boolean, default: false },
         comboProducts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Products' }],
         variants: [
           {
@@ -40,6 +41,7 @@ export class Sales {
     salePrice: number;
     quantity: number;
     isCombo?: boolean;
+    isCustom?: boolean;
     comboProducts?: mongoose.Schema.Types.ObjectId[];
     variants?: {
       size: string;
