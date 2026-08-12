@@ -99,7 +99,7 @@ export function useTicket() {
     const shopName = (shopData?.name || "MI KIOSCO").toUpperCase();
     const instagramHandle = shopData?.instagram || `@${shopName.toLowerCase().replace(/[^a-z0-9]/g, '')}`;
     const addressStr = shopData?.address || "Lisandro de la Torre 1000";
-    const cityStr = shopData?.city ? `${shopData.city}, Argentina` : "Córdoba, Argentina";
+    const cityStr = shopData?.city ? `${shopData.city}, Córdoba, Argentina` : "Villa María, Córdoba, Argentina";
     const cashierName = userName || "Vendedor";
 
     // --- SECCIÓN 3: DETALLE DE PRODUCTOS ---
