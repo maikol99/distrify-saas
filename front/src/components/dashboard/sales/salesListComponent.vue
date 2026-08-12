@@ -1606,27 +1606,32 @@ export default {
         try {
           const pdfBlob = doc.output("blob");
           const pdfUrl = URL.createObjectURL(pdfBlob);
-          const printWindow = window.open(pdfUrl, "_blank");
+          // Usamos iframe oculto para evitar bloqueos del pop-up blocker
+          const iframe = document.createElement('iframe');
+          iframe.style.cssText = 'position:fixed;right:0;bottom:0;width:1px;height:1px;border:0;opacity:0;';
+          iframe.src = pdfUrl;
+          document.body.appendChild(iframe);
 
-          if (printWindow) {
-            printWindow.onload = () => {
+          iframe.onload = () => {
+            setTimeout(() => {
+              try {
+                iframe.contentWindow.focus();
+                iframe.contentWindow.print();
+              } catch (err) {
+                // Fallback: descargar
+                const link = document.createElement('a');
+                link.href = pdfUrl;
+                link.download = `ticket-${ticketNumber}.pdf`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+              }
               setTimeout(() => {
-                printWindow.print();
-                setTimeout(() => {
-                  URL.revokeObjectURL(pdfUrl);
-                }, 1000);
-              }, 500);
-            };
-          } else {
-            // Fallback para descarga si no se puede abrir ventana
-            const link = document.createElement("a");
-            link.href = pdfUrl;
-            link.download = `ticket-${ticketNumber}.pdf`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(pdfUrl);
-          }
+                document.body.removeChild(iframe);
+                URL.revokeObjectURL(pdfUrl);
+              }, 2000);
+            }, 300);
+          };
 
           return true;
         } catch (pdfError) {

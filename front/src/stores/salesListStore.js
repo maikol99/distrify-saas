@@ -738,29 +738,34 @@ export const useSalesListStore = defineStore("salesList", {
         const pdfBlob = doc.output("blob");
         const pdfUrl = URL.createObjectURL(pdfBlob);
 
-        const printWindow = window.open(pdfUrl, "_blank");
+        const printWindow = null; // Usamos iframe en su lugar
 
-        if (printWindow) {
-          printWindow.onload = () => {
+        // Usamos iframe oculto para evitar bloqueos del pop-up blocker
+        const iframe = document.createElement('iframe');
+        iframe.style.cssText = 'position:fixed;right:0;bottom:0;width:1px;height:1px;border:0;opacity:0;';
+        iframe.src = pdfUrl;
+        document.body.appendChild(iframe);
+
+        iframe.onload = () => {
+          setTimeout(() => {
+            try {
+              iframe.contentWindow.focus();
+              iframe.contentWindow.print();
+            } catch (err) {
+              // Fallback: descargar el PDF
+              const link = document.createElement('a');
+              link.href = pdfUrl;
+              link.download = `venta-${ticketNumber}.pdf`;
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+            }
             setTimeout(() => {
-              printWindow.print();
-              // Limpiar el URL del objeto después de imprimir
-              setTimeout(() => {
-                URL.revokeObjectURL(pdfUrl);
-                printWindow.close();
-              }, 1000);
-            }, 500);
-          };
-        } else {
-          // Fallback si no se puede abrir la ventana
-          const link = document.createElement("a");
-          link.href = pdfUrl;
-          link.download = `venta-${ticketNumber}.pdf`;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          URL.revokeObjectURL(pdfUrl);
-        }
+              document.body.removeChild(iframe);
+              URL.revokeObjectURL(pdfUrl);
+            }, 2000);
+          }, 300);
+        };
 
         return true;
       } catch (error) {

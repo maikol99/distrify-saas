@@ -23,14 +23,19 @@ export enum OutputsCategoriesEnum {
   LicenciasDeSoftware = 'Licencias de software',
   InvestigacionYDesarrollo = 'Investigación y desarrollo',
   Capacitacion = 'Capacitación',
+  Ventas = 'Ventas',
+  Otros = 'Otros',
 }
 
 export enum OutputsPaymentMethodsEnum {
   Efectivo = 'Efectivo',
   TarjetaCredito = 'Credito',
   TarjetaDebito = 'Debito',
+  TarjetaCreditoAlt = 'TarjetaCredito',
+  TarjetaDebitoAlt = 'TarjetaDebito',
   TransferenciaBancaria = 'Transferencia',
   Cheque = 'Cheque',
   CuentaCorriente = 'Cuenta corriente',
   Otros = 'Otros',
 }
+

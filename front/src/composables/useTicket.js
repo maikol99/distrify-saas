@@ -529,26 +529,36 @@ export function useTicket() {
     // Siempre imprimir o descargar el ticket
     doc.autoPrint();
     const pdfUrl = URL.createObjectURL(pdfBlob);
-    const printWindow = window.open(pdfUrl, "_blank");
 
-    if (printWindow) {
-      printWindow.onload = () => {
+    // Usamos un iframe oculto en vez de window.open para evitar:
+    // 1) Bloqueos del pop-up blocker del navegador
+    // 2) El bug de Chrome donde onload no dispara en PDFs de blob
+    const iframe = document.createElement('iframe');
+    iframe.style.cssText = 'position:fixed;right:0;bottom:0;width:1px;height:1px;border:0;opacity:0;';
+    iframe.src = pdfUrl;
+
+    document.body.appendChild(iframe);
+
+    iframe.onload = () => {
+      setTimeout(() => {
+        try {
+          iframe.contentWindow.focus();
+          iframe.contentWindow.print();
+        } catch (err) {
+          // Si el navegador bloquea el iframe, descargar como fallback
+          const link = document.createElement('a');
+          link.href = pdfUrl;
+          link.download = `ticket-${ticketNumber}.pdf`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
         setTimeout(() => {
-          printWindow.print();
-          setTimeout(() => {
-            URL.revokeObjectURL(pdfUrl);
-          }, 1000);
-        }, 500);
-      };
-    } else {
-      const link = document.createElement("a");
-      link.href = pdfUrl;
-      link.download = `ticket-${ticketNumber}.pdf`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(pdfUrl);
-    }
+          document.body.removeChild(iframe);
+          URL.revokeObjectURL(pdfUrl);
+        }, 2000);
+      }, 300);
+    };
 
     return true;
   }

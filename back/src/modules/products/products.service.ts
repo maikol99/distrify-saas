@@ -396,8 +396,23 @@ export class ProductsService {
         };
       }
 
+      // Usar el mismo shopIdFilter que searchProduct para compatibilidad con ObjectId y string
+      const shopIdFilter = Types.ObjectId.isValid(shopId)
+        ? { $in: [shopId, new Types.ObjectId(shopId)] }
+        : shopId;
+
+      const codeStr = String(code).trim();
+      // Intentar convertir a número para búsqueda numérica también
+      const codeNum = !isNaN(Number(codeStr)) ? Number(codeStr) : null;
+
+      const orConditions: any[] = [{ code: codeStr }];
+      if (codeNum !== null) orConditions.push({ code: codeNum });
+
       const products = await this.productsModel
-        .find({ shopId, code })
+        .find({
+          shopId: shopIdFilter,
+          $or: orConditions,
+        })
         .populate({ path: 'categoryId', select: 'name description' })
         .lean();
 

@@ -1,14 +1,11 @@
 // src/outputs/dto/create-output.dto.ts
 
 import {
-  IsDate,
-  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
 } from 'class-validator';
-import { OutputsCategoriesEnum, OutputsPaymentMethodsEnum } from '../enum/outputs.enum';
 import { PartialType } from '@nestjs/mapped-types';
 
 export class CreateOutputDto {
@@ -20,9 +17,10 @@ export class CreateOutputDto {
   @IsNotEmpty()
   description: string;
 
-  @IsEnum(OutputsCategoriesEnum)
-  @IsNotEmpty()
-  category: OutputsCategoriesEnum;
+  // Aceptamos cualquier string de categoría (enum flexible)
+  @IsString()
+  @IsOptional()
+  category?: string;
 
   @IsNumber()
   @IsNotEmpty()
@@ -32,13 +30,15 @@ export class CreateOutputDto {
   @IsString()
   userId?: string;
 
-  @IsEnum(OutputsPaymentMethodsEnum)
+  // Aceptamos cualquier string de método de pago (enum flexible)
   @IsOptional()
-  paymentMethod?: OutputsPaymentMethodsEnum;
+  @IsString()
+  paymentMethod?: string;
 
+  // Aceptamos string de fecha "YYYY-MM-DD" o ISO — no @IsDate() que requiere instancia Date
   @IsOptional()
-  @IsDate()
-  date?: Date;
+  @IsString()
+  date?: string;
 }
 
 

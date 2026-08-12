@@ -38,6 +38,7 @@ export const useSalesStore = defineStore("sales", {
     globalStore: useGlobalStore(),
     searchType: "code",
     autoPrintTicket: false,
+    _isSearching: false,
     // Estados para variantes
     showingVariantModal: false,
     selectedProductForVariant: null,
@@ -195,71 +196,79 @@ export const useSalesStore = defineStore("sales", {
         this.searchResults = [];
         return;
       }
+
+      // Anti-doble-escaneo: si ya hay una búsqueda en curso, ignorar
+      if (this._isSearching) return;
+      this._isSearching = true;
+
       this.setLoading(true);
       try {
-        if (this.searchType === "code") {
-          console.log("Buscando por codigo");
-          const shopId = this.globalStore.shopId();
-          const response = await api.get(
-            `/products/get/search-product-by-code/${shopId}?code=${this.searchQuery}`,
+        const shopId = this.globalStore.shopId();
+        const query = this.searchQuery.trim();
+
+        // PASO 1: Intentar búsqueda exacta por código (siempre, independiente del searchType)
+        try {
+          const codeResponse = await api.get(
+            `/products/get/search-product-by-code/${shopId}?code=${encodeURIComponent(query)}`,
           );
-          if (response.data.success) {
-            if (response.data.data.length === 1) {
-              const product = response.data.data[0];
-              this.addToCart(product);
+          if (codeResponse.data.success && codeResponse.data.data && codeResponse.data.data.length > 0) {
+            const results = codeResponse.data.data;
+            if (results.length === 1) {
+              // Exactamente 1 producto → agregar al carrito directamente y limpiar búsqueda
+              this.addToCart(results[0]);
+              this.searchQuery = "";
+              this.searchResults = [];
+              return;
             } else {
-              this.searchResults = response.data.data;
-              if (this.searchResults.length === 0) {
-                this.toast = { showing: true, message: "Producto no encontrado", state: "danger" };
-              }
+              // Múltiples con ese código → mostrar lista
+              this.searchResults = results;
+              return;
             }
-          } else {
-            this.searchResults = [];
-            this.toast = { showing: true, message: "Producto no encontrado", state: "danger" };
           }
-        } else {
-          const shopId = this.globalStore.shopId();
-          try {
-            const [productsResponse, promosResponse] = await Promise.all([
-              api.get(`/products/get/search-product/${shopId}?name=${this.searchQuery}`),
-              api.get(`/promotions/get/${shopId}?search=${this.searchQuery}&isActive=true&type=combo&page=1&limit=20`)
-            ]);
-            
-            let combinedResults = [];
-            
-            if (promosResponse.data.success && promosResponse.data.data) {
-              const combos = promosResponse.data.data.map(promo => ({
-                _id: promo._id,
-                name: `[Combo] ${promo.name}`,
-                sellPrice: promo.comboPrice,
-                stock: 9999,
-                quantity: 9999,
-                isCombo: true,
-                comboProducts: promo.productIds.map(p => p._id || p),
-                sizesAndColors: [],
-                code: 'COMBO'
-              }));
-              combinedResults = [...combos];
-            }
-            
-            if (productsResponse.data.success && productsResponse.data.data) {
-              combinedResults = [...combinedResults, ...productsResponse.data.data];
-            }
-            
-            this.searchResults = combinedResults;
-            if (this.searchResults.length === 0) {
-              this.toast = { showing: true, message: "Producto no encontrado", state: "danger" };
-            }
-          } catch (error) {
-            console.error(error);
-            this.searchResults = [];
-            this.toast = { showing: true, message: "Error al buscar", state: "danger" };
-          }
+        } catch (_) {
+          // Si falla la búsqueda por código, continuamos con la búsqueda por nombre
         }
+
+        // PASO 2: Búsqueda por nombre/descripción (con combos)
+        const [productsResponse, promosResponse] = await Promise.all([
+          api.get(`/products/get/search-product/${shopId}?name=${encodeURIComponent(query)}`),
+          api.get(`/promotions/get/${shopId}?search=${encodeURIComponent(query)}&isActive=true&type=combo&page=1&limit=20`).catch(() => ({ data: { success: false } }))
+        ]);
+
+        let combinedResults = [];
+
+        if (promosResponse.data.success && promosResponse.data.data) {
+          const combos = promosResponse.data.data.map(promo => ({
+            _id: promo._id,
+            name: `[Combo] ${promo.name}`,
+            sellPrice: promo.comboPrice,
+            stock: 9999,
+            quantity: 9999,
+            isCombo: true,
+            comboProducts: promo.productIds.map(p => p._id || p),
+            sizesAndColors: [],
+            code: 'COMBO'
+          }));
+          combinedResults = [...combos];
+        }
+
+        if (productsResponse.data.success && productsResponse.data.data) {
+          combinedResults = [...combinedResults, ...productsResponse.data.data];
+        }
+
+        this.searchResults = combinedResults;
+        if (this.searchResults.length === 0) {
+          this.toast = { showing: true, message: "Producto no encontrado", state: "danger" };
+        }
+
       } catch (error) {
         console.error("Error al buscar producto:", error);
       } finally {
         this.setLoading(false);
+        // Liberar el lock después de 400ms para prevenir doble-escaneo del scanner
+        setTimeout(() => {
+          this._isSearching = false;
+        }, 400);
       }
     },
 

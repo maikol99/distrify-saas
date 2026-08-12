@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Portfolio de Maikol Tomás Alegre — Full Stack Developer apasionado por crear experiencias web modernas, escalables y de alto rendimiento." />
+  <meta property="og:title" content="Maikol Tomás Alegre | Full Stack Developer" />
+  <meta property="og:description" content="Portfolio de Maikol Tomás Alegre — Full Stack Developer especializado en React, Node.js y arquitecturas modernas." />
+  <meta property="og:type" content="website" />
+  <title>Maikol Tomás Alegre | Full Stack Developer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ========== NAVBAR ========== -->
+  <header class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="#hero" class="nav-logo">
+        <span class="logo-bracket">&lt;</span>MTA<span class="logo-bracket">/&gt;</span>
+      </a>
+      <nav class="nav-links" id="navLinks">
+        <a href="#about" class="nav-link">Sobre mí</a>
+        <a href="#skills" class="nav-link">Skills</a>
+        <a href="#projects" class="nav-link">Proyectos</a>
+        <a href="#experience" class="nav-link">Experiencia</a>
+        <a href="#education" class="nav-link">Educación</a>
+        <a href="#contact" class="nav-link nav-cta">Contacto</a>
+      </nav>
+      <button class="hamburger" id="hamburger" aria-label="Menú">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ========== HERO ========== -->
+  <section class="hero" id="hero">
+    <div class="hero-bg">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+      <div class="grid-overlay"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        Disponible para proyectos
+      </div>
+      <h1 class="hero-title">
+        Hola, soy<br />
+        <span class="gradient-text">Maikol Tomás</span><br />
+        <span class="gradient-text">Alegre</span>
+      </h1>
+      <p class="hero-role">
+        <span class="role-prefix">{"role":</span>
+        <span class="role-type" id="typewriter"></span>
+        <span class="role-cursor">|</span>
+        <span class="role-suffix">}</span>
+      </p>
+      <p class="hero-desc">
+        Construyo aplicaciones web modernas, escalables y de alto rendimiento.
+        Apasionado por el código limpio y las experiencias de usuario excepcionales.
+      </p>
+      <div class="hero-actions">
+        <a href="#projects" class="btn btn-primary">Ver proyectos</a>
+        <a href="#contact" class="btn btn-outline">Contactame</a>
+        <a href="cv-maikol-alegre.pdf" class="btn btn-ghost" download>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          CV
+        </a>
+      </div>
+      <div class="hero-socials">
+        <a href="https://github.com" target="_blank" rel="noopener" class="social-link" aria-label="GitHub">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+        </a>
+        <a href="https://linkedin.com" target="_blank" rel="noopener" class="social-link" aria-label="LinkedIn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        </a>
+        <a href="mailto:maikol@ejemplo.com" class="social-link" aria-label="Email">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="hero-image-wrap">
+      <div class="hero-img-ring ring-1"></div>
+      <div class="hero-img-ring ring-2"></div>
+      <div class="hero-img-ring ring-3"></div>
+      <img src="fotoperfil.jpeg" alt="Maikol Tomás Alegre" class="hero-img" />
+      <div class="hero-img-badge">
+        <span>⚡</span> Full Stack
+      </div>
+    </div>
+    <a href="#about" class="scroll-indicator" aria-label="Scroll down">
+      <div class="scroll-dot"></div>
+    </a>
+  </section>
+
+  <!-- ========== ABOUT ========== -->
+  <section class="section" id="about">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">01. sobre mí</span>
+        <h2 class="section-title">¿Quién soy?</h2>
+      </div>
+      <div class="about-grid">
+        <div class="about-text">
+          <p>Soy un <strong>Full Stack Developer</strong> con más de 3 años de experiencia construyendo productos digitales de alta calidad. Me especializo en el ecosistema de <strong>JavaScript/TypeScript</strong>, trabajando tanto en frontend como en backend.</p>
+          <p>Me apasiona escribir código limpio, escalable y mantenible. Creo firmemente que la mejor tecnología es la que resuelve problemas reales de manera eficiente y elegante.</p>
+          <p>Cuando no estoy programando, estoy explorando nuevas tecnologías, contribuyendo a proyectos open source o compartiendo conocimiento en la comunidad tech.</p>
+          <div class="about-stats">
+            <div class="stat-item">
+              <span class="stat-number">3+</span>
+              <span class="stat-label">Años de experiencia</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number">20+</span>
+              <span class="stat-label">Proyectos completados</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number">10+</span>
+              <span class="stat-label">Clientes satisfechos</span>
+            </div>
+          </div>
+        </div>
+        <div class="about-card-wrap">
+          <div class="about-card">
+            <div class="about-card-inner">
+              <img src="fotoperfil.jpeg" alt="Maikol Tomás Alegre" class="about-img" />
+              <div class="about-info">
+                <h3>Maikol Tomás Alegre</h3>
+                <p>Full Stack Developer</p>
+                <div class="about-tags">
+                  <span class="tag">React</span>
+                  <span class="tag">Node.js</span>
+                  <span class="tag">TypeScript</span>
+                  <span class="tag">PostgreSQL</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== SKILLS ========== -->
+  <section class="section section-alt" id="skills">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">02. habilidades</span>
+        <h2 class="section-title">Stack tecnológico</h2>
+        <p class="section-subtitle">Tecnologías con las que construyo aplicaciones web de punta a punta.</p>
+      </div>
+      <div class="skills-grid">
+
+        <!-- LENGUAJES -->
+        <div class="skill-category">
+          <div class="skill-cat-header">
+            <div class="skill-cat-icon-wrap" style="--cat-color:#f59e0b">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            </div>
+            <h3>Lenguajes</h3>
+          </div>
+          <p class="skill-cat-desc">Lenguajes de programación que domino para resolver distintos tipos de problemas.</p>
+          <div class="tech-chips">
+            <div class="tech-chip">
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg" alt="JavaScript">
+              <span>JavaScript</span>
+            </div>
+            <div class="tech-chip">
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg" alt="TypeScript">
+              <span>TypeScript</span>
+            </div>
+            <div class="tech-chip">
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original.svg" alt="Java">
+              <span>Java</span>
+            </div>
+            <div class="tech-chip">
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" alt="Python">
+              <span>Python</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- FRONTEND -->
+        <div class="skill-category">
+          <div class="skill-cat-header">
+            <div class="skill-cat-icon-wrap" style="--cat-color:#6366f1">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            </div>
+            <h3>Frontend</h3>
+          </div>
+          <p class="skill-cat-desc">Construyo interfaces modernas, responsivas y experiencias de usuario intuitivas.</p>
+          <div class="tech-chips">
+            <div class="tech-chip">
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg" alt="React">
+              <span>React</span>
+            </div>
+            <div class="tech-chip">
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nextjs/nextjs-original.svg" alt="Next.js" style="filter:invert(1) brightness(0.9)">
+              <span>Next.js</span>
+            </div>
+            <div class="tech-chip">
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg" alt="Tailwind CSS">
+              <span>Tailwind CSS</span>
+            </div>
+            <div class="tech-chip">
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vuejs/vuejs-original.svg" alt="Vue.js">
+              <span>Vue.js</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- BACKEND -->
+        <div class="skill-category skill-focus">
+          <div class="skill-cat-header">
+            <div class="skill-cat-icon-wrap" style="--cat-color:#8b5cf6">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            </div>
+            <h3>Backend</h3>
+            <span class="focus-badge">&#9733; FOCO</span>
+          </div>
+          <p class="skill-cat-desc">Desarrollo APIs escalables, seguras y bien estructuradas.</p>
+          <div class="tech-chips">
+            <div class="tech-chip chip-main">
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nestjs/nestjs-original.svg" alt="NestJS">
+              <span>NestJS<small>MAIN STACK</small></span>
+            </div>
+            <div class="tech-chip">
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original.svg" alt="Node.js">
+              <span>Node.js</span>
+            </div>
+            <div class="tech-chip">
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/express/express-original.svg" alt="Express" style="filter:invert(1) brightness(0.9)">
+              <span>Express</span>
+            </div>
+            <div class="tech-chip">
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/spring/spring-original.svg" alt="Spring Boot">
+              <span>Spring Boot</span>
+            </div>
+            <div class="tech-chip">
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/fastapi/fastapi-original.svg" alt="FastAPI">
+              <span>FastAPI</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- BASES DE DATOS -->
+        <div class="skill-category">
+          <div class="skill-cat-header">
+            <div class="skill-cat-icon-wrap" style="--cat-color:#06b6d4">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+            </div>
+            <h3>Bases de datos</h3>
+          </div>
+          <p class="skill-cat-desc">Trabajo con bases de datos relacionales, NoSQL y lenguajes de consulta avanzados.</p>
+          <div class="tech-chips">
+            <div class="tech-chip">
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/postgresql/postgresql-original.svg" alt="PostgreSQL">
+              <span>PostgreSQL</span>
+            </div>
+            <div class="tech-chip">
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mongodb/mongodb-original.svg" alt="MongoDB">
+              <span>MongoDB</span>
+            </div>
+            <div class="tech-chip">
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg" alt="MySQL">
+              <span>MySQL</span>
+            </div>
+            <div class="tech-chip">
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/redis/redis-original.svg" alt="Redis">
+              <span>Redis</span>
+            </div>
+            <div class="tech-chip">
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/graphql/graphql-plain.svg" alt="GraphQL">
+              <span>GraphQL</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- DEVOPS -->
+        <div class="skill-category">
+          <div class="skill-cat-header">
+            <div class="skill-cat-icon-wrap" style="--cat-color:#10b981">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
+            </div>
+            <h3>DevOps &amp; Tools</h3>
+          </div>
+          <p class="skill-cat-desc">Automatizo, despliego y mantengo aplicaciones de forma eficiente.</p>
+          <div class="tech-chips">
+            <div class="tech-chip">
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-original.svg" alt="Docker">
+              <span>Docker</span>
+            </div>
+            <div class="tech-chip">
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/kubernetes/kubernetes-original.svg" alt="Kubernetes">
+              <span>Kubernetes</span>
+            </div>
+            <div class="tech-chip">
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/amazonwebservices/amazonwebservices-plain-wordmark.svg" alt="AWS">
+              <span>AWS</span>
+            </div>
+            <div class="tech-chip">
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/git/git-original.svg" alt="Git">
+              <span>Git</span>
+            </div>
+            <div class="tech-chip">
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/githubactions/githubactions-original.svg" alt="GitHub Actions">
+              <span>GitHub Actions</span>
+            </div>
+            <div class="tech-chip">
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/linux/linux-original.svg" alt="Linux">
+              <span>Linux</span>
+            </div>
+            <div class="tech-chip">
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bash/bash-original.svg" alt="Bash">
+              <span>Bash</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- TECH LOGO CAROUSEL -->
+      <div class="carousel-section">
+        <p class="carousel-label">También trabajo con</p>
+
+        <!-- Row 1 → izquierda -->
+        <div class="carousel-track-wrap">
+          <div class="carousel-track track-left">
+            <div class="logo-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/git/git-original.svg" alt="Git" /><span>Git</span></div>
+            <div class="logo-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vitejs/vitejs-original.svg" alt="Vite" /><span>Vite</span></div>
+            <div class="logo-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/jest/jest-plain.svg" alt="Jest" /><span>Jest</span></div>
+            <div class="logo-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/redux/redux-original.svg" alt="Redux" /><span>Redux</span></div>
+            <div class="logo-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/firebase/firebase-original.svg" alt="Firebase" /><span>Firebase</span></div>
+            <div class="logo-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/figma/figma-original.svg" alt="Figma" /><span>Figma</span></div>
+            <div class="logo-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nginx/nginx-original.svg" alt="Nginx" /><span>Nginx</span></div>
+            <div class="logo-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/graphql/graphql-plain.svg" alt="GraphQL" /><span>GraphQL</span></div>
+            <div class="logo-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/linux/linux-original.svg" alt="Linux" /><span>Linux</span></div>
+            <div class="logo-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg" alt="GitHub" style="filter:invert(1) brightness(0.8)"/><span>GitHub</span></div>
+            <!-- duplicado para loop infinito -->
+            <div class="logo-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/git/git-original.svg" alt="Git" /><span>Git</span></div>
+            <div class="logo-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vitejs/vitejs-original.svg" alt="Vite" /><span>Vite</span></div>
+            <div class="logo-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/jest/jest-plain.svg" alt="Jest" /><span>Jest</span></div>
+            <div class="logo-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/redux/redux-original.svg" alt="Redux" /><span>Redux</span></div>
+            <div class="logo-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/firebase/firebase-original.svg" alt="Firebase" /><span>Firebase</span></div>
+            <div class="logo-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/figma/figma-original.svg" alt="Figma" /><span>Figma</span></div>
+            <div class="logo-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nginx/nginx-original.svg" alt="Nginx" /><span>Nginx</span></div>
+            <div class="logo-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/graphql/graphql-plain.svg" alt="GraphQL" /><span>GraphQL</span></div>
+            <div class="logo-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/linux/linux-original.svg" alt="Linux" /><span>Linux</span></div>
+            <div class="logo-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg" alt="GitHub" style="filter:invert(1) brightness(0.8)"/><span>GitHub</span></div>
+          </div>
+        </div>
+
+        <!-- Row 2 → derecha (opuesta) -->
+        <div class="carousel-track-wrap">
+          <div class="carousel-track track-right">
+            <div class="logo-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/prisma/prisma-original.svg" alt="Prisma" style="filter:invert(1) brightness(0.8)"/><span>Prisma</span></div>
+            <div class="logo-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/socketio/socketio-original.svg" alt="Socket.io" style="filter:invert(1) brightness(0.8)"/><span>Socket.io</span></div>
+            <div class="logo-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vercel/vercel-original.svg" alt="Vercel" style="filter:invert(1) brightness(0.8)"/><span>Vercel</span></div>
+            <div class="logo-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/terraform/terraform-original.svg" alt="Terraform" /><span>Terraform</span></div>
+            <div class="logo-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/swagger/swagger-original.svg" alt="Swagger" /><span>Swagger</span></div>
+            <div class="logo-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/jest/jest-plain.svg" alt="Vitest" /><span>Vitest</span></div>
+            <div class="logo-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/npm/npm-original-wordmark.svg" alt="npm" /><span>npm</span></div>
+            <div class="logo-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bash/bash-original.svg" alt="Bash" /><span>Bash</span></div>
+            <div class="logo-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/eslint/eslint-original.svg" alt="ESLint" /><span>ESLint</span></div>
+            <div class="logo-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/yarn/yarn-original.svg" alt="Yarn" /><span>Yarn</span></div>
+            <!-- duplicado para loop infinito -->
+            <div class="logo-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/prisma/prisma-original.svg" alt="Prisma" style="filter:invert(1) brightness(0.8)"/><span>Prisma</span></div>
+            <div class="logo-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/socketio/socketio-original.svg" alt="Socket.io" style="filter:invert(1) brightness(0.8)"/><span>Socket.io</span></div>
+            <div class="logo-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vercel/vercel-original.svg" alt="Vercel" style="filter:invert(1) brightness(0.8)"/><span>Vercel</span></div>
+            <div class="logo-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/terraform/terraform-original.svg" alt="Terraform" /><span>Terraform</span></div>
+            <div class="logo-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/swagger/swagger-original.svg" alt="Swagger" /><span>Swagger</span></div>
+            <div class="logo-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/jest/jest-plain.svg" alt="Vitest" /><span>Vitest</span></div>
+            <div class="logo-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/npm/npm-original-wordmark.svg" alt="npm" /><span>npm</span></div>
+            <div class="logo-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bash/bash-original.svg" alt="Bash" /><span>Bash</span></div>
+            <div class="logo-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/eslint/eslint-original.svg" alt="ESLint" /><span>ESLint</span></div>
+            <div class="logo-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/yarn/yarn-original.svg" alt="Yarn" /><span>Yarn</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== PROJECTS ========== -->
+  <section class="section" id="projects">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">03. proyectos</span>
+        <h2 class="section-title">Lo que construí</h2>
+      </div>
+      <div class="projects-grid">
+
+        <article class="project-card featured">
+          <div class="project-img-wrap">
+            <div class="project-img-placeholder grad-1">
+              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+            </div>
+            <div class="project-overlay">
+              <a href="#" class="project-link-btn" aria-label="Ver proyecto">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              </a>
+              <a href="#" class="project-link-btn" aria-label="Ver código">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+              </a>
+            </div>
+          </div>
+          <div class="project-body">
+            <div class="project-meta">
+              <span class="project-featured-badge">⭐ Destacado</span>
+              <span class="project-year">2024</span>
+            </div>
+            <h3 class="project-title">DevFlow — Plataforma SaaS</h3>
+            <p class="project-desc">Plataforma de gestión de proyectos para equipos de desarrollo. Incluye tableros Kanban en tiempo real, integración con GitHub, reportes avanzados y sistema de notificaciones.</p>
+            <div class="project-tech">
+              <span class="tech-tag">Next.js</span>
+              <span class="tech-tag">TypeScript</span>
+              <span class="tech-tag">PostgreSQL</span>
+              <span class="tech-tag">Socket.io</span>
+              <span class="tech-tag">Docker</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card">
+          <div class="project-img-wrap">
+            <div class="project-img-placeholder grad-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            </div>
+            <div class="project-overlay">
+              <a href="#" class="project-link-btn" aria-label="Ver proyecto">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              </a>
+              <a href="#" class="project-link-btn" aria-label="Ver código">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+              </a>
+            </div>
+          </div>
+          <div class="project-body">
+            <div class="project-meta">
+              <span class="project-year">2024</span>
+            </div>
+            <h3 class="project-title">E-Commerce API REST</h3>
+            <p class="project-desc">API RESTful completa para un e-commerce con autenticación JWT, pagos con Stripe, manejo de inventario y sistema de envíos.</p>
+            <div class="project-tech">
+              <span class="tech-tag">Node.js</span>
+              <span class="tech-tag">NestJS</span>
+              <span class="tech-tag">MongoDB</span>
+              <span class="tech-tag">Stripe</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card">
+          <div class="project-img-wrap">
+            <div class="project-img-placeholder grad-3">
+              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </div>
+            <div class="project-overlay">
+              <a href="#" class="project-link-btn" aria-label="Ver proyecto">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              </a>
+              <a href="#" class="project-link-btn" aria-label="Ver código">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+              </a>
+            </div>
+          </div>
+          <div class="project-body">
+            <div class="project-meta">
+              <span class="project-year">2023</span>
+            </div>
+            <h3 class="project-title">Analytics Dashboard</h3>
+            <p class="project-desc">Dashboard de analíticas en tiempo real con visualizaciones de datos interactivas, filtros dinámicos y exportación de reportes en PDF.</p>
+            <div class="project-tech">
+              <span class="tech-tag">React</span>
+              <span class="tech-tag">D3.js</span>
+              <span class="tech-tag">FastAPI</span>
+              <span class="tech-tag">Redis</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card">
+          <div class="project-img-wrap">
+            <div class="project-img-placeholder grad-4">
+              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </div>
+            <div class="project-overlay">
+              <a href="#" class="project-link-btn" aria-label="Ver proyecto">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              </a>
+              <a href="#" class="project-link-btn" aria-label="Ver código">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+              </a>
+            </div>
+          </div>
+          <div class="project-body">
+            <div class="project-meta">
+              <span class="project-year">2023</span>
+            </div>
+            <h3 class="project-title">AI Chat App</h3>
+            <p class="project-desc">Aplicación de chat con inteligencia artificial integrada. Soporte multi-idioma, historial de conversaciones y streaming de respuestas en tiempo real.</p>
+            <div class="project-tech">
+              <span class="tech-tag">Vue.js</span>
+              <span class="tech-tag">OpenAI API</span>
+              <span class="tech-tag">Node.js</span>
+              <span class="tech-tag">Socket.io</span>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== EXPERIENCE ========== -->
+  <section class="section section-alt" id="experience">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">04. experiencia</span>
+        <h2 class="section-title">Trayectoria profesional</h2>
+      </div>
+      <div class="timeline">
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-header">
+              <div>
+                <h3 class="timeline-role">Senior Full Stack Developer</h3>
+                <span class="timeline-company">TechNova Solutions</span>
+              </div>
+              <span class="timeline-period">2023 – Presente</span>
+            </div>
+            <p class="timeline-desc">Lideré el desarrollo del frontend de la plataforma principal, migrando de una arquitectura monolítica a microservicios. Mentoreé a un equipo de 4 developers junior y reduje el tiempo de carga de la app en un 40%.</p>
+            <div class="timeline-tags">
+              <span class="tag">Next.js</span>
+              <span class="tag">TypeScript</span>
+              <span class="tag">AWS</span>
+              <span class="tag">Docker</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-header">
+              <div>
+                <h3 class="timeline-role">Full Stack Developer</h3>
+                <span class="timeline-company">Digital Craft Studio</span>
+              </div>
+              <span class="timeline-period">2022 – 2023</span>
+            </div>
+            <p class="timeline-desc">Desarrollé más de 12 aplicaciones web para clientes de diferentes industrias. Implementé pipelines de CI/CD y mejoré las prácticas de testing, aumentando la cobertura de código del 20% al 80%.</p>
+            <div class="timeline-tags">
+              <span class="tag">React</span>
+              <span class="tag">Node.js</span>
+              <span class="tag">PostgreSQL</span>
+              <span class="tag">GCP</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-header">
+              <div>
+                <h3 class="timeline-role">Frontend Developer Jr.</h3>
+                <span class="timeline-company">StartUp Hub Argentina</span>
+              </div>
+              <span class="timeline-period">2021 – 2022</span>
+            </div>
+            <p class="timeline-desc">Comencé mi carrera profesional construyendo interfaces de usuario con React. Trabajé en proyectos ágiles con metodología Scrum, aprendiendo las mejores prácticas del desarrollo de software.</p>
+            <div class="timeline-tags">
+              <span class="tag">React</span>
+              <span class="tag">JavaScript</span>
+              <span class="tag">CSS</span>
+              <span class="tag">REST APIs</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== EDUCATION ========== -->
+  <section class="section" id="education">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">05. educación</span>
+        <h2 class="section-title">Formación académica</h2>
+      </div>
+      <div class="edu-grid">
+
+        <div class="edu-card">
+          <div class="edu-icon">🎓</div>
+          <div class="edu-body">
+            <span class="edu-period">2017 – 2022</span>
+            <h3 class="edu-title">Licenciatura en Sistemas de Información</h3>
+            <span class="edu-institution">Universidad Nacional de Córdoba</span>
+            <p class="edu-desc">Especialización en Ingeniería de Software y Arquitectura de Sistemas. Tesis sobre optimización de bases de datos distribuidas.</p>
+          </div>
+        </div>
+
+        <div class="edu-card">
+          <div class="edu-icon">📜</div>
+          <div class="edu-body">
+            <span class="edu-period">2023</span>
+            <h3 class="edu-title">AWS Certified Solutions Architect</h3>
+            <span class="edu-institution">Amazon Web Services</span>
+            <p class="edu-desc">Certificación oficial de AWS para diseño y despliegue de arquitecturas escalables y seguras en la nube.</p>
+          </div>
+        </div>
+
+        <div class="edu-card">
+          <div class="edu-icon">⚡</div>
+          <div class="edu-body">
+            <span class="edu-period">2022</span>
+            <h3 class="edu-title">Advanced React & TypeScript</h3>
+            <span class="edu-institution">Frontend Masters</span>
+            <p class="edu-desc">Curso avanzado de patrones de diseño en React, TypeScript profundo, performance optimization y testing strategies.</p>
+          </div>
+        </div>
+
+        <div class="edu-card">
+          <div class="edu-icon">🐳</div>
+          <div class="edu-body">
+            <span class="edu-period">2022</span>
+            <h3 class="edu-title">Docker & Kubernetes en Producción</h3>
+            <span class="edu-institution">Udemy — Stephen Grider</span>
+            <p class="edu-desc">Containerización de aplicaciones, orquestación con Kubernetes y configuración de clusters en ambientes de producción.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CONTACT ========== -->
+  <section class="section section-alt" id="contact">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">06. contacto</span>
+        <h2 class="section-title">Hablemos</h2>
+        <p class="section-subtitle">¿Tenés un proyecto en mente? ¿Buscás un developer para tu equipo? Escribime, estoy disponible para nuevas oportunidades.</p>
+      </div>
+      <div class="contact-grid">
+        <div class="contact-info">
+          <div class="contact-item">
+            <div class="contact-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
+            </div>
+            <div>
+              <span class="contact-label">Email</span>
+              <a href="mailto:alegremaikol6@gmail.com" class="contact-value">alegremaikol6@gmail.com</a>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+            <div>
+              <span class="contact-label">Ubicación</span>
+              <span class="contact-value">Córdoba, Argentina 🇦🇷</span>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.07 12 19.79 19.79 0 0 1 1 3.18 2 2 0 0 1 2.96 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 8.84a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            </div>
+            <div>
+              <span class="contact-label">WhatsApp / Teléfono</span>
+              <a href="https://wa.me/543534296008" class="contact-value" target="_blank">+54 353 429-6008</a>
+            </div>
+          </div>
+          <div class="contact-socials">
+            <a href="https://github.com" target="_blank" rel="noopener" class="social-link-lg" aria-label="GitHub">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+              GitHub
+            </a>
+            <a href="https://linkedin.com" target="_blank" rel="noopener" class="social-link-lg" aria-label="LinkedIn">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+              LinkedIn
+            </a>
+          </div>
+        </div>
+
+        <form class="contact-form" id="contactForm" onsubmit="handleFormSubmit(event)">
+          <div class="form-group">
+            <label for="name">Nombre</label>
+            <input type="text" id="name" name="name" placeholder="Tu nombre" required />
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="tu@email.com" required />
+          </div>
+          <div class="form-group">
+            <label for="subject">Asunto</label>
+            <input type="text" id="subject" name="subject" placeholder="¿De qué querés hablar?" required />
+          </div>
+          <div class="form-group">
+            <label for="message">Mensaje</label>
+            <textarea id="message" name="message" rows="5" placeholder="Contame sobre tu proyecto o consulta..." required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary btn-full" id="submitBtn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Enviar mensaje
+          </button>
+          <div class="form-success" id="formSuccess">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            ¡Mensaje enviado! Me contactaré pronto.
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <a href="#hero" class="nav-logo">
+          <span class="logo-bracket">&lt;</span>MTA<span class="logo-bracket">/&gt;</span>
+        </a>
+        <p class="footer-copy">
+          Diseñado y construido por <strong>Maikol Tomás Alegre</strong> · 2026
+        </p>
+        <a href="#hero" class="back-to-top" id="backToTop" aria-label="Volver arriba">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
