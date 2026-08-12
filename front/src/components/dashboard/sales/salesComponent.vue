@@ -210,7 +210,7 @@
       <div class="quick-action-buttons flex items-center gap-2">
         <button
           @click="openQuickSaleModal"
-          class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-gradient-to-r from-amber-500 to-amber-600 text-white font-bold rounded-xl text-xs shadow-md shadow-amber-500/20 hover:shadow-lg hover:shadow-amber-500/30 hover:scale-[1.03] active:scale-[0.97] transition-all cursor-pointer"
+          class="btn-action-sale inline-flex items-center gap-1.5 px-3.5 py-2 font-bold rounded-xl text-xs shadow-md transition-all cursor-pointer"
           title="Venta Rápida de producto o monto sin código (F6)"
         >
           <span class="material-symbols-outlined text-base">bolt</span>
@@ -218,14 +218,14 @@
         </button>
         <button
           @click="showQuickInput = true"
-          class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-bold rounded-xl text-xs shadow-md shadow-emerald-500/20 hover:shadow-lg hover:shadow-emerald-500/30 hover:scale-[1.03] active:scale-[0.97] transition-all cursor-pointer"
+          class="btn-action-input inline-flex items-center gap-1.5 px-3.5 py-2 font-bold rounded-xl text-xs shadow-md transition-all cursor-pointer"
         >
           <span class="material-symbols-outlined text-base">add_circle</span>
           <span>Ingreso</span>
         </button>
         <button
           @click="showQuickOutput = true"
-          class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-gradient-to-r from-rose-500 to-rose-600 text-white font-bold rounded-xl text-xs shadow-md shadow-rose-500/20 hover:shadow-lg hover:shadow-rose-500/30 hover:scale-[1.03] active:scale-[0.97] transition-all cursor-pointer"
+          class="btn-action-output inline-flex items-center gap-1.5 px-3.5 py-2 font-bold rounded-xl text-xs shadow-md transition-all cursor-pointer"
         >
           <span class="material-symbols-outlined text-base">remove_circle</span>
           <span>Egreso</span>
@@ -732,8 +732,8 @@
           <div class="grid grid-cols-3 gap-3 mb-5">
             <div class="col-span-2">
               <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Precio / Monto ($)</label>
-              <div class="relative">
-                <span class="absolute left-3 top-2.5 font-bold text-slate-400">$</span>
+              <div class="flex items-center rounded-xl border border-slate-300 dark:border-slate-600 overflow-hidden bg-slate-50 dark:bg-slate-900 focus-within:border-amber-500 focus-within:ring-2 focus-within:ring-amber-500/20">
+                <span class="px-3.5 py-2.5 font-black text-sm text-slate-500 bg-slate-200/70 dark:bg-slate-800 border-r border-slate-300 dark:border-slate-700">$</span>
                 <input
                   ref="quickSalePriceInput"
                   v-model.number="quickSale.price"
@@ -742,7 +742,8 @@
                   min="0.01"
                   placeholder="0.00"
                   required
-                  class="w-full p-2.5 pl-7 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl font-black text-base text-slate-800 dark:text-white outline-none focus:border-amber-500"
+                  class="w-full py-2.5 px-3 font-black text-lg text-slate-900 dark:text-white bg-transparent outline-none border-none shadow-none"
+                  style="border: none !important; box-shadow: none !important; outline: none !important;"
                 />
               </div>
             </div>
@@ -753,7 +754,7 @@
                 type="number"
                 min="1"
                 required
-                class="w-full p-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl font-bold text-sm text-slate-800 dark:text-white text-center outline-none focus:border-amber-500"
+                class="w-full p-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-xl font-bold text-sm text-slate-800 dark:text-white text-center outline-none focus:border-amber-500"
               />
             </div>
           </div>
@@ -3873,14 +3874,39 @@ textarea:focus {
 .btn-search { width: 44px; height: 40px; margin: 4px; border-radius: .7rem; }
 
 .quick-action-buttons button {
-  min-width: 103px;
   min-height: 42px;
   border-radius: .75rem;
-  background: #fff;
-  box-shadow: 0 6px 18px rgba(31, 43, 65, .07);
 }
-.quick-action-buttons button:first-child { color: #00a875; background: #fff; border: 1px solid #e7eef0; }
-.quick-action-buttons button:last-child { color: #f04463; background: #fff; border: 1px solid #e7eef0; }
+.btn-action-sale {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+  color: #ffffff !important;
+  border: none !important;
+  box-shadow: 0 4px 14px rgba(245, 158, 11, .35) !important;
+}
+.btn-action-sale:hover {
+  background: linear-gradient(135deg, #d97706 0%, #b45309 100%) !important;
+  color: #ffffff !important;
+}
+.btn-action-input {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+  color: #ffffff !important;
+  border: none !important;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, .35) !important;
+}
+.btn-action-input:hover {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+  color: #ffffff !important;
+}
+.btn-action-output {
+  background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%) !important;
+  color: #ffffff !important;
+  border: none !important;
+  box-shadow: 0 4px 14px rgba(244, 63, 94, .35) !important;
+}
+.btn-action-output:hover {
+  background: linear-gradient(135deg, #e11d48 0%, #be123c 100%) !important;
+  color: #ffffff !important;
+}
 
 .main-content { align-items: stretch; margin-top: .25rem; }
 .cart-section, .summary-section { border-radius: 1.15rem; }
