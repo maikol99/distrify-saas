@@ -235,16 +235,20 @@ export function useTicket() {
   
   <div class="center bold" style="font-size: 15px; letter-spacing: 0.5px;">${shopNameDisplay}</div>
   <div class="star-divider">★</div>
+  
+  ${instagramHandle ? `
   <div class="center" style="font-size: 10px; margin-bottom: 4px; display: flex; align-items: center; justify-content: center;">
     ${instagramIconSvg}<span>${instagramHandle}</span>
-  </div>
+  </div>` : ''}
 
+  ${(addressStr || cityStr) ? `
   <div class="dashed-line"></div>
-
+  ${addressStr ? `
   <div class="center" style="font-size: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 2px;">
     ${locationIconSvg}<span>${addressStr}</span>
-  </div>
-  <div class="center" style="font-size: 10px;">${cityStr}</div>
+  </div>` : ''}
+  ${cityStr ? `<div class="center" style="font-size: 10px;">${cityStr}</div>` : ''}
+  ` : ''}
 
   <div class="dashed-line"></div>
 
