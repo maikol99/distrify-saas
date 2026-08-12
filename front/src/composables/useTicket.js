@@ -97,11 +97,11 @@ export function useTicket() {
     const formattedTime = `${hours}:${minutes}:${seconds}`;
 
     const itemsToShow = items || [];
-    const rawShopName = shopData?.name || "MAXIKIOSCO LA 10";
+    const rawShopName = shopData?.name || "Mi Negocio";
     const shopNameDisplay = rawShopName.toUpperCase();
-    const instagramHandle = shopData?.instagram || `@${rawShopName.toLowerCase().replace(/[^a-z0-9_.]/g, '')}`;
-    const addressStr = shopData?.address || "Lisandro de la Torre 1000";
-    const cityStr = shopData?.city ? `${shopData.city}, Córdoba, Argentina` : "Villa María, Córdoba, Argentina";
+    const instagramHandle = shopData?.instagram || "";
+    const addressStr = shopData?.address || "";
+    const cityStr = shopData?.city || "";
     const cashierName = userName || "Vendedor";
 
     // --- LOGO BADGE (Imagen real o SVG circular con estrellas) ---

@@ -708,17 +708,21 @@ export default {
         doc.setFontSize(14);
         doc.setFont("helvetica", "bold");
         const shopName =
-          this.globalStore?.shopData?.name || "Distribuidora SuperArte";
+          this.globalStore?.shopData?.name || "Mi Negocio";
         doc.text(shopName, pageWidth / 2, yPos + 5, { align: "center" });
         yPos += 8;
         doc.setFontSize(8);
         doc.setFont("helvetica", "normal");
-        const empresaInfo = [
-          this.globalStore?.shopData?.address ||
-          "Pasaje Vivero, B. San Cayetano, Nueva Esperanza",
-          this.globalStore?.shopData?.city || "Nueva Esperanza",
-          `Tel: ${this.globalStore?.shopData?.phone || "(11) 685-91078"}`,
-        ];
+        const empresaInfo = [];
+        if (this.globalStore?.shopData?.address) {
+          empresaInfo.push(this.globalStore.shopData.address);
+        }
+        if (this.globalStore?.shopData?.city) {
+          empresaInfo.push(this.globalStore.shopData.city);
+        }
+        if (this.globalStore?.shopData?.phone) {
+          empresaInfo.push(`Tel: ${this.globalStore.shopData.phone}`);
+        }
         empresaInfo.forEach((line) => {
           doc.text(line, pageWidth / 2, yPos, { align: "center" });
           yPos += 3;
