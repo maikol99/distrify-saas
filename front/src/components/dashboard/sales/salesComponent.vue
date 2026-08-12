@@ -209,6 +209,14 @@
       </div>
       <div class="quick-action-buttons flex items-center gap-2">
         <button
+          @click="openQuickSaleModal"
+          class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-gradient-to-r from-amber-500 to-amber-600 text-white font-bold rounded-xl text-xs shadow-md shadow-amber-500/20 hover:shadow-lg hover:shadow-amber-500/30 hover:scale-[1.03] active:scale-[0.97] transition-all cursor-pointer"
+          title="Venta Rápida de producto o monto sin código (F6)"
+        >
+          <span class="material-symbols-outlined text-base">bolt</span>
+          <span>Venta Rápida (F6)</span>
+        </button>
+        <button
           @click="showQuickInput = true"
           class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-bold rounded-xl text-xs shadow-md shadow-emerald-500/20 hover:shadow-lg hover:shadow-emerald-500/30 hover:scale-[1.03] active:scale-[0.97] transition-all cursor-pointer"
         >
@@ -672,6 +680,104 @@
         </div>
       </div>
     </div>
+
+    <!-- Modal Venta Rápida / Venta Libre sin Código -->
+    <Teleport to="body">
+    <div v-if="showQuickSale" class="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4" @click.self="showQuickSale = false">
+      <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 w-full max-w-md shadow-2xl border border-slate-100 dark:border-slate-700 animate-in fade-in zoom-in duration-150">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center font-bold">
+              <span class="material-symbols-outlined text-xl">bolt</span>
+            </div>
+            <div>
+              <h3 class="text-base font-black text-slate-800 dark:text-white">Venta Rápida</h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400">Para productos sin código de barras</p>
+            </div>
+          </div>
+          <button @click="showQuickSale = false" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer">
+            <span class="material-symbols-outlined text-xl">close</span>
+          </button>
+        </div>
+
+        <!-- Chips de conceptos rápidos -->
+        <div class="mb-4">
+          <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Conceptos Rápidos</label>
+          <div class="flex flex-wrap gap-1.5">
+            <button
+              v-for="chip in ['Pan', 'Caramelos', 'Cigarrillos', 'Hielo', 'Fotocopias', 'Bolsa', 'Varios']"
+              :key="chip"
+              type="button"
+              @click="setQuickSaleConcept(chip)"
+              class="px-2.5 py-1 text-xs font-bold rounded-lg bg-slate-100 dark:bg-slate-700/60 text-slate-700 dark:text-slate-200 hover:bg-amber-500 hover:text-white dark:hover:bg-amber-500 transition-all cursor-pointer"
+            >
+              {{ chip }}
+            </button>
+          </div>
+        </div>
+
+        <form @submit.prevent="submitQuickSale">
+          <div class="mb-3">
+            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Producto / Concepto</label>
+            <input
+              ref="quickSaleNameInput"
+              v-model="quickSale.name"
+              type="text"
+              placeholder="Ej: Pan, Caramelos sueltos, Fotocopias"
+              class="w-full p-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl font-bold text-sm text-slate-800 dark:text-white outline-none focus:border-amber-500"
+              @keypress.enter.prevent="$refs.quickSalePriceInput ? $refs.quickSalePriceInput.focus() : null"
+            />
+          </div>
+
+          <div class="grid grid-cols-3 gap-3 mb-5">
+            <div class="col-span-2">
+              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Precio / Monto ($)</label>
+              <div class="relative">
+                <span class="absolute left-3 top-2.5 font-bold text-slate-400">$</span>
+                <input
+                  ref="quickSalePriceInput"
+                  v-model.number="quickSale.price"
+                  type="number"
+                  step="0.01"
+                  min="0.01"
+                  placeholder="0.00"
+                  required
+                  class="w-full p-2.5 pl-7 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl font-black text-base text-slate-800 dark:text-white outline-none focus:border-amber-500"
+                />
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Cantidad</label>
+              <input
+                v-model.number="quickSale.quantity"
+                type="number"
+                min="1"
+                required
+                class="w-full p-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl font-bold text-sm text-slate-800 dark:text-white text-center outline-none focus:border-amber-500"
+              />
+            </div>
+          </div>
+
+          <div class="flex items-center justify-end gap-2.5">
+            <button
+              type="button"
+              @click="showQuickSale = false"
+              class="px-4 py-2.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 text-slate-700 dark:text-slate-200 font-bold rounded-xl text-xs transition-all cursor-pointer"
+            >
+              Cancelar (ESC)
+            </button>
+            <button
+              type="submit"
+              class="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold rounded-xl text-xs shadow-md shadow-amber-500/20 transition-all cursor-pointer flex items-center gap-1.5"
+            >
+              <span class="material-symbols-outlined text-base">bolt</span>
+              <span>Agregar al Carrito</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    </Teleport>
 
     <!-- Quick Input Modal -->
     <Teleport to="body">
@@ -1137,7 +1243,9 @@ export default {
       // Cambio calculator
       receivedAmount: 0,
       change: 0,
-      // Quick Ingreso/Egreso
+      // Quick Ingreso/Egreso/Venta Rápida
+      showQuickSale: false,
+      quickSale: { name: '', price: null, quantity: 1 },
       showQuickInput: false,
       showQuickOutput: false,
       quickInput: { description: '', total: 0, category: 'Ventas', paymentMethod: 'Efectivo' },
@@ -1428,6 +1536,41 @@ export default {
         this.showToast('Error al registrar egreso', 'danger');
       }
     },
+
+    openQuickSaleModal() {
+      this.quickSale = { name: '', price: null, quantity: 1 };
+      this.showQuickSale = true;
+      this.$nextTick(() => {
+        if (this.$refs.quickSaleNameInput) {
+          this.$refs.quickSaleNameInput.focus();
+        }
+      });
+    },
+
+    setQuickSaleConcept(conceptName) {
+      this.quickSale.name = conceptName;
+      this.$nextTick(() => {
+        if (this.$refs.quickSalePriceInput) {
+          this.$refs.quickSalePriceInput.focus();
+        }
+      });
+    },
+
+    submitQuickSale() {
+      if (!this.quickSale.price || this.quickSale.price <= 0) {
+        this.showToast('Ingresá un monto válido mayor a 0', 'danger');
+        return;
+      }
+      const name = (this.quickSale.name && this.quickSale.name.trim()) ? this.quickSale.name.trim() : 'Venta Rápida';
+      this.salesStore.addCustomItemToCart(name, this.quickSale.price, this.quickSale.quantity);
+      this.showQuickSale = false;
+      this.showToast(`"${name}" agregado al carrito ($${this.quickSale.price})`, 'success');
+      this.$nextTick(() => {
+        if (this.$refs.productSearch) {
+          this.$refs.productSearch.focus();
+        }
+      });
+    },
   },
 
   async mounted() {
@@ -1435,6 +1578,11 @@ export default {
     hotkeys("f4", async (event) => {
       event.preventDefault();
       await this.createSale();
+    });
+
+    hotkeys("f6", (event) => {
+      event.preventDefault();
+      this.openQuickSaleModal();
     });
 
     hotkeys("esc", (event) => {
@@ -1468,6 +1616,7 @@ export default {
   beforeUnmount() {
     // Limpiar atajos de teclado
     hotkeys.unbind("f4");
+    hotkeys.unbind("f6");
     hotkeys.unbind("esc");
     clearTimeout(this.clientSearchTimeout);
   },

@@ -343,6 +343,39 @@ export const useSalesStore = defineStore("sales", {
       this.closeVariantModal();
     },
 
+    // Permite agregar un item de Venta Rápida / Venta Libre (para productos sin código)
+    addCustomItemToCart(name, price, quantity = 1) {
+      const customName = (name && name.trim()) ? name.trim() : "Venta Rápida";
+      const numPrice = Math.max(0, Number(price) || 0);
+      const numQty = Math.max(1, Number(quantity) || 1);
+      const customId = "custom-" + Date.now() + "-" + Math.random().toString(36).substring(2, 7);
+
+      const cartItem = {
+        cartItemId: customId,
+        _id: customId,
+        productId: customId,
+        name: customName,
+        sellPrice: numPrice,
+        quantity: numQty,
+        originalPrice: numPrice,
+        stock: 999999,
+        variants: null,
+        product: {
+          _id: customId,
+          name: customName,
+          sellPrice: numPrice,
+          quantity: 999999,
+        },
+        isCustom: true,
+      };
+
+      this.cartItems.push(cartItem);
+      this.updateArrayForSale();
+
+      this.searchQuery = "";
+      this.searchResults = [];
+    },
+
     // Método para actualizar arrayForSale con variantes
     updateArrayForSale() {
       this.arrayForSale = [];
