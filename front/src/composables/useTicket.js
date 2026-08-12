@@ -48,7 +48,8 @@ function formatMoneyAR(amount) {
 
 /**
  * Composable para generar y emitir tickets de venta.
- * Diseño exacto al mockup del ticket argentino con tipografía monocroma y secciones.
+ * Usa SVG nativos monocromo para iconos e imágenes reales del logo,
+ * evitando cajas distorsionadas de emojis en impresoras térmicas.
  */
 export function useTicket() {
   /**
@@ -96,11 +97,44 @@ export function useTicket() {
     const formattedTime = `${hours}:${minutes}:${seconds}`;
 
     const itemsToShow = items || [];
-    const shopName = (shopData?.name || "MI KIOSCO").toUpperCase();
-    const instagramHandle = shopData?.instagram || `@${shopName.toLowerCase().replace(/[^a-z0-9]/g, '')}`;
+    const rawShopName = shopData?.name || "MAXIKIOSCO LA 10";
+    const shopNameDisplay = rawShopName.toUpperCase();
+    const instagramHandle = shopData?.instagram || `@${rawShopName.toLowerCase().replace(/[^a-z0-9_.]/g, '')}`;
     const addressStr = shopData?.address || "Lisandro de la Torre 1000";
     const cityStr = shopData?.city ? `${shopData.city}, Córdoba, Argentina` : "Villa María, Córdoba, Argentina";
     const cashierName = userName || "Vendedor";
+
+    // --- LOGO BADGE (Imagen real o SVG circular con estrellas) ---
+    let logoHtml = "";
+    const logoUrl = shopData?.image || shopData?.shopImage?.secure_url;
+
+    if (logoUrl) {
+      logoHtml = `<div style="text-align:center;margin-bottom:6px;">
+        <img src="${logoUrl}" style="max-width:70px;max-height:70px;border-radius:50%;object-fit:cover;border:2px solid #000;" />
+      </div>`;
+    } else {
+      // Badge circular vectorial exacto al diseño "LA 10 MAXIKIOSCO"
+      logoHtml = `
+      <div style="text-align:center;margin-bottom:6px;">
+        <svg width="68" height="68" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto;">
+          <circle cx="50" cy="50" r="46" fill="none" stroke="#000" stroke-width="3" />
+          <circle cx="50" cy="50" r="41" fill="none" stroke="#000" stroke-width="1.5" />
+          <text x="50" y="38" font-family="'Courier New', monospace" font-weight="bold" font-size="12" text-anchor="middle" fill="#000">LA 10</text>
+          <text x="50" y="58" font-family="'Courier New', monospace" font-weight="bold" font-size="22" text-anchor="middle" fill="#000">10</text>
+          <text x="20" y="52" font-size="10" text-anchor="middle" fill="#000">★</text>
+          <text x="80" y="52" font-size="10" text-anchor="middle" fill="#000">★</text>
+          <path id="circleTextPath" d="M 22 70 A 32 32 0 0 0 78 70" fill="none" />
+          <text font-family="'Courier New', monospace" font-size="7" font-weight="bold" fill="#000">
+            <textPath href="#circleTextPath" startOffset="50%" text-anchor="middle">MAXIKIOSCO</textPath>
+          </text>
+        </svg>
+      </div>`;
+    }
+
+    // --- ICONOS SVG VECTORIALES MONOCROMO (Evita cajas distorsionadas de emojis en impresoras térmicas) ---
+    const instagramIconSvg = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" style="vertical-align:middle;margin-right:3px;display:inline-block;"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>`;
+    const locationIconSvg = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" style="vertical-align:middle;margin-right:3px;display:inline-block;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>`;
+    const heartIconSvg = `<svg width="12" height="12" viewBox="0 0 24 24" fill="#000" stroke="#000" stroke-width="1" style="vertical-align:middle;margin-right:3px;display:inline-block;"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;
 
     // --- SECCIÓN 3: DETALLE DE PRODUCTOS ---
     const productRows = itemsToShow.map((item) => {
@@ -114,13 +148,13 @@ export function useTicket() {
         const parts = [];
         if (item.variants.size) parts.push(`Talla: ${item.variants.size}`);
         if (item.variants.color) parts.push(`Color: ${item.variants.color}`);
-        variantText = `<div style="font-size:9px;color:#555;font-style:italic;margin-left:14px;">${parts.join(" - ")}</div>`;
+        variantText = `<div style="font-size:9px;color:#555;font-style:italic;margin-left:32px;">${parts.join(" - ")}</div>`;
       }
 
       return `
-        <div style="margin: 3px 0; font-size: 11px;">
-          <div style="display: grid; grid-template-columns: 24px 1fr 68px 68px; align-items: baseline;">
-            <span>${qty}</span>
+        <div style="margin: 4px 0; font-size: 11px;">
+          <div style="display: grid; grid-template-columns: 32px 1fr 68px 68px; align-items: baseline;">
+            <span style="font-weight:bold;">${qty}</span>
             <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-right: 4px;">${name}</span>
             <span style="text-align: right;">${formatMoneyAR(unitPrice)}</span>
             <span style="text-align: right; font-weight: bold;">${formatMoneyAR(itemTotal)}</span>
@@ -150,7 +184,7 @@ export function useTicket() {
     const internalCodeStr = `75${Date.now().toString().slice(-10)}`;
     const barcodeNumberStr = `${ticketNumber.replace(/[^0-9]/g, '')}${day}${month}${year}${hours}${minutes}`;
 
-    // --- PLANTILLA HTML EXACTA AL DISEÑO TICKET ARGENTINO ---
+    // --- PLANTILLA HTML EXACTA AL DISEÑO TICKET ARGENTINO CON VECTORES ---
     const ticketHtml = `<!DOCTYPE html>
 <html>
 <head>
@@ -192,36 +226,24 @@ export function useTicket() {
       margin: 4px 0;
       letter-spacing: 2px;
     }
-    .logo-badge {
-      width: 56px;
-      height: 56px;
-      border: 3px double #000;
-      border-radius: 50%;
-      margin: 0 auto 6px auto;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      font-size: 14px;
-      text-align: center;
-      line-height: 1.1;
-    }
   </style>
 </head>
 <body>
 
-  <!-- SECCIÓN 1: ENCABEZADO -->
-  <div class="logo-badge">
-    LA 10
-  </div>
+  <!-- SECCIÓN 1: ENCABEZADO Y LOGO BADGE -->
+  ${logoHtml}
   
-  <div class="center bold" style="font-size: 15px; letter-spacing: 0.5px;">${shopName}</div>
+  <div class="center bold" style="font-size: 15px; letter-spacing: 0.5px;">${shopNameDisplay}</div>
   <div class="star-divider">★</div>
-  <div class="center" style="font-size: 10px; margin-bottom: 4px;">📷 ${instagramHandle}</div>
+  <div class="center" style="font-size: 10px; margin-bottom: 4px; display: flex; align-items: center; justify-content: center;">
+    ${instagramIconSvg}<span>${instagramHandle}</span>
+  </div>
 
   <div class="dashed-line"></div>
 
-  <div class="center" style="font-size: 10px;">📍 ${addressStr}</div>
+  <div class="center" style="font-size: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 2px;">
+    ${locationIconSvg}<span>${addressStr}</span>
+  </div>
   <div class="center" style="font-size: 10px;">${cityStr}</div>
 
   <div class="dashed-line"></div>
@@ -239,9 +261,9 @@ export function useTicket() {
 
   <div class="dashed-line"></div>
 
-  <!-- SECCIÓN 3: DETALLE DE PRODUCTOS -->
+  <!-- SECCIÓN 3: DETALLE DE PRODUCTOS CON ESPACIADO CORREGIDO -->
   <div style="font-size: 10px; font-weight: bold; margin-bottom: 4px;">
-    <div style="display: grid; grid-template-columns: 24px 1fr 68px 68px;">
+    <div style="display: grid; grid-template-columns: 32px 1fr 68px 68px;">
       <span>CANT.</span>
       <span>DESCRIPCIÓN</span>
       <span class="right">P.UNIT</span>
@@ -289,12 +311,12 @@ export function useTicket() {
 
   <div class="dashed-line"></div>
 
-  <!-- SECCIÓN 5: MENSAJE -->
-  <div class="center bold" style="font-size: 11px; margin-top: 4px;">
-    💙 ¡GRACIAS POR TU COMPRA!
+  <!-- SECCIÓN 5: MENSAJE CON ICONO SVG HEART -->
+  <div class="center bold" style="font-size: 11px; margin-top: 4px; display: flex; align-items: center; justify-content: center;">
+    ${heartIconSvg} <span>¡GRACIAS POR TU COMPRA!</span>
   </div>
   <div class="center" style="font-size: 10px; margin-bottom: 4px;">
-    Te esperamos siempre en ${shopData?.name || "nuestro local"}
+    Te esperamos siempre en ${rawShopName}
   </div>
 
   <div class="dashed-line"></div>
@@ -326,8 +348,8 @@ export function useTicket() {
         const formData = new FormData();
         formData.append("file", htmlBlob, `ticket-${ticketNumber}.html`);
         formData.append("email", clientEmail);
-        formData.append("subject", `Ticket de compra - ${shopName}`);
-        formData.append("businessName", shopName);
+        formData.append("subject", `Ticket de compra - ${shopNameDisplay}`);
+        formData.append("businessName", shopNameDisplay);
         formData.append("total", total.toFixed(2));
         formData.append("date", now.toISOString());
         formData.append(
