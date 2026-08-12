@@ -3,6 +3,7 @@ import moment from "moment";
 import numeral from "numeral";
 import api from "@/config/axios.config";
 import { useGlobalStore } from "./globalStore";
+import { useTicket } from "@/composables/useTicket";
 import jsPDF from "jspdf";
 
 export const useSalesListStore = defineStore("salesList", {
@@ -245,7 +246,7 @@ export const useSalesListStore = defineStore("salesList", {
         const sale = this.selectedSale;
 
         const itemsMapped = (sale.productDetails || []).map((detail) => {
-          let name = "Producto";
+          let name = detail.productName || "Producto";
           if (detail.productId && typeof detail.productId === "object" && detail.productId.name) {
             name = detail.productId.name;
           } else if (typeof detail.productId === "string") {
@@ -254,13 +255,16 @@ export const useSalesListStore = defineStore("salesList", {
           return {
             name,
             quantity: detail.quantity || 1,
-            sellPrice: detail.unitPrice || 0,
+            sellPrice: detail.unitPrice || detail.salePrice || 0,
+            variants: detail.variants && detail.variants.length > 0 ? detail.variants[0] : null,
           };
         });
 
         let clientNameStr = "CONSUMIDOR FINAL";
         if (sale.clientId && typeof sale.clientId === "object") {
           clientNameStr = `${sale.clientId.name || ""} ${sale.clientId.lastName || ""}`.trim() || "CONSUMIDOR FINAL";
+        } else if (sale.clientName) {
+          clientNameStr = sale.clientName;
         }
 
         return await emitirTicket({
@@ -268,9 +272,13 @@ export const useSalesListStore = defineStore("salesList", {
           shopData: this.globalStore.shopData,
           ticketType: "Ticket",
           clientName: clientNameStr,
-          userName: this.globalStore.userName(),
-          subtotal: sale.total || 0,
+          userName: sale.cashier || this.globalStore.userName(),
+          subtotal: sale.subtotal || sale.total || 0,
           total: sale.total || 0,
+          tax: sale.iva || 0,
+          ivaEnabled: (sale.iva || 0) > 0,
+          discountValue: sale.discount || 0,
+          surchargeValue: sale.surcharge || 0,
           paymentMethod: sale.paymentMethod || "Efectivo",
           paymentMethods: sale.paymentMethods || [],
           saleNumber: sale._id ? `TK-${sale._id.slice(-8)}` : "",

@@ -380,12 +380,7 @@ export function useTicket() {
       iframe.contentDocument.write(ticketHtml);
       iframe.contentDocument.close();
 
-      iframe.contentWindow.onafterprint = () => {
-        try { document.body.removeChild(iframe); } catch (_) {}
-        resolve(true);
-      };
-
-      setTimeout(() => {
+      const triggerPrint = () => {
         try {
           iframe.contentWindow.focus();
           iframe.contentWindow.print();
@@ -398,7 +393,38 @@ export function useTicket() {
           try { document.body.removeChild(iframe); } catch (_) {}
           resolve(true);
         }, 10000);
-      }, 300);
+      };
+
+      // Esperar a que cargue la imagen del logo antes de imprimir
+      const imgs = iframe.contentDocument.getElementsByTagName("img");
+      if (imgs.length > 0) {
+        let loadedCount = 0;
+        const onImgLoad = () => {
+          loadedCount++;
+          if (loadedCount === imgs.length) {
+            triggerPrint();
+          }
+        };
+
+        for (let i = 0; i < imgs.length; i++) {
+          if (imgs[i].complete) {
+            onImgLoad();
+          } else {
+            imgs[i].addEventListener("load", onImgLoad);
+            imgs[i].addEventListener("error", onImgLoad); // Si falla la descarga, imprimimos igual para no trabar
+          }
+        }
+
+        // Respaldo por si la red va muy lenta (máximo 2.5s)
+        setTimeout(() => {
+          if (loadedCount < imgs.length) {
+            triggerPrint();
+          }
+        }, 2500);
+      } else {
+        // Si no hay imágenes, esperar un instante y gatillar impresión
+        setTimeout(triggerPrint, 300);
+      }
     });
   }
 
