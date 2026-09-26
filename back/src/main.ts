@@ -57,6 +57,12 @@ async function bootstrap() {
     credentials: true,
   });
 
+  // Health check endpoint para UptimeRobot (mantiene el servidor activo en Render)
+  const httpAdapter = app.getHttpAdapter();
+  httpAdapter.get('/health', (req, res) => {
+    res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+  });
+
   const port = process.env.PORT || 3000;
   await app.listen(port);
 }
