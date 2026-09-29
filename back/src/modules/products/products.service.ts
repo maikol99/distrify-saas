@@ -288,6 +288,16 @@ export class ProductsService {
         }
       }
 
+      // Normalizar categoryId: puede llegar como string, ObjectId o como objeto populado { _id, name }
+      if (body.categoryId) {
+        const catId = (body.categoryId as any)?._id ?? body.categoryId;
+        if (typeof catId === 'string' && Types.ObjectId.isValid(catId)) {
+          (body as any).categoryId = new Types.ObjectId(catId);
+        } else if (typeof catId === 'object' && catId.toString) {
+          (body as any).categoryId = catId; // ya es ObjectId
+        }
+      }
+
       const updatedProduct = await this.productsModel.findByIdAndUpdate(
         { _id: id },
         { $set: body },
