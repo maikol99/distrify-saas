@@ -227,22 +227,28 @@ export class AuthService {
   //Logear usuario
   async login(user: any): Promise<LoginResponse> {
     try {
-      // Verificar que el email esté verificado
-      if (!user.isEmailVerified) {
-        throw new UnauthorizedException(
-          'Debes verificar tu correo electrónico antes de iniciar sesión. Revisá tu bandeja de entrada.',
-        );
-      }
+      const isDesktop =
+        this.configService.get<boolean>('DESKTOP_MODE') === true ||
+        this.configService.get<string>('DESKTOP_MODE') === 'true';
 
-      // Verificar trial de 7 días (solo para usuarios no premium)
-      if (!user.isPremium && user.trialStartDate) {
-        const trialDays = 7;
-        const trialEnd = new Date(user.trialStartDate);
-        trialEnd.setDate(trialEnd.getDate() + trialDays);
-        if (new Date() > trialEnd) {
+      if (!isDesktop) {
+        // Verificar que el email esté verificado
+        if (!user.isEmailVerified) {
           throw new UnauthorizedException(
-            'Tu período de prueba de 7 días ha finalizado. Actualizá tu plan para continuar usando Alevia Pay.',
+            'Debes verificar tu correo electrónico antes de iniciar sesión. Revisá tu bandeja de entrada.',
           );
+        }
+
+        // Verificar trial de 7 días (solo para usuarios no premium)
+        if (!user.isPremium && user.trialStartDate) {
+          const trialDays = 7;
+          const trialEnd = new Date(user.trialStartDate);
+          trialEnd.setDate(trialEnd.getDate() + trialDays);
+          if (new Date() > trialEnd) {
+            throw new UnauthorizedException(
+              'Tu período de prueba de 7 días ha finalizado. Actualizá tu plan para continuar usando Alevia Pay.',
+            );
+          }
         }
       }
 
@@ -297,21 +303,79 @@ export class AuthService {
 
   //Registro de usuario
   async register(createUserDto: RegisterUserDto): Promise<RegisterResponse> {
+    const isDesktop =
+      this.configService.get<boolean>('DESKTOP_MODE') === true ||
+      this.configService.get<string>('DESKTOP_MODE') === 'true';
+
+    const { username, password, email } = createUserDto;
+    const trimmedUsername = username.trim();
+    const lowerCaseEmail = email.toLowerCase().trim();
+
+    // Validaciones
+    await this.validateRegistrationData(
+      trimmedUsername,
+      lowerCaseEmail,
+      password,
+    );
+
+    // En Desktop / Standalone MongoDB no usamos transacciones para evitar requerir Replica Set
+    if (isDesktop) {
+      const existingUser = await this.usersModel.findOne({
+        $or: [{ email: lowerCaseEmail }, { username: trimmedUsername }],
+      });
+
+      if (existingUser) {
+        if (existingUser.email === lowerCaseEmail) {
+          return { success: false, message: 'El correo electrónico ya está registrado' };
+        }
+        return { success: false, message: 'El nombre de usuario ya existe' };
+      }
+
+      let savedShop = null;
+      if (createUserDto.createShop === true) {
+        const newShop = new this.shopsModel({
+          name: 'Mi Negocio Local',
+          email: lowerCaseEmail,
+          isFirstLogin: true,
+          isCentral: true,
+        });
+        savedShop = await newShop.save();
+      }
+
+      const hashedPassword = await this.hashPassword(password);
+      const newUser = new this.usersModel({
+        ...createUserDto,
+        username: trimmedUsername,
+        email: lowerCaseEmail,
+        password: hashedPassword,
+        role: 'ADMIN',
+        createdAt: new Date(),
+        lastLogin: new Date(),
+        verificationToken: null,
+        isEmailVerified: true,
+        phone: createUserDto.phone || null,
+        shopId: createUserDto.createShop === true ? savedShop._id : createUserDto.shopId,
+        trialStartDate: new Date(),
+        isPremium: true,
+      });
+
+      const savedUser = await newUser.save();
+
+      return {
+        success: true,
+        message: 'Usuario creado correctamente',
+        user: {
+          id: savedUser._id.toString(),
+          username: savedUser.username,
+          email: savedUser.email,
+        },
+      };
+    }
+
     const session = await this.usersModel.db.startSession();
 
     try {
       session.startTransaction();
-
-      const { username, password, email } = createUserDto;
-      const trimmedUsername = username.trim();
-      const lowerCaseEmail = email.toLowerCase().trim();
-
-      // Validaciones
-      await this.validateRegistrationData(
-        trimmedUsername,
-        lowerCaseEmail,
-        password,
-      );
 
       // Verificar duplicados en una sola consulta dentro de la transacción
       const existingUser = await this.usersModel

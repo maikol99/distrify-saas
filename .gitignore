@@ -22,3 +22,7 @@ coverage/
 *.pfx
 .vercel
 .env*
+
+desktop/node_modules/
+desktop/release/
+desktop/dist/

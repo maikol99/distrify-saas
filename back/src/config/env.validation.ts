@@ -16,25 +16,35 @@ class EnvironmentVariables {
   @IsOptional()
   PORT: number = 3000;
 
+  @IsOptional()
+  DESKTOP_MODE: boolean = false;
+
   @IsString()
+  @IsOptional()
   MONGO_DB_URI: string;
 
   @IsString()
+  @IsOptional()
   MONGO_DB_NAME: string;
 
   @IsString()
+  @IsOptional()
   JWT_SECRET: string;
 
   @IsString()
+  @IsOptional()
   ENCRYPTION_KEY: string;
 
   @IsString()
+  @IsOptional()
   FRONTEND_URL: string;
 
   @IsString()
+  @IsOptional()
   RESEND_API_KEY: string;
 
   @IsString()
+  @IsOptional()
   EMAIL_FROM: string;
 
   // ─── Plan Limits (con defaults seguros) ────────────────────────────────────
@@ -56,6 +66,20 @@ class EnvironmentVariables {
 }
 
 export function validate(config: Record<string, any>) {
+  const isDesktop = config.DESKTOP_MODE === 'true' || config.DESKTOP_MODE === true;
+
+  // Inyectar defaults seguros para modo offline si no están presentes
+  if (isDesktop) {
+    config.MONGO_DB_URI = config.MONGO_DB_URI || 'mongodb://127.0.0.1:27017';
+    config.MONGO_DB_NAME = config.MONGO_DB_NAME || 'alevia_desktop';
+    config.JWT_SECRET = config.JWT_SECRET || 'alevia_desktop_offline_jwt_secret_key_2026';
+    config.ENCRYPTION_KEY = config.ENCRYPTION_KEY || 'alevia_desktop_enc_key_32chars!';
+    config.FRONTEND_URL = config.FRONTEND_URL || 'http://localhost:3000';
+    config.RESEND_API_KEY = config.RESEND_API_KEY || 'desktop_offline_resend_mock';
+    config.EMAIL_FROM = config.EMAIL_FROM || 'soporte@alevia.local';
+    config.DESKTOP_MODE = true;
+  }
+
   const validatedConfig = plainToInstance(
     EnvironmentVariables,
     config,
