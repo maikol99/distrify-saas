@@ -136,9 +136,15 @@ export const useStockStore = defineStore("stock", {
         this.loading = false;
       }
     },
+    async applyFilters() {
+      this.pagination.page = 1;
+      await this.filterProducts();
+    },
+
     async filterProducts() {
       this.loading = true;
       this.filtersObject.filtersApplied = true;
+      this.searchNameApplied = false; // Los filtros tienen prioridad sobre la búsqueda previa
       try {
         const shopId = this.shopId();
         const urlParams = new URLSearchParams();

@@ -234,7 +234,7 @@
           </div>
         </div>
         <div class="filter-actions">
-          <button @click="store.filterProducts" class="btn-primary">
+          <button @click="store.applyFilters()" class="btn-primary">
             <i class="fas fa-filter"></i> Aplicar filtros
           </button>
         </div>
