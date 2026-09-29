@@ -231,7 +231,7 @@ export const useSalesStore = defineStore("sales", {
 
         // PASO 2: Búsqueda por nombre/descripción (con combos)
         const [productsResponse, promosResponse] = await Promise.all([
-          api.get(`/products/get/search-product/${shopId}?name=${encodeURIComponent(query)}`),
+          api.get(`/products/get/search-product/${shopId}?name=${encodeURIComponent(query)}&limit=50`),
           api.get(`/promotions/get/${shopId}?search=${encodeURIComponent(query)}&isActive=true&type=combo&page=1&limit=20`).catch(() => ({ data: { success: false } }))
         ]);
 
