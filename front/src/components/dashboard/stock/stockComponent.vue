@@ -630,7 +630,7 @@
 
   <editProduct
     v-if="showingEditProduct"
-    @close="showingEditProduct = false"
+    @close="showingEditProduct = false; store.loadData()"
     :productId="productId"
   ></editProduct>
 
@@ -816,6 +816,7 @@ export default {
         message: "Producto actualizado exitosamente",
         state: "success",
       };
+      this.store.loadData();
     },
     handleQuickUpdateError(error) {
       this.showingQuickUpdate = false;
