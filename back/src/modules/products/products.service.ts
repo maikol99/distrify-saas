@@ -8,6 +8,7 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Products } from './products.schema';
+import { Categories } from '../categories/categories.schema';
 import { v2 as cloudinary, v2 } from 'cloudinary';
 import toStream = require('buffer-to-stream');
 import { ConfigService } from '@nestjs/config';
@@ -19,6 +20,8 @@ import {
   ProductUpdateTypeEnum,
 } from './product.enum';
 import { PlanLimitsService } from '../plan-limits/plan-limits.service';
+import * as fs from 'fs';
+import { join } from 'path';
 
 @Injectable()
 export class ProductsService {
@@ -26,6 +29,7 @@ export class ProductsService {
 
   constructor(
     @InjectModel(Products.name) private productsModel: Model<Products>,
+    @InjectModel(Categories.name) private categoriesModel: Model<Categories>,
     private configService: ConfigService,
     private planLimitsService: PlanLimitsService,
   ) {
@@ -91,13 +95,28 @@ export class ProductsService {
           : shopId,
       };
 
-      // Agregar filtro de búsqueda si se proporciona
+      // Agregar filtro de búsqueda si se proporciona (incluyendo categoría)
       if (search && search.trim()) {
-        filter.$or = [
-          { name: { $regex: search.trim(), $options: 'i' } },
-          { code: { $regex: search.trim(), $options: 'i' } },
-          { description: { $regex: search.trim(), $options: 'i' } },
+        const searchRegex = new RegExp(search.trim(), 'i');
+        const matchedCategories = await this.categoriesModel
+          .find({
+            shopId: filter.shopId,
+            name: searchRegex,
+          })
+          .select('_id')
+          .lean();
+        const matchedCatIds = matchedCategories.map((c) => c._id);
+
+        const orConditions: any[] = [
+          { name: searchRegex },
+          { code: searchRegex },
+          { description: searchRegex },
+          { category: searchRegex },
         ];
+        if (matchedCatIds.length > 0) {
+          orConditions.push({ categoryId: { $in: matchedCatIds } });
+        }
+        filter.$or = orConditions;
       }
 
       // Filtro por ubicación de stock
@@ -344,13 +363,28 @@ export class ProductsService {
         ? { $in: [shopId, new Types.ObjectId(shopId)] }
         : shopId;
 
+      const matchedCategories = await this.categoriesModel
+        .find({
+          shopId: shopIdFilter,
+          name: regex,
+        })
+        .select('_id')
+        .lean();
+      const matchedCatIds = matchedCategories.map((c) => c._id);
+
+      const orConditions: any[] = [
+        { name: regex },
+        { code: regex },
+        { description: regex },
+        { category: regex },
+      ];
+      if (matchedCatIds.length > 0) {
+        orConditions.push({ categoryId: { $in: matchedCatIds } });
+      }
+
       const searchFilter = {
         shopId: shopIdFilter,
-        $or: [
-          { name: regex },
-          { code: regex },
-          { description: regex },
-        ],
+        $or: orConditions,
       };
 
       const products = await this.productsModel
@@ -440,6 +474,24 @@ export class ProductsService {
   async uploadImage(
     file: Express.Multer.File,
   ): Promise<{ secure_url: string; public_id: string }> {
+    const isDesktop =
+      this.configService.get<boolean>('DESKTOP_MODE') === true ||
+      this.configService.get<string>('DESKTOP_MODE') === 'true' ||
+      !this.configService.get<string>('CLOUDINARY_API_KEY');
+
+    if (isDesktop) {
+      const uploadDir = join(process.cwd(), 'uploads', 'products');
+      await fs.promises.mkdir(uploadDir, { recursive: true });
+      const filename = `${Date.now()}-${file.originalname.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
+      const filePath = join(uploadDir, filename);
+      await fs.promises.writeFile(filePath, file.buffer);
+      const port = this.configService.get<number>('PORT', 3000);
+      return {
+        secure_url: `http://localhost:${port}/uploads/products/${filename}`,
+        public_id: `local_${filename}`,
+      };
+    }
+
     return new Promise((resolve, reject) => {
       const upload = v2.uploader.upload_stream((error, result) => {
         if (error) return reject(error);
@@ -455,6 +507,15 @@ export class ProductsService {
 
   //Eliminar una imagen de producto
   async deleteImage(publicId: string): Promise<any> {
+    if (publicId && publicId.startsWith('local_')) {
+      const filename = publicId.replace('local_', '');
+      const filePath = join(process.cwd(), 'uploads', 'products', filename);
+      try {
+        await fs.promises.unlink(filePath);
+      } catch (_) {}
+      return { result: 'ok' };
+    }
+
     return new Promise((resolve, reject) => {
       v2.uploader.destroy(publicId, (error, result) => {
         if (error) return reject(error);

@@ -6,6 +6,7 @@ import { Products, ProductsSchema } from './products.schema';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Shops, ShopsSchema } from '../shops/shops.schema';
+import { Categories, CategoriesSchema } from '../categories/categories.schema';
 import { PlanLimitsModule } from '../plan-limits/plan-limits.module';
 
 @Module({
@@ -13,6 +14,7 @@ import { PlanLimitsModule } from '../plan-limits/plan-limits.module';
     MongooseModule.forFeature([
       { name: Products.name, schema: ProductsSchema },
       { name: Shops.name, schema: ShopsSchema },
+      { name: Categories.name, schema: CategoriesSchema },
     ]),
     JwtModule.registerAsync({
       imports: [ConfigModule],

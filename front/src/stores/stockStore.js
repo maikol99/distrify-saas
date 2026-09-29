@@ -143,8 +143,19 @@ export const useStockStore = defineStore("stock", {
         const shopId = this.shopId();
         const urlParams = new URLSearchParams();
 
-        if (this.filtersObject.filters.categoryId) {
-          urlParams.append("categoryId", this.filtersObject.filters.categoryId);
+        let catId = this.filtersObject.filters.categoryId;
+        if (!catId && this.filtersObject.categorySearchQuery && this.filtersObject.categorySearchQuery.trim()) {
+          const queryText = this.filtersObject.categorySearchQuery.trim().toLowerCase();
+          const matchingCat = (this.categories || []).find(
+            (c) => c.name && c.name.toLowerCase() === queryText
+          );
+          if (matchingCat) {
+            catId = matchingCat._id;
+          }
+        }
+
+        if (catId) {
+          urlParams.append("categoryId", catId);
         }
 
         if (this.filtersObject.filters.supplierId) {
