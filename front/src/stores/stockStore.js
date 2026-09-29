@@ -485,7 +485,8 @@ export const useStockStore = defineStore("stock", {
     // Métodos de navegación de paginación
     async goToPage(page) {
       if (page >= 1 && page <= this.pagination.totalPages) {
-        await this.fetchProducts(page, this.pagination.limit);
+        this.pagination.page = page;
+        await this.loadData();
       }
     },
 
