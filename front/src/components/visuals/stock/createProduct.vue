@@ -26,8 +26,15 @@
             </div>
             <div class="form-group">
               <label for="code">Código del Producto *</label>
-              <input id="code" v-model="product.code" type="text" class="form-control" :class="{ error: errors.code }"
-                placeholder="Código único del producto" required />
+              <div class="code-input-wrapper">
+                <input id="code" v-model="product.code" type="text" class="form-control" :class="{ error: errors.code }"
+                  placeholder="Código único del producto" required />
+                <button type="button" @click="generateCode" class="btn-generate-code" title="Generar código interno automático para productos sin código de fábrica">
+                  <i class="fas fa-barcode"></i>
+                  Generar
+                </button>
+              </div>
+              <span class="code-hint">¿El producto no tiene código de fábrica? Hacé clic en "Generar"</span>
               <span v-if="errors.code" class="error-message">{{
                 errors.code
               }}</span>
@@ -600,6 +607,22 @@ export default {
     },
   },
   methods: {
+    // Genera un código EAN-13 interno (prefijo 2 = reservado para uso interno, compatible con scanner y ticket SVG)
+    generateCode() {
+      // El prefijo '2' está reservado por GS1 para codificación interna de cada empresa
+      let digits = '2';
+      for (let i = 0; i < 11; i++) {
+        digits += Math.floor(Math.random() * 10).toString();
+      }
+      // Calcular dígito verificador EAN-13
+      let sum = 0;
+      for (let i = 0; i < 12; i++) {
+        sum += parseInt(digits[i]) * (i % 2 === 0 ? 1 : 3);
+      }
+      const checkDigit = (10 - (sum % 10)) % 10;
+      this.product.code = digits + checkDigit;
+    },
+
     // Métodos para manejo de imágenes
     handleFileSelect(event) {
       const files = Array.from(event.target.files);
@@ -2011,5 +2034,48 @@ textarea.form-control {
 
 .mb-4 {
   margin-bottom: 1rem;
+}
+
+/* Generador de código interno */
+.code-input-wrapper {
+  display: flex;
+  gap: 0.5rem;
+  align-items: stretch;
+}
+
+.code-input-wrapper .form-control {
+  flex: 1;
+}
+
+.btn-generate-code {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1rem;
+  background-color: #f9931e;
+  color: white;
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.2s ease;
+}
+
+.btn-generate-code:hover {
+  background-color: #e8851b;
+}
+
+.btn-generate-code i {
+  font-size: 0.9rem;
+}
+
+.code-hint {
+  display: block;
+  font-size: 0.72rem;
+  color: #6b7280;
+  margin-top: 0.3rem;
+  font-style: italic;
 }
 </style>

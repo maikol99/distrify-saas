@@ -56,15 +56,22 @@
             </div>
 
             <div class="form-group">
-              <label for="description">Código de barras</label>
-              <input
-                id="name"
-                v-model="product.code"
-                type="text"
-                class="form-control"
-                placeholder="Ingresa el código de barras del producto"
-                required
-              />
+              <label for="code">Código de barras</label>
+              <div class="code-input-wrapper">
+                <input
+                  id="code"
+                  v-model="product.code"
+                  type="text"
+                  class="form-control"
+                  placeholder="Ingresa el código de barras del producto"
+                  required
+                />
+                <button type="button" @click="generateCode" class="btn-generate-code" title="Generar código interno automático para productos sin código de fábrica">
+                  <i class="fas fa-barcode"></i>
+                  Generar
+                </button>
+              </div>
+              <span class="code-hint">¿El producto no tiene código de fábrica? Hacé clic en "Generar"</span>
             </div>
 
             <div class="form-group">
@@ -171,6 +178,20 @@ export default {
   },
 
   methods: {
+    // Genera un código EAN-13 interno (prefijo 2 = reservado para uso interno, compatible con scanner y ticket SVG)
+    generateCode() {
+      let digits = '2';
+      for (let i = 0; i < 11; i++) {
+        digits += Math.floor(Math.random() * 10).toString();
+      }
+      let sum = 0;
+      for (let i = 0; i < 12; i++) {
+        sum += parseInt(digits[i]) * (i % 2 === 0 ? 1 : 3);
+      }
+      const checkDigit = (10 - (sum % 10)) % 10;
+      this.product.code = digits + checkDigit;
+    },
+
     async createProduct() {
       this.loading = true;
       try {
@@ -525,5 +546,48 @@ textarea.form-control {
   .section-title {
     font-size: 1.125rem;
   }
+}
+
+/* Generador de código interno */
+.code-input-wrapper {
+  display: flex;
+  gap: 0.5rem;
+  align-items: stretch;
+}
+
+.code-input-wrapper .form-control {
+  flex: 1;
+}
+
+.btn-generate-code {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1rem;
+  background-color: #f9931e;
+  color: white;
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.2s ease;
+}
+
+.btn-generate-code:hover {
+  background-color: #e8851b;
+}
+
+.btn-generate-code i {
+  font-size: 0.9rem;
+}
+
+.code-hint {
+  display: block;
+  font-size: 0.72rem;
+  color: #6b7280;
+  margin-top: 0.3rem;
+  font-style: italic;
 }
 </style>
