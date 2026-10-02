@@ -68,6 +68,65 @@ export class ProductsService {
     }
   }
 
+  private buildWordRegex(word: string): RegExp {
+    const escaped = word.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&').toLowerCase();
+    let base = escaped;
+    if (base.endsWith('s') && base.length > 3) {
+      base = base.slice(0, -1);
+    }
+    let accent = base
+      .replace(/a/g, '[aá]')
+      .replace(/e/g, '[eé]')
+      .replace(/i/g, '[ií]')
+      .replace(/o/g, '[oó]')
+      .replace(/u/g, '[uú]')
+      .replace(/c/g, '[cç]');
+    accent = accent.replace(/m\[aá\]r?lb\[oó\]r\[oó\]/gi, 'm[aá]r?lb[oó]r[oó]');
+    return new RegExp(accent + '(s)?', 'i');
+  }
+
+  private async buildSearchCondition(
+    queryText: string,
+    shopIdFilter: any,
+  ): Promise<any> {
+    const trimmed = queryText ? String(queryText).trim() : '';
+    if (!trimmed) return null;
+
+    const words = trimmed.split(/\s+/).filter((w) => w.length > 0);
+    if (words.length === 0) return null;
+
+    // Obtener todas las categorías de la tienda para vincular categoría y producto
+    const allCategories = await this.categoriesModel
+      .find({ shopId: shopIdFilter })
+      .select('_id name')
+      .lean();
+
+    const andConditions: any[] = [];
+
+    for (const word of words) {
+      const wRegex = this.buildWordRegex(word);
+      const matchedCatIds = allCategories
+        .filter((c) => c.name && wRegex.test(c.name))
+        .map((c) => c._id);
+
+      const wordOr: any[] = [
+        { name: wRegex },
+        { code: wRegex },
+        { description: wRegex },
+        { category: wRegex },
+      ];
+      if (matchedCatIds.length > 0) {
+        wordOr.push({ categoryId: { $in: matchedCatIds } });
+      }
+      andConditions.push({ $or: wordOr });
+    }
+
+    if (andConditions.length === 1) {
+      return andConditions[0];
+    }
+    return { $and: andConditions };
+  }
+
   //Traer todos los producto
   async findAll(
     shopId: string,
@@ -95,40 +154,19 @@ export class ProductsService {
           : shopId,
       };
 
-      // Agregar filtro de búsqueda si se proporciona (incluyendo categoría, accent-insensitive)
+      // Agregar filtro de búsqueda flexible (palabras múltiples, categoría, acentos, variaciones)
       if (search && search.trim()) {
-        const escapedInput = search
-          .trim()
-          .replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
-          .toLowerCase();
-        const accentInsensitiveRegex = escapedInput
-          .replace(/a/g, '[aá]')
-          .replace(/e/g, '[eé]')
-          .replace(/i/g, '[ií]')
-          .replace(/o/g, '[oó]')
-          .replace(/u/g, '[uú]')
-          .replace(/c/g, '[cç]');
-        const searchRegex = new RegExp(accentInsensitiveRegex, 'i');
-
-        const matchedCategories = await this.categoriesModel
-          .find({
-            shopId: filter.shopId,
-            name: searchRegex,
-          })
-          .select('_id')
-          .lean();
-        const matchedCatIds = matchedCategories.map((c) => c._id);
-
-        const orConditions: any[] = [
-          { name: searchRegex },
-          { code: searchRegex },
-          { description: searchRegex },
-          { category: searchRegex },
-        ];
-        if (matchedCatIds.length > 0) {
-          orConditions.push({ categoryId: { $in: matchedCatIds } });
+        const searchCondition = await this.buildSearchCondition(
+          search,
+          filter.shopId,
+        );
+        if (searchCondition) {
+          if (searchCondition.$or) {
+            filter.$or = searchCondition.$or;
+          } else if (searchCondition.$and) {
+            filter.$and = searchCondition.$and;
+          }
         }
-        filter.$or = orConditions;
       }
 
       // Filtro por ubicación de stock
@@ -369,45 +407,26 @@ export class ProductsService {
       const limitNumber = Number(limit) || 10;
       const skip = (pageNumber - 1) * limitNumber;
 
-      const escapedInput = String(name)
-        .replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
-        .toLowerCase();
-      const accentInsensitiveRegex = escapedInput
-        .replace(/a/g, '[aá]')
-        .replace(/e/g, '[eé]')
-        .replace(/i/g, '[ií]')
-        .replace(/o/g, '[oó]')
-        .replace(/u/g, '[uú]')
-        .replace(/c/g, '[cç]');
-      const regex = new RegExp(accentInsensitiveRegex, 'i');
-
       const shopIdFilter = Types.ObjectId.isValid(shopId)
         ? { $in: [shopId, new Types.ObjectId(shopId)] }
         : shopId;
 
-      const matchedCategories = await this.categoriesModel
-        .find({
-          shopId: shopIdFilter,
-          name: regex,
-        })
-        .select('_id')
-        .lean();
-      const matchedCatIds = matchedCategories.map((c) => c._id);
+      const searchCondition = await this.buildSearchCondition(
+        String(name),
+        shopIdFilter,
+      );
 
-      const orConditions: any[] = [
-        { name: regex },
-        { code: regex },
-        { description: regex },
-        { category: regex },
-      ];
-      if (matchedCatIds.length > 0) {
-        orConditions.push({ categoryId: { $in: matchedCatIds } });
-      }
-
-      const searchFilter = {
+      const searchFilter: any = {
         shopId: shopIdFilter,
-        $or: orConditions,
       };
+
+      if (searchCondition) {
+        if (searchCondition.$or) {
+          searchFilter.$or = searchCondition.$or;
+        } else if (searchCondition.$and) {
+          searchFilter.$and = searchCondition.$and;
+        }
+      }
 
       const products = await this.productsModel
         .find(searchFilter)
@@ -656,42 +675,16 @@ export class ProductsService {
       }
 
       if (name && name.trim() !== '') {
-        const escapedInput = name
-          .trim()
-          .replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
-          .toLowerCase();
-        const accentInsensitiveInput = escapedInput
-          .replace(/a/g, '[aá]')
-          .replace(/e/g, '[eé]')
-          .replace(/i/g, '[ií]')
-          .replace(/o/g, '[oó]')
-          .replace(/u/g, '[uú]')
-          .replace(/c/g, '[cç]');
-        const regex = new RegExp(accentInsensitiveInput, 'i');
-
-        // Si no se seleccionó una categoría por ID, intentar resolverla por nombre
-        if (!categoryId) {
-          const matchedCategories = await this.categoriesModel
-            .find({ shopId: query.shopId, name: regex })
-            .select('_id')
-            .lean();
-          const matchedCatIds = matchedCategories.map((c) => c._id);
-          const nameOrConds: any[] = [
-            { name: regex },
-            { code: regex },
-            { description: regex },
-            { category: regex },
-          ];
-          if (matchedCatIds.length > 0) {
-            nameOrConds.push({ categoryId: { $in: matchedCatIds } });
+        const searchCondition = await this.buildSearchCondition(
+          name,
+          query.shopId,
+        );
+        if (searchCondition) {
+          if (searchCondition.$or) {
+            query.$or = searchCondition.$or;
+          } else if (searchCondition.$and) {
+            query.$and = searchCondition.$and;
           }
-          query.$or = nameOrConds;
-        } else {
-          query.$or = [
-            { name: regex },
-            { code: regex },
-            { description: regex },
-          ];
         }
       }
       if (minAmount !== undefined || maxAmount !== undefined) {

@@ -73,6 +73,7 @@ export const useStockStore = defineStore("stock", {
         this.loading = true;
         const shopId = this.shopId();
         this.filtersObject.filtersApplied = false;
+        this.searchNameApplied = false;
 
         // Construir URL con parámetros de paginación
         const response = await api.get(
@@ -98,10 +99,13 @@ export const useStockStore = defineStore("stock", {
       }
     },
 
-    async searchProduct() {
+    async searchProduct(resetPage = true) {
       try {
         this.loading = true;
         this.filtersObject.filtersApplied = false;
+        if (resetPage) {
+          this.pagination.page = 1;
+        }
         if (!this.searchQuery || this.searchQuery.trim() === "") {
           this.toast = {
             showing: true,
@@ -124,6 +128,10 @@ export const useStockStore = defineStore("stock", {
           this.pagination.page = data.pagination.page;
           this.pagination.totalPages = data.pagination.totalPages;
         } else {
+          this.products = [];
+          this.pagination.total = 0;
+          this.pagination.page = 1;
+          this.pagination.totalPages = 0;
           this.toast = {
             showing: true,
             message: data.message || "No se encontraron productos",
@@ -498,7 +506,7 @@ export const useStockStore = defineStore("stock", {
 
     async loadData() {
       if (this.searchNameApplied) {
-        await this.searchProduct();
+        await this.searchProduct(false);
       } else if (this.filtersObject.filtersApplied) {
         await this.filterProducts();
       } else {
