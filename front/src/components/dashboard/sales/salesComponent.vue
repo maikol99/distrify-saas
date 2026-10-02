@@ -1576,6 +1576,11 @@ export default {
 
   async mounted() {
     // Configurar atajos de teclado
+    // Permitir atajos incluso con el foco en inputs (ej: barra del scanner)
+    hotkeys.filter = function () {
+      return true;
+    };
+
     hotkeys("f4", async (event) => {
       event.preventDefault();
       await this.createSale();
