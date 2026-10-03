@@ -14,45 +14,53 @@ export class SupplierPaymentsService {
 
   //Crear pago de proveedor
   async createPayment(body: SupplierPaymentsDto) {
+    const session = await this.supplierPaymentsModel.db.startSession();
+    session.startTransaction();
     try {
-      const supplier = await this.suppliersModel.findById(body.supplierId);
+      const supplier = await this.suppliersModel.findById(body.supplierId).session(session);
       if (!supplier) {
+        await session.abortTransaction();
         return {
           success: false,
           message: 'Proveedor no encontrado',
         };
       }
 
-      if (supplier.debt <= 0) {
+      const currentDebt = Number(supplier.debt) || 0;
+      if (currentDebt <= 0) {
+        await session.abortTransaction();
         return {
           success: false,
           message: 'El proveedor no tiene deuda pendiente',
         };
       }
 
-      const newPayment = await this.supplierPaymentsModel.create({
-        ...body,
-        date: new Date(),
-      });
-      if (!newPayment) {
+      const newPayment = await this.supplierPaymentsModel.create(
+        [{ ...body, date: new Date() }],
+        { session },
+      );
+      if (!newPayment || newPayment.length === 0) {
+        await session.abortTransaction();
         return {
           success: false,
-          message: 'Error creando el pago del cliente',
+          message: 'Error creando el pago del proveedor',
         };
       }
 
-      
+      supplier.debt = Math.max(0, currentDebt - newPayment[0].amount);
+      await supplier.save({ session });
 
-      supplier.debt -= newPayment.amount;
-      await supplier.save();
-
+      await session.commitTransaction();
       return {
         success: true,
         message: 'Pago del proveedor creado exitosamente',
-        data: newPayment,
+        data: newPayment[0],
       };
     } catch (error) {
+      await session.abortTransaction();
       throw error;
+    } finally {
+      session.endSession();
     }
   }
 

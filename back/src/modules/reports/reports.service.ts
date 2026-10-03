@@ -34,8 +34,9 @@ export class ReportsService {
       }
 
       // Obtener ventas con populate de productos para obtener nombres
+      // Solo incluir ventas completadas (excluir anuladas)
       const sales: any = await this.salesModel
-        .find(dateFilter)
+        .find({ ...dateFilter, status: { $ne: 'Cancelado' } })
         .populate('productDetails.productId', 'name buyPrice sellPrice category categoryId')
         .populate('clientId', 'name')
         .select(

@@ -49,8 +49,10 @@ export class ReturnsService {
         );
       }
 
-      // Restaurar stock de todos los productos
+      // Restaurar stock de todos los productos (ignorar items de venta rapida sin productId)
       for (const product of sale.productDetails) {
+        if (!product.productId) continue;
+
         await this.productsModel.findByIdAndUpdate(
           product.productId,
           { $inc: { quantity: product.quantity } },
@@ -92,11 +94,14 @@ export class ReturnsService {
       } else if (refundType === RefundType.ACCOUNT_ADJUSTMENT) {
         // Ajustar cuenta corriente del cliente
         if (sale.clientId) {
-          const client = await this.clientsModel.findById(sale.clientId);
+          const client = await this.clientsModel
+            .findById(sale.clientId)
+            .session(session);
           if (client) {
             // Si la venta fue a cuenta, reducir la deuda
             if (sale.paymentMethod === PaymentMethodsEnum.CUENTA) {
-              client.debt = Math.max(0, client.debt - sale.total);
+              const currentDebt = Number(client.debt) || 0;
+              client.debt = Math.max(0, currentDebt - sale.total);
               await client.save({ session });
             }
           }
@@ -189,7 +194,7 @@ export class ReturnsService {
       // Procesar cada producto a devolver
       for (const returnItem of productsToReturn) {
         const originalProduct = sale.productDetails.find(
-          (p) => p.productId.toString() === returnItem.productId,
+          (p) => p.productId && p.productId.toString() === returnItem.productId,
         );
 
         if (!originalProduct) {
@@ -198,12 +203,14 @@ export class ReturnsService {
           );
         }
 
-        // Restaurar stock
-        await this.productsModel.findByIdAndUpdate(
-          returnItem.productId,
-          { $inc: { quantity: returnItem.quantity } },
-          { session },
-        );
+        // Restaurar stock (si tiene productId valido)
+        if (returnItem.productId) {
+          await this.productsModel.findByIdAndUpdate(
+            returnItem.productId,
+            { $inc: { quantity: returnItem.quantity } },
+            { session },
+          );
+        }
 
         if (returnItem.variants && returnItem.variants.length > 0) {
           for (const variant of returnItem.variants) {

@@ -108,7 +108,7 @@ export class CajaService {
             $lte: fechaCierre,
           },
         })
-        .select('total paymentMethod');
+        .select('total paymentMethod paymentMethods');
 
       const outputs = await this.outputsModel
         .find({
@@ -139,21 +139,29 @@ export class CajaService {
       });
 
       //Obtener totales sin importar medio de pago
-      const totalSales = sales.reduce((acc, sale) => acc + sale.total, 0);
+      const totalSales = sales.reduce((acc, sale) => acc + (sale.total || 0), 0);
       const totalOutputs = outputs.reduce(
-        (acc, output) => acc + output.total,
+        (acc, output) => acc + (output.total || 0),
         0,
       );
-      const totalBuys = buys.reduce((acc, buy) => acc + buy.total, 0);
+      const totalBuys = buys.reduce((acc, buy) => acc + (buy.total || 0), 0);
 
-      const totalInputs = inputs.reduce((acc, input) => acc + input.total, 0);
+      const totalInputs = inputs.reduce((acc, input) => acc + (input.total || 0), 0);
 
-      //Obtener totales por medio de pago
-
-      const totalSalesByPaymentMethod: any = sales.reduce((acc, sale) => {
-        acc[sale.paymentMethod] = (acc[sale.paymentMethod] || 0) + sale.total;
-        return acc;
-      }, {});
+      //Obtener totales por medio de pago (soportando tanto metodo unico como multiples metodos)
+      const totalSalesByPaymentMethod: any = {};
+      sales.forEach((sale: any) => {
+        if (sale.paymentMethods && Array.isArray(sale.paymentMethods) && sale.paymentMethods.length > 0) {
+          sale.paymentMethods.forEach((pm: any) => {
+            const m = pm.method || 'Efectivo';
+            totalSalesByPaymentMethod[m] =
+              (totalSalesByPaymentMethod[m] || 0) + (pm.amount || 0);
+          });
+        } else if (sale.paymentMethod) {
+          totalSalesByPaymentMethod[sale.paymentMethod] =
+            (totalSalesByPaymentMethod[sale.paymentMethod] || 0) + (sale.total || 0);
+        }
+      });
 
       const totalOutputsByPaymentMethod = outputs.reduce((acc, output) => {
         acc[output.paymentMethod] =
@@ -216,8 +224,10 @@ export class CajaService {
         arqueoFinal: {
           balanceFinal: totalSales + totalInputs - totalOutputs - totalBuys,
           efectivoTotalSistema:
-            (totalSalesByPaymentMethod.Efectivo || 0) +
-            (totalInputsByPaymentMethod.Efectivo || 0),
+            (openCaja.entregasEfectivo?.inicial || 0) +
+            (totalSalesByPaymentMethod['Efectivo'] || totalSalesByPaymentMethod['efectivo'] || 0) +
+            (totalInputsByPaymentMethod['Efectivo'] || totalInputsByPaymentMethod['efectivo'] || 0) -
+            (totalOutputsByPaymentMethod['Efectivo'] || totalOutputsByPaymentMethod['efectivo'] || 0),
           efectivoTotalPresentado: entregaEfectivoFinal,
         },
         actualizadoEn: new Date(),

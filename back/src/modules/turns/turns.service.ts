@@ -144,7 +144,9 @@ export class TurnsService {
     const totalEgresos = outputs.reduce((sum, o) => sum + (o.total ?? 0), 0);
 
     const efectivoPresentadoFinal = efectivoPresentado ?? 0;
-    const efectivoRealSistema = totalEfectivo;
+    const efectivoRecibidoInicial = previousTurn.efectivoRecibido ?? 0;
+    const efectivoRealSistema =
+      efectivoRecibidoInicial + totalEfectivo + totalIngresos - totalEgresos;
     const balancePresentadoReal = efectivoPresentadoFinal - efectivoRealSistema;
 
     const updatedTurn = await this.turnsModel.findByIdAndUpdate(
@@ -238,12 +240,35 @@ export class TurnsService {
       }
     });
 
+    const shopId = previousTurn.shopId.toString();
+    const inputs = await this.inputsModel.find({
+      shopId,
+      userId: previousTurn.userId,
+      createdAt: { $gte: previousTurn.horaApertura, $lte: now },
+    });
+    const totalIngresos = inputs.reduce((sum, i) => sum + (i.total ?? 0), 0);
+
+    const outputs = await this.outputsModel.find({
+      shopId,
+      userId: previousTurn.userId,
+      createdAt: { $gte: previousTurn.horaApertura, $lte: now },
+    });
+    const totalEgresos = outputs.reduce((sum, o) => sum + (o.total ?? 0), 0);
+
+    const efectivoRecibido = previousTurn.efectivoRecibido ?? 0;
+    const efectivoEsperado =
+      efectivoRecibido + totalEfectivo + totalIngresos - totalEgresos;
+
     return {
       totalVentas,
       totalEfectivo,
       totalTransferencia,
       totalTarjeta,
       totalCuentaCorriente,
+      efectivoRecibido,
+      totalIngresos,
+      totalEgresos,
+      efectivoEsperado,
       cantidadVentas: sales.length,
       horaApertura: previousTurn.horaApertura,
       turnId: previousTurn._id,

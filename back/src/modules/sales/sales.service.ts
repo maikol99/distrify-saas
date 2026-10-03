@@ -146,22 +146,30 @@ export class SalesService {
 
       if (body.clientId) {
         if (body.paymentMethod === PaymentMethodsEnum.CUENTA) {
-          const client = await this.clientsModel.findById(body.clientId);
+          const client = await this.clientsModel
+            .findById(body.clientId)
+            .session(session);
           if (!client) {
             throw new NotFoundException('Cliente no encontrado');
           }
-          client.debt += body.total;
+          client.debt = (client.debt || 0) + (body.total || 0);
           await client.save({ session });
         } else if (body.paymentMethods && body.paymentMethods.length > 0) {
-          const client = await this.clientsModel.findById(body.clientId);
+          const client = await this.clientsModel
+            .findById(body.clientId)
+            .session(session);
           if (!client) {
             throw new NotFoundException('Cliente no encontrado');
           }
+          let addedDebt = 0;
           for (const method of body.paymentMethods) {
             if (method.method === PaymentMethodsEnum.CUENTA) {
-              client.debt += method.amount;
-              await client.save({ session });
+              addedDebt += method.amount || 0;
             }
+          }
+          if (addedDebt > 0) {
+            client.debt = (client.debt || 0) + addedDebt;
+            await client.save({ session });
           }
         }
       }
@@ -405,7 +413,7 @@ export class SalesService {
         throw new BadRequestException('ID de venta es requerido');
       }
 
-      const sale: any = await this.salesModel.findById(saleId);
+      const sale: any = await this.salesModel.findById(saleId).session(session);
 
       if (!sale) {
         throw new NotFoundException('Venta no encontrada');
@@ -417,28 +425,27 @@ export class SalesService {
 
       // Revertir deuda del cliente si existe
       if (sale.clientId) {
-        const client = await this.clientsModel.findOne({
-          _id: sale.clientId,
-        });
+        const client = await this.clientsModel
+          .findById(sale.clientId)
+          .session(session);
 
         if (client) {
+          const currentDebt = Number(client.debt) || 0;
+          let debtToReduce = 0;
+
           if (sale.paymentMethod === PaymentMethodsEnum.CUENTA) {
-            if (client.debt < sale.total) {
-              return {
-                success: false,
-                message:
-                  'La deuda del cliente es insuficiente para anular esta venta',
-              };
-            }
-            client.debt -= sale.total;
-            await client.save({ session });
+            debtToReduce = sale.total || 0;
           } else if (sale.paymentMethods && sale.paymentMethods.length > 0) {
             for (const method of sale.paymentMethods) {
               if (method.method === PaymentMethodsEnum.CUENTA) {
-                client.debt -= method.amount;
-                await client.save({ session });
+                debtToReduce += method.amount || 0;
               }
             }
+          }
+
+          if (debtToReduce > 0) {
+            client.debt = Math.max(0, currentDebt - debtToReduce);
+            await client.save({ session });
           }
         }
       }
@@ -448,6 +455,11 @@ export class SalesService {
       // Procesar productos y variantes
       for (const product of sale.productDetails) {
         const { productId, quantity, variants, isCombo, comboProducts } = product;
+
+        // Ignorar items de venta rápida sin productId
+        if (!productId && !isCombo) {
+          continue;
+        }
 
         if (isCombo && comboProducts && comboProducts.length > 0) {
           for (const comboProductId of comboProducts) {
@@ -461,35 +473,33 @@ export class SalesService {
           // Restaurar stock principal
           await this.productsModel.findByIdAndUpdate(
             productId,
-            {
-              $inc: { quantity },
-            },
+            { $inc: { quantity } },
             { session },
           );
 
-        // Restaurar variantes si existen
-        if (variants && variants.length > 0) {
-          for (const variant of variants) {
-            await this.productsModel.findByIdAndUpdate(
-              productId,
-              {
-                $inc: {
-                  'sizesAndColors.$[variant].quantity': variant.quantity,
-                },
-              },
-              {
-                session,
-                arrayFilters: [
-                  {
-                    'variant.size': variant.size,
-                    'variant.color': variant.color,
+          // Restaurar variantes si existen
+          if (variants && variants.length > 0) {
+            for (const variant of variants) {
+              await this.productsModel.findByIdAndUpdate(
+                productId,
+                {
+                  $inc: {
+                    'sizesAndColors.$[variant].quantity': variant.quantity,
                   },
-                ],
-              },
-            );
+                },
+                {
+                  session,
+                  arrayFilters: [
+                    {
+                      'variant.size': variant.size,
+                      'variant.color': variant.color,
+                    },
+                  ],
+                },
+              );
+            }
           }
         }
-        } // close else if (!isCombo)
 
         productsRestored.push({
           productId,

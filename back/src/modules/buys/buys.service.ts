@@ -37,12 +37,14 @@ export class BuysService {
 
       //Actualizar deuda del proveedor si la compra no está pagada
       if (body.supplierId && body.isPaid === false) {
-        const supplier = await this.supplierModel.findById(body.supplierId);
+        const supplier = await this.supplierModel
+          .findById(body.supplierId)
+          .session(session);
         if (!supplier) {
           throw new NotFoundException('Supplier not found');
         }
 
-        supplier.debt += body.total;
+        supplier.debt = (Number(supplier.debt) || 0) + (body.total || 0);
 
         await supplier.save({ session });
       }
@@ -199,22 +201,58 @@ export class BuysService {
 
   // ELIMINAR UNA COMPRA
   async remove(id: string) {
+    const session = await this.buysModel.startSession();
+    session.startTransaction();
     try {
-      const buy = await this.buysModel.findByIdAndDelete(id);
+      const buy = await this.buysModel.findById(id).session(session);
 
       if (!buy) {
-        throw new NotFoundException();
+        await session.abortTransaction();
+        throw new NotFoundException('Compra no encontrada');
       }
 
+      // Revertir deuda del proveedor si no estaba pagada
+      if (buy.supplierId && buy.isPaid === false) {
+        const supplier = await this.supplierModel
+          .findById(buy.supplierId)
+          .session(session);
+        if (supplier) {
+          supplier.debt = Math.max(
+            0,
+            (Number(supplier.debt) || 0) - (buy.total || 0),
+          );
+          await supplier.save({ session });
+        }
+      }
+
+      // Revertir stock de productos si fueron ingresados al inventario
+      if (buy.productsAdded && buy.products && buy.products.length > 0) {
+        for (const item of (buy.products as any[])) {
+          if (item.productId) {
+            await this.productsModel.findByIdAndUpdate(
+              item.productId,
+              { $inc: { quantity: -(item.quantity || 0) } },
+              { session },
+            );
+          }
+        }
+      }
+
+      await this.buysModel.findByIdAndDelete(id, { session });
+
+      await session.commitTransaction();
       return {
         success: true,
         message: 'Compra eliminada correctamente',
       };
     } catch (error) {
+      await session.abortTransaction();
       if (error.kind === 'ObjectId') {
         throw new BadRequestException('Invalid ID format');
       }
-      throw new InternalServerErrorException('Error deleting buy');
+      throw error;
+    } finally {
+      session.endSession();
     }
   }
 
@@ -335,7 +373,7 @@ export class BuysService {
 
       const buys = await this.buysModel
         .find({
-          supplierId: '6878120827f510480f2040e5',
+          supplierId: supplier._id,
           shopId: shopId,
         })
         .sort({ createdAt: -1 });

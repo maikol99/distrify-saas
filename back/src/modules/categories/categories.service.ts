@@ -108,19 +108,22 @@ export class CategoriesService {
         };
       }
 
-      if (page && limit && (page < 1 || limit < 1)) {
+      const pageNum = Number(page) || 1;
+      const limitNum = Number(limit) || 100;
+
+      if (page && limit && (pageNum < 1 || limitNum < 1)) {
         return {
           success: false,
           message: 'Los valores de page y limit deben ser mayores a 0',
         };
       }
 
-      const skip = (page - 1) * limit;
+      const skip = (pageNum - 1) * limitNum;
 
       const categories = await this.categoriesModel
         .find({ shopId })
         .skip(skip)
-        .limit(limit)
+        .limit(limitNum)
         .sort({ name: 1 })
         .lean();
       if (!categories || categories.length === 0) {
@@ -148,12 +151,12 @@ export class CategoriesService {
         message: 'Categorias obtenidas correctamente',
         categories: categoriesWithCount,
         pagination: {
-          page: page,
+          page: pageNum,
           total: await this.categoriesModel.countDocuments({ shopId }),
           totalPages: Math.ceil(
-            (await this.categoriesModel.countDocuments({ shopId })) / limit,
+            (await this.categoriesModel.countDocuments({ shopId })) / limitNum,
           ),
-          limit: limit,
+          limit: limitNum,
         },
       };
     } catch (error) {
@@ -205,6 +208,13 @@ export class CategoriesService {
           message: 'Categoria no encontrada',
         };
       }
+
+      // Limpiar referencias de categoryId en productos que apuntaban a esta categoría
+      await this.productsModel.updateMany(
+        { categoryId: id },
+        { $unset: { categoryId: 1 } },
+      );
+
       return {
         success: true,
         message: 'Categoria eliminada correctamente',

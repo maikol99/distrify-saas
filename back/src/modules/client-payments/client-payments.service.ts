@@ -26,7 +26,8 @@ export class ClientPaymentsService {
         throw new NotFoundException('Cliente no encontrado');
       }
 
-      if (client.debt <= 0) {
+      const currentDebt = Number(client.debt) || 0;
+      if (currentDebt <= 0) {
         throw new BadRequestException('El cliente no tiene deuda pendiente');
       }
 
@@ -47,8 +48,7 @@ export class ClientPaymentsService {
         { session },
       );
 
-      client.debt -= newPayment[0].amount;
-      if (client.debt < 0) client.debt = 0;
+      client.debt = Math.max(0, currentDebt - newPayment[0].amount);
       await client.save({ session });
 
       // Si el pago está vinculado a una venta, marcarla como pagada
