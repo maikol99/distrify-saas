@@ -82,6 +82,8 @@ export class ProductsService {
       .replace(/u/g, '[uú]')
       .replace(/c/g, '[cç]');
     accent = accent.replace(/m\[aá\]r?lb\[oó\]r\[oó\]/gi, 'm[aá]r?lb[oó]r[oó]');
+    accent = accent.replace(/\bf(i|í)l(i|y)?\b/gi, '(philip|filip|fili)');
+    accent = accent.replace(/\bph?il+ip(s)?\b/gi, '(philip|filip|fili)');
     return new RegExp(accent + '(s)?', 'i');
   }
 
@@ -314,7 +316,7 @@ export class ProductsService {
           body.buyPrice !== undefined &&
           body.buyPrice !== productWithoutUpdate.buyPrice
         ) {
-          body.priceLists = productWithoutUpdate.priceLists.map((list) => {
+          body.priceLists = (productWithoutUpdate.priceLists || []).map((list) => {
             list.buyPrice = body.buyPrice;
             list.price = this.calculateSellPrice(
               body.buyPrice,
@@ -326,6 +328,9 @@ export class ProductsService {
         }
       }
 
+      // Evitar sobreescribir _id
+      delete (body as any)._id;
+
       // Normalizar categoryId: puede llegar como string, ObjectId o como objeto populado { _id, name }
       if (body.categoryId) {
         const catId = (body.categoryId as any)?._id ?? body.categoryId;
@@ -333,6 +338,16 @@ export class ProductsService {
           (body as any).categoryId = new Types.ObjectId(catId);
         } else if (typeof catId === 'object' && catId.toString) {
           (body as any).categoryId = catId; // ya es ObjectId
+        }
+      }
+
+      // Normalizar supplierId si viene como objeto
+      if ((body as any).supplierId) {
+        const supId = (body as any).supplierId?._id ?? (body as any).supplierId;
+        if (typeof supId === 'string' && Types.ObjectId.isValid(supId)) {
+          (body as any).supplierId = new Types.ObjectId(supId);
+        } else if (typeof supId === 'object' && supId.toString) {
+          (body as any).supplierId = supId;
         }
       }
 
