@@ -49,8 +49,30 @@ export class ProductsService {
       if (typeof body.shopId === 'string' && Types.ObjectId.isValid(body.shopId)) {
         (body as any).shopId = new Types.ObjectId(body.shopId);
       }
-      if (typeof body.categoryId === 'string' && Types.ObjectId.isValid(body.categoryId)) {
-        (body as any).categoryId = new Types.ObjectId(body.categoryId);
+      if ((body as any).categoryId === '' || (body as any).categoryId === null) {
+        delete (body as any).categoryId;
+      } else if (body.categoryId) {
+        const catId = (body.categoryId as any)?._id ?? body.categoryId;
+        if (typeof catId === 'string' && Types.ObjectId.isValid(catId)) {
+          (body as any).categoryId = new Types.ObjectId(catId);
+        } else if (typeof catId === 'object' && catId?.toString && Types.ObjectId.isValid(catId.toString())) {
+          (body as any).categoryId = catId;
+        } else {
+          delete (body as any).categoryId;
+        }
+      }
+
+      if ((body as any).supplierId === '' || (body as any).supplierId === null) {
+        delete (body as any).supplierId;
+      } else if ((body as any).supplierId) {
+        const supId = (body as any).supplierId?._id ?? (body as any).supplierId;
+        if (typeof supId === 'string' && Types.ObjectId.isValid(supId)) {
+          (body as any).supplierId = new Types.ObjectId(supId);
+        } else if (typeof supId === 'object' && supId?.toString && Types.ObjectId.isValid(supId.toString())) {
+          (body as any).supplierId = supId;
+        } else {
+          delete (body as any).supplierId;
+        }
       }
       // Verificar límite de productos según plan
       await this.planLimitsService.checkProductLimit(body.shopId as any);
@@ -331,29 +353,48 @@ export class ProductsService {
       // Evitar sobreescribir _id
       delete (body as any)._id;
 
+      const unsetFields: any = {};
+
       // Normalizar categoryId: puede llegar como string, ObjectId o como objeto populado { _id, name }
-      if (body.categoryId) {
+      if ((body as any).categoryId === '' || (body as any).categoryId === null) {
+        delete (body as any).categoryId;
+        unsetFields.categoryId = 1;
+      } else if (body.categoryId) {
         const catId = (body.categoryId as any)?._id ?? body.categoryId;
         if (typeof catId === 'string' && Types.ObjectId.isValid(catId)) {
           (body as any).categoryId = new Types.ObjectId(catId);
-        } else if (typeof catId === 'object' && catId.toString) {
+        } else if (typeof catId === 'object' && catId?.toString && Types.ObjectId.isValid(catId.toString())) {
           (body as any).categoryId = catId; // ya es ObjectId
+        } else {
+          delete (body as any).categoryId;
+          unsetFields.categoryId = 1;
         }
       }
 
-      // Normalizar supplierId si viene como objeto
-      if ((body as any).supplierId) {
+      // Normalizar supplierId si viene como objeto o vacío
+      if ((body as any).supplierId === '' || (body as any).supplierId === null) {
+        delete (body as any).supplierId;
+        unsetFields.supplierId = 1;
+      } else if ((body as any).supplierId) {
         const supId = (body as any).supplierId?._id ?? (body as any).supplierId;
         if (typeof supId === 'string' && Types.ObjectId.isValid(supId)) {
           (body as any).supplierId = new Types.ObjectId(supId);
-        } else if (typeof supId === 'object' && supId.toString) {
+        } else if (typeof supId === 'object' && supId?.toString && Types.ObjectId.isValid(supId.toString())) {
           (body as any).supplierId = supId;
+        } else {
+          delete (body as any).supplierId;
+          unsetFields.supplierId = 1;
         }
+      }
+
+      const updateOp: any = { $set: body };
+      if (Object.keys(unsetFields).length > 0) {
+        updateOp.$unset = unsetFields;
       }
 
       const updatedProduct = await this.productsModel.findByIdAndUpdate(
         { _id: id },
-        { $set: body },
+        updateOp,
         { new: true },
       );
 

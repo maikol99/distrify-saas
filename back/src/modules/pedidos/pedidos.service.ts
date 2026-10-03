@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Clients } from '../clients/clients.schema';
 import { Pedidos } from 'src/modules/pedidos/pedidos.schema';
 import { Sales } from 'src/modules/sales/sales.schema';
@@ -104,6 +104,19 @@ export class PedidosService {
 
   // Actualizar un pedido
   async updatePedido(id: string, body: Partial<CreatePedidoDto>) {
+    delete (body as any)._id;
+
+    if (body.productDetails && Array.isArray(body.productDetails)) {
+      for (const item of body.productDetails) {
+        if (item.productId) {
+          const rawId = (item.productId as any)?._id ?? item.productId;
+          if (typeof rawId === 'string' && Types.ObjectId.isValid(rawId)) {
+            item.productId = new Types.ObjectId(rawId) as any;
+          }
+        }
+      }
+    }
+
     const pedido = await this.pedidosModel.findByIdAndUpdate(id, body, {
       new: true,
     });

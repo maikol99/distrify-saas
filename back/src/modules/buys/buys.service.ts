@@ -7,7 +7,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Buys } from './buys.schema';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -30,6 +30,13 @@ export class BuysService {
     const session = await this.buysModel.startSession();
     session.startTransaction();
     try {
+      if (body.supplierId) {
+        const sId = (body.supplierId as any)?._id ?? body.supplierId;
+        if (typeof sId === 'string' && Types.ObjectId.isValid(sId)) {
+          (body as any).supplierId = new Types.ObjectId(sId);
+        }
+      }
+
       const buy = await this.buysModel.create([body], { session });
       if (!buy) {
         throw new InternalServerErrorException('Error creando la compra');
@@ -156,6 +163,28 @@ export class BuysService {
 
     try {
       session.startTransaction();
+
+      delete (body as any)._id;
+
+      if (body.supplierId) {
+        const sId = (body.supplierId as any)?._id ?? body.supplierId;
+        if (typeof sId === 'string' && Types.ObjectId.isValid(sId)) {
+          body.supplierId = new Types.ObjectId(sId);
+        } else if (typeof sId === 'object' && sId?.toString && Types.ObjectId.isValid(sId.toString())) {
+          body.supplierId = sId;
+        }
+      }
+
+      if (body.products && Array.isArray(body.products)) {
+        for (const item of body.products) {
+          if (item.productId) {
+            const pId = (item.productId as any)?._id ?? item.productId;
+            if (typeof pId === 'string' && Types.ObjectId.isValid(pId)) {
+              item.productId = new Types.ObjectId(pId);
+            }
+          }
+        }
+      }
 
       if (body.productsAdded) {
         const buy = await this.buysModel.findById(id);

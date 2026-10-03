@@ -119,6 +119,15 @@ export class PromotionsService {
 
   async update(id: string, body: any) {
     try {
+      delete body._id;
+      if (body.productIds && Array.isArray(body.productIds)) {
+        body.productIds = body.productIds.map((item) => {
+          const rawId = item?._id ?? item;
+          return typeof rawId === 'string' && Types.ObjectId.isValid(rawId)
+            ? new Types.ObjectId(rawId)
+            : rawId;
+        });
+      }
       const promotion = await this.promotionsModel.findByIdAndUpdate(id, body, { new: true });
       if (!promotion) {
         throw new NotFoundException('Promoción no encontrada');
