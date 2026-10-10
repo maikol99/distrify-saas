@@ -11,122 +11,70 @@
           <span class="material-symbols-outlined text-2xl">close</span>
         </button>
       </div>
-      <div class="modal-body p-5 flex-1 overflow-y-auto">
-        <!-- Selector Tipo de Egreso: Gasto General vs Pago a Proveedor -->
-        <div class="form-group">
-          <label class="block text-sm font-semibold text-gray-700 mb-1.5">Tipo de Egreso:</label>
-          <div class="grid grid-cols-2 gap-3 mb-2">
-            <button
-              type="button"
-              @click="expenseType = 'gasto'; currentExpense.category = 'Otros'"
-              :class="[
-                'p-3 rounded-xl border text-sm font-semibold flex items-center justify-center gap-2 cursor-pointer transition-all',
-                expenseType === 'gasto'
-                  ? 'border-orange-500 bg-orange-50 text-orange-600 shadow-sm'
-                  : 'border-gray-200 bg-white text-gray-600 hover:bg-gray-50'
-              ]"
-            >
-              <span class="material-symbols-outlined text-lg">receipt_long</span>
-              Gasto del Local
-            </button>
-            <button
-              type="button"
-              @click="expenseType = 'proveedor'; currentExpense.category = 'Pago a proveedores'"
-              :class="[
-                'p-3 rounded-xl border text-sm font-semibold flex items-center justify-center gap-2 cursor-pointer transition-all',
-                expenseType === 'proveedor'
-                  ? 'border-orange-500 bg-orange-50 text-orange-600 shadow-sm'
-                  : 'border-gray-200 bg-white text-gray-600 hover:bg-gray-50'
-              ]"
-            >
-              <span class="material-symbols-outlined text-lg">local_shipping</span>
-              Pago a Proveedor
-            </button>
-          </div>
-        </div>
-
-        <!-- Si es Proveedor: selector opcional de proveedor registrado -->
-        <div v-if="expenseType === 'proveedor'" class="form-group bg-orange-50/50 p-3.5 rounded-2xl border border-orange-100 mb-4">
-          <label for="supplierSelect" class="block text-xs font-bold text-orange-800 uppercase tracking-wider mb-1">
-            Proveedor:
-          </label>
-          <select
-            id="supplierSelect"
-            v-model="selectedSupplierId"
-            @change="onSupplierChange"
-            class="form-control bg-white"
-          >
-            <option value="">-- Escribir nombre manual o seleccionar --</option>
-            <option v-for="sup in suppliers" :key="sup._id" :value="sup._id">
-              {{ sup.name }} {{ sup.company ? '(' + sup.company + ')' : '' }}
-            </option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="expenseDescription">Descripción / Concepto:</label>
+      <!-- BODY -->
+      <div class="p-5 flex-1 overflow-y-auto flex flex-col gap-4">
+        <!-- Input fields -->
+        <div class="flex flex-col gap-1.5">
+          <label for="expenseDescription" class="text-sm font-semibold text-gray-600">Descripción:</label>
           <input
             type="text"
             id="expenseDescription"
             v-model="currentExpense.description"
-            class="form-control"
-            :placeholder="expenseType === 'proveedor' ? 'Ej: Pago mercadería La Serenísima' : 'Descripción del egreso'"
+            class="py-2.5 px-3 border border-gray-200 rounded-xl text-base text-gray-800 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
+            placeholder="Descripción del egreso"
             required
           />
         </div>
 
-        <div class="form-group">
-          <label for="expenseCategory">Categoría:</label>
+        <div class="flex flex-col gap-1.5">
+          <label for="expenseCategory" class="text-sm font-semibold text-gray-600">Categoría:</label>
           <select
             v-model="currentExpense.category"
             id="expenseCategory"
-            class="form-control"
+            class="py-2.5 px-3 border border-gray-200 rounded-xl text-base text-gray-800 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
             required
           >
             <option value="" disabled>Seleccione una categoría</option>
-            <optgroup label="Proveedores">
-              <option value="Pago a proveedores">Pago a proveedores</option>
-              <option value="Materia prima">Materia prima</option>
-              <option value="Empaques">Empaques</option>
-            </optgroup>
-            <optgroup label="Gastos Operativos">
-              <option value="Servicios">Servicios (Luz, agua, gas, internet)</option>
-              <option value="Alquiler">Alquiler</option>
-              <option value="Sueldos">Sueldos</option>
-              <option value="Impuestos">Impuestos</option>
-              <option value="Mantenimiento">Mantenimiento</option>
-              <option value="Insumos de oficina">Insumos de oficina</option>
-              <option value="Seguros">Seguros</option>
-              <option value="Servicios profesionales">Servicios profesionales</option>
-              <option value="Publicidad y marketing">Publicidad y marketing</option>
-              <option value="Transporte y logística">Transporte y logística</option>
-              <option value="Comisiones bancarias">Comisiones bancarias</option>
-              <option value="Préstamos o créditos">Préstamos o créditos</option>
-              <option value="Otros">Otros</option>
-            </optgroup>
+            <option value="Gastos">Gastos</option>
+            <option value="Proveedores">Proveedores</option>
+            <option value="Pago a proveedores">Pago a proveedores</option>
+            <option value="Servicios">Servicios</option>
+            <option value="Sueldos">Sueldos</option>
+            <option value="Alquiler">Alquiler</option>
+            <option value="Impuestos">Impuestos</option>
+            <option value="Mantenimiento">Mantenimiento</option>
+            <option value="Insumos de oficina">Insumos de oficina</option>
+            <option value="Materia prima">Materia prima</option>
+            <option value="Empaques">Empaques</option>
+            <option value="Seguros">Seguros</option>
+            <option value="Servicios profesionales">Servicios profesionales</option>
+            <option value="Publicidad y marketing">Publicidad y marketing</option>
+            <option value="Transporte y logística">Transporte y logística</option>
+            <option value="Comisiones bancarias">Comisiones bancarias</option>
+            <option value="Préstamos o créditos">Préstamos o créditos</option>
+            <option value="Otros">Otros</option>
           </select>
         </div>
-        <div class="form-row">
-    
-          <div class="form-group">
-            <label for="expenseTotal">Total:</label>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="flex flex-col gap-1.5">
+            <label for="expenseTotal" class="text-sm font-semibold text-gray-600">Total:</label>
             <input
               id="expenseTotal"
               v-model.number="currentExpense.total"
               type="number"
               step="0.01"
-              class="form-control"
+              class="py-2.5 px-3 border border-gray-200 rounded-xl text-base text-gray-800 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
               required
             />
           </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="paymentMethod">Método de Pago:</label>
+
+          <div class="flex flex-col gap-1.5">
+            <label for="paymentMethod" class="text-sm font-semibold text-gray-600">Método de Pago:</label>
             <select
               v-model="paymentMethod"
               id="paymentMethod"
-              class="form-control"
+              class="py-2.5 px-3 border border-gray-200 rounded-xl text-base text-gray-800 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
             >
               <option value="Efectivo">Efectivo</option>
               <option value="Transferencia">Transferencia</option>
@@ -170,12 +118,9 @@ export default {
   emits: ["save", "close", "submit"],
   data() {
     return {
-      expenseType: "gasto", // "gasto" | "proveedor"
-      selectedSupplierId: "",
-      suppliers: [],
       currentExpense: {
         description: "",
-        category: "Otros",
+        category: "",
         date: moment().format("YYYY-MM-DD"),
         total: 0,
         shopId: "",
@@ -186,36 +131,11 @@ export default {
       globalStore: useGlobalStore(),
     };
   },
-  async mounted() {
-    await this.loadSuppliers();
-  },
   methods: {
-    async loadSuppliers() {
-      try {
-        const shopId = this.globalStore.shopId();
-        if (!shopId) return;
-        const res = await api.get(`/suppliers/get/all-suppliers-with-select/${shopId}`);
-        if (res.data?.success && Array.isArray(res.data.suppliers)) {
-          this.suppliers = res.data.suppliers;
-        }
-      } catch (err) {
-        // Silencioso si falla la carga de lista
-      }
-    },
-    onSupplierChange() {
-      if (this.selectedSupplierId) {
-        const sup = this.suppliers.find((s) => s._id === this.selectedSupplierId);
-        if (sup) {
-          this.currentExpense.description = `Pago proveedor: ${sup.name}${sup.company ? ' (' + sup.company + ')' : ''}`;
-        }
-      }
-    },
     resetForm() {
-      this.expenseType = "gasto";
-      this.selectedSupplierId = "";
       this.currentExpense = {
         description: "",
-        category: "Otros",
+        category: "",
         date: moment().format("YYYY-MM-DD"),
         total: 0,
       };
