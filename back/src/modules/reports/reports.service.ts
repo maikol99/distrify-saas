@@ -188,11 +188,27 @@ export class ReportsService {
         0,
       );
 
-      // Calcular margen bruto y neto
-      const grossProfit = totalSales - totalRealCost;
-      const grossMargin = totalSales > 0 ? (grossProfit / totalSales) * 100 : 0;
-      const netProfit = totalSales + totalInputs - totalOutputs - totalRealCost;
-      const netMargin = totalSales > 0 ? (netProfit / totalSales) * 100 : 0;
+      // Calcular costo de los productos vendidos (Costo de mercadería vendida)
+      let totalCostOfGoodsSold = 0;
+      for (const sale of sales) {
+        if (sale.productDetails && Array.isArray(sale.productDetails)) {
+          for (const item of sale.productDetails) {
+            const qty = Number(item.quantity) || 1;
+            const cost = Number(item.productId?.buyPrice) || Number(item.buyPrice) || 0;
+            totalCostOfGoodsSold += qty * cost;
+          }
+        }
+      }
+
+      // Ganancia obtenida sobre la venta de productos (Ventas - Costo de los productos vendidos)
+      const profitFromProducts = Math.max(0, totalSales - totalCostOfGoodsSold);
+      const profitMargin = totalSales > 0 ? (profitFromProducts / totalSales) * 100 : 0;
+
+      // El usuario solicita que la ganancia neta se calcule sobre la venta de productos (los gastos van por fuera)
+      const grossProfit = profitFromProducts;
+      const grossMargin = profitMargin;
+      const netProfit = profitFromProducts;
+      const netMargin = profitMargin;
 
       // Calcular totales por método de pago
       const salesByPaymentMethod =

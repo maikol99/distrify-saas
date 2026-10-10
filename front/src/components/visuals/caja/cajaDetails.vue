@@ -649,15 +649,18 @@ export default {
         // Add any other payment methods if they appear in the backend response
       };
 
-      const internalMetodo = paymentMethodKeyMap[newMovement.paymentMethod] || newMovement.paymentMethod.toLowerCase();
+      const internalMetodo = paymentMethodKeyMap[newMovement.paymentMethod] || (newMovement.paymentMethod ? newMovement.paymentMethod.toLowerCase() : (newMovement.metodo || 'efectivo'));
+
+      const desc = newMovement.descripcion || newMovement.description || (newMovement.categoria ? `[${newMovement.categoria}]` : `Movimiento de ${this.getMovementTypeText(newMovement.type || newMovement.tipo)}`);
 
       return {
-        _id: `movement-${index}-${Math.random().toString(36).substr(2, 9)}`, // Generate a unique ID for v-for key
-        fecha: summaryFechaActual || new Date().toISOString(), // Use summary's fechaActual as a fallback, or current date
-        descripcion: `Movimiento de ${this.getMovementTypeText(newMovement.type)}`, // Generate a description
+        _id: newMovement._id || `movement-${index}-${Math.random().toString(36).substr(2, 9)}`,
+        fecha: newMovement.fecha || newMovement.createdAt || summaryFechaActual || new Date().toISOString(),
+        descripcion: desc,
+        categoria: newMovement.categoria || newMovement.category || '',
         metodo: internalMetodo,
-        monto: newMovement.total,
-        tipo: newMovement.type,
+        monto: newMovement.monto || newMovement.total || 0,
+        tipo: newMovement.tipo || newMovement.type || 'egreso',
       };
     },
   },

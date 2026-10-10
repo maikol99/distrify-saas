@@ -360,6 +360,7 @@ export class CajaService {
       }
 
       const fechaActual = new Date();
+      const fechaFin = caja.estado === 'cerrada' && caja.fechaCierre ? caja.fechaCierre : fechaActual;
 
       const sales = await this.salesModel
         .find({
@@ -367,7 +368,7 @@ export class CajaService {
           status: 'Completado',
           createdAt: {
             $gte: caja.fechaApertura,
-            $lte: fechaActual,
+            $lte: fechaFin,
           },
         })
         .select('total paymentMethod');
@@ -377,28 +378,30 @@ export class CajaService {
           shopId: caja.shopId,
           createdAt: {
             $gte: caja.fechaApertura,
-            $lte: fechaActual,
+            $lte: fechaFin,
           },
         })
-        .select('total paymentMethod');
+        .select('total paymentMethod category description createdAt');
 
       const buys = await this.buysModel
         .find({
           shopId: caja.shopId,
           createdAt: {
             $gte: caja.fechaApertura,
-            $lte: fechaActual,
+            $lte: fechaFin,
           },
         })
         .select('total paymentMethod');
 
-      const inputs = await this.inputsModel.find({
-        shopId: caja.shopId,
-        createdAt: {
-          $gte: caja.fechaApertura,
-          $lte: fechaActual,
-        },
-      });
+      const inputs = await this.inputsModel
+        .find({
+          shopId: caja.shopId,
+          createdAt: {
+            $gte: caja.fechaApertura,
+            $lte: fechaFin,
+          },
+        })
+        .select('total paymentMethod category description createdAt');
 
       const totalSales = sales.reduce((acc, sale) => acc + sale.total, 0);
       const totalOutputs = outputs.reduce((acc, out) => acc + out.total, 0);
@@ -427,25 +430,41 @@ export class CajaService {
         return acc;
       }, {});
 
-      const inputsMovements = inputs.reduce((acc, input) => {
-        acc.push({
-          type: 'ingreso',
-          total: input.total,
-          paymentMethod: input.paymentMethod,
-        });
-        return acc;
-      }, []);
+      const inputsMovements = inputs.map((input) => ({
+        _id: input._id,
+        tipo: 'ingreso',
+        type: 'ingreso',
+        monto: input.total,
+        total: input.total,
+        metodo: input.paymentMethod || 'Efectivo',
+        paymentMethod: input.paymentMethod || 'Efectivo',
+        descripcion: input.description || input.category || 'Ingreso',
+        categoria: input.category || 'Ingreso',
+        fecha: (input as any).createdAt || new Date(),
+      }));
 
-      const outputsMovements = outputs.reduce((acc, output) => {
-        acc.push({
+      const outputsMovements = outputs.map((output) => {
+        let desc = output.description || '';
+        if (output.category && output.category !== desc) {
+          desc = desc ? `[${output.category}] ${desc}` : output.category;
+        }
+        return {
+          _id: output._id,
+          tipo: 'egreso',
           type: 'egreso',
+          monto: output.total,
           total: output.total,
-          paymentMethod: output.paymentMethod,
-        });
-        return acc;
-      }, []);
+          metodo: output.paymentMethod || 'Efectivo',
+          paymentMethod: output.paymentMethod || 'Efectivo',
+          descripcion: desc || 'Egreso',
+          categoria: output.category || 'Egreso',
+          fecha: (output as any).createdAt || new Date(),
+        };
+      });
 
-      const movements = [...inputsMovements, ...outputsMovements];
+      const movements = [...inputsMovements, ...outputsMovements].sort(
+        (a: any, b: any) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime(),
+      );
 
       const resumen = {
         totalCaja: {
