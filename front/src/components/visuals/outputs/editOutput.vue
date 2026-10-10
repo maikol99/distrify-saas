@@ -77,6 +77,7 @@
               <option value="Empaques">Empaques</option>
             </optgroup>
             <optgroup label="Gastos Operativos">
+              <option value="Gastos">Gastos</option>
               <option value="Servicios">Servicios (Luz, agua, gas, internet)</option>
               <option value="Alquiler">Alquiler</option>
               <option value="Sueldos">Sueldos</option>

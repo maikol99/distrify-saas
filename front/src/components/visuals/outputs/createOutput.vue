@@ -18,7 +18,7 @@
           <div class="grid grid-cols-2 gap-3 mb-2">
             <button
               type="button"
-              @click="expenseType = 'gasto'; currentExpense.category = 'Otros'"
+              @click="expenseType = 'gasto'; currentExpense.category = 'Gastos'"
               :class="[
                 'p-3 rounded-xl border text-sm font-semibold flex items-center justify-center gap-2 cursor-pointer transition-all',
                 expenseType === 'gasto'
@@ -90,6 +90,7 @@
               <option value="Empaques">Empaques</option>
             </optgroup>
             <optgroup label="Gastos Operativos">
+              <option value="Gastos">Gastos</option>
               <option value="Servicios">Servicios (Luz, agua, gas, internet)</option>
               <option value="Alquiler">Alquiler</option>
               <option value="Sueldos">Sueldos</option>
@@ -175,7 +176,7 @@ export default {
       suppliers: [],
       currentExpense: {
         description: "",
-        category: "Otros",
+        category: "Gastos",
         date: moment().format("YYYY-MM-DD"),
         total: 0,
         shopId: "",
@@ -215,7 +216,7 @@ export default {
       this.selectedSupplierId = "";
       this.currentExpense = {
         description: "",
-        category: "Otros",
+        category: "Gastos",
         date: moment().format("YYYY-MM-DD"),
         total: 0,
       };
