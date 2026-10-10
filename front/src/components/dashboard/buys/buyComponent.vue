@@ -570,17 +570,6 @@ export default {
         { align: "right" }
       );
 
-      // ===== PIE =====
-      doc.setFontSize(10);
-      doc.setFont("helvetica", "italic");
-      doc.setTextColor(120, 120, 120);
-      doc.text(
-        "Documento generado automáticamente por Sistema Nahuel",
-        105,
-        doc.internal.pageSize.height - 10,
-        { align: "center" }
-      );
-
       doc.save(`Compra_${buy._id}.pdf`);
     },
     handleActionChange(buy, event) {
