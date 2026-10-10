@@ -24,6 +24,8 @@ export enum OutputsCategoriesEnum {
   InvestigacionYDesarrollo = 'Investigación y desarrollo',
   Capacitacion = 'Capacitación',
   Ventas = 'Ventas',
+  Gastos = 'Gastos',
+  GastoDeProveedores = 'Gasto de proveedores',
   Proveedores = 'Proveedores',
   PagoAProveedores = 'Pago a proveedores',
   Otros = 'Otros',

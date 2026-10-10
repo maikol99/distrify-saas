@@ -72,22 +72,36 @@
           >
             <option value="" disabled>Seleccione una categoría</option>
             <option value="Gastos">Gastos</option>
-            <option value="Proveedores">Proveedores</option>
-            <option value="Pago a proveedores">Pago a proveedores</option>
+            <option value="Gasto de proveedores">Gasto de proveedores</option>
+            <option value="Alquiler">Alquiler</option>
             <option value="Servicios">Servicios</option>
             <option value="Sueldos">Sueldos</option>
-            <option value="Alquiler">Alquiler</option>
             <option value="Impuestos">Impuestos</option>
+            <option value="Seguros">Seguros</option>
             <option value="Mantenimiento">Mantenimiento</option>
             <option value="Insumos de oficina">Insumos de oficina</option>
-            <option value="Materia prima">Materia prima</option>
-            <option value="Empaques">Empaques</option>
-            <option value="Seguros">Seguros</option>
-            <option value="Servicios profesionales">Servicios profesionales</option>
-            <option value="Publicidad y marketing">Publicidad y marketing</option>
-            <option value="Transporte y logística">Transporte y logística</option>
+            <option value="Servicios profesionales">
+              Servicios profesionales
+            </option>
+            <option value="Publicidad y marketing">
+              Publicidad y marketing
+            </option>
+            <option value="Transporte y logística">
+              Transporte y logística
+            </option>
+            <option value="Comunicaciones">Comunicaciones</option>
             <option value="Comisiones bancarias">Comisiones bancarias</option>
             <option value="Préstamos o créditos">Préstamos o créditos</option>
+            <option value="Materia prima">Materia prima</option>
+            <option value="Empaques">Empaques</option>
+            <option value="Costos de exportación">Costos de exportación</option>
+            <option value="Aduana">Aduana</option>
+            <option value="Costos de producción">Costos de producción</option>
+            <option value="Licencias de software">Licencias de software</option>
+            <option value="Investigación y desarrollo">
+              Investigación y desarrollo
+            </option>
+            <option value="Capacitación">Capacitación</option>
             <option value="Otros">Otros</option>
           </select>
         </div>

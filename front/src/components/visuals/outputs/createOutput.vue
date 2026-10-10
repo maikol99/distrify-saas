@@ -11,70 +11,82 @@
           <span class="material-symbols-outlined text-2xl">close</span>
         </button>
       </div>
-      <!-- BODY -->
-      <div class="p-5 flex-1 overflow-y-auto flex flex-col gap-4">
-        <!-- Input fields -->
-        <div class="flex flex-col gap-1.5">
-          <label for="expenseDescription" class="text-sm font-semibold text-gray-600">Descripción:</label>
+      <div class="modal-body p-5 flex-1 overflow-y-auto">
+        <div class="form-group">
+          <label for="expenseDescription">Descripción:</label>
           <input
             type="text"
             id="expenseDescription"
             v-model="currentExpense.description"
-            class="py-2.5 px-3 border border-gray-200 rounded-xl text-base text-gray-800 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
+            class="form-control"
             placeholder="Descripción del egreso"
             required
           />
         </div>
-
-        <div class="flex flex-col gap-1.5">
-          <label for="expenseCategory" class="text-sm font-semibold text-gray-600">Categoría:</label>
+        <div class="form-group">
+          <label for="expenseCategory">Categoría:</label>
           <select
             v-model="currentExpense.category"
             id="expenseCategory"
-            class="py-2.5 px-3 border border-gray-200 rounded-xl text-base text-gray-800 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
+            class="form-control"
             required
           >
             <option value="" disabled>Seleccione una categoría</option>
             <option value="Gastos">Gastos</option>
-            <option value="Proveedores">Proveedores</option>
-            <option value="Pago a proveedores">Pago a proveedores</option>
+            <option value="Gasto de proveedores">Gasto de proveedores</option>
+            <option value="Alquiler">Alquiler</option>
             <option value="Servicios">Servicios</option>
             <option value="Sueldos">Sueldos</option>
-            <option value="Alquiler">Alquiler</option>
             <option value="Impuestos">Impuestos</option>
+            <option value="Seguros">Seguros</option>
             <option value="Mantenimiento">Mantenimiento</option>
             <option value="Insumos de oficina">Insumos de oficina</option>
-            <option value="Materia prima">Materia prima</option>
-            <option value="Empaques">Empaques</option>
-            <option value="Seguros">Seguros</option>
-            <option value="Servicios profesionales">Servicios profesionales</option>
-            <option value="Publicidad y marketing">Publicidad y marketing</option>
-            <option value="Transporte y logística">Transporte y logística</option>
+            <option value="Servicios profesionales">
+              Servicios profesionales
+            </option>
+            <option value="Publicidad y marketing">
+              Publicidad y marketing
+            </option>
+            <option value="Transporte y logística">
+              Transporte y logística
+            </option>
+            <option value="Comunicaciones">Comunicaciones</option>
             <option value="Comisiones bancarias">Comisiones bancarias</option>
             <option value="Préstamos o créditos">Préstamos o créditos</option>
+            <option value="Materia prima">Materia prima</option>
+            <option value="Empaques">Empaques</option>
+            <option value="Costos de exportación">Costos de exportación</option>
+            <option value="Aduana">Aduana</option>
+            <option value="Costos de producción">Costos de producción</option>
+            <option value="Licencias de software">Licencias de software</option>
+            <option value="Investigación y desarrollo">
+              Investigación y desarrollo
+            </option>
+            <option value="Capacitación">Capacitación</option>
             <option value="Otros">Otros</option>
           </select>
         </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="flex flex-col gap-1.5">
-            <label for="expenseTotal" class="text-sm font-semibold text-gray-600">Total:</label>
+        <div class="form-row">
+    
+          <div class="form-group">
+            <label for="expenseTotal">Total:</label>
             <input
               id="expenseTotal"
               v-model.number="currentExpense.total"
               type="number"
               step="0.01"
-              class="py-2.5 px-3 border border-gray-200 rounded-xl text-base text-gray-800 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
+              class="form-control"
               required
             />
           </div>
-
-          <div class="flex flex-col gap-1.5">
-            <label for="paymentMethod" class="text-sm font-semibold text-gray-600">Método de Pago:</label>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="paymentMethod">Método de Pago:</label>
             <select
               v-model="paymentMethod"
               id="paymentMethod"
-              class="py-2.5 px-3 border border-gray-200 rounded-xl text-base text-gray-800 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
+              class="form-control"
             >
               <option value="Efectivo">Efectivo</option>
               <option value="Transferencia">Transferencia</option>
