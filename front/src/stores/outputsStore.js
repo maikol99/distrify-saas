@@ -93,11 +93,15 @@ export const useOutputsStore = defineStore("outputs", {
         await this.filterOutputs();
       }
     },
-    async filterOutputs() {
+    async filterOutputs(resetPage = false) {
       this.loading = true;
       try {
         const shopId = this.globalStore.shopId();
         this.filterApplied = true;
+
+        if (resetPage) {
+          this.pagination.page = 1;
+        }
 
         const params = new URLSearchParams({
           shopId,
@@ -160,6 +164,7 @@ export const useOutputsStore = defineStore("outputs", {
       this.searchQuery = cashier.username;
       this.cashierSearchResults = [];
       this.filterApplied = true;
+      this.pagination.page = 1;
       this.loadData();
     },
     clearCashierSearch() {
@@ -167,6 +172,7 @@ export const useOutputsStore = defineStore("outputs", {
       this.cashierSearchResults = [];
       this.filters.userId = null;
       this.filterApplied = false;
+      this.pagination.page = 1;
     },
     clearFilters() {
       this.filters = {
@@ -179,6 +185,7 @@ export const useOutputsStore = defineStore("outputs", {
         maxAmount: null,
       };
       this.filterApplied = false;
+      this.pagination.page = 1;
       this.loadData();
     },
   },

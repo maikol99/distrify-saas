@@ -171,7 +171,7 @@
 
         <!-- Botones de acción de filtros -->
         <div class="filter-actions">
-          <button @click="outputsStore.filterOutputs" class="btn-primary">
+          <button @click="outputsStore.filterOutputs(true)" class="btn-primary">
             <i class="fas fa-filter"></i> Aplicar Filtros
           </button>
           <button
@@ -215,7 +215,7 @@
                 </td>
                 <td>${{ formatAmount(output.total) }}</td>
   
-                <td>{{ output.userId.username || "N/A" }}</td>
+                <td>{{ output.userId?.username || "N/A" }}</td>
                 <td>{{ output.paymentMethod || "N/A" }}</td>
                 <td>{{ formatDate(output.createdAt) }}</td>
                 <td class="sale-actions-cell">
@@ -265,7 +265,7 @@
                 </div>
                 <div class="flex flex-col">
                   <span class="text-[0.65rem] uppercase tracking-wider text-gray-400 font-bold mb-1">Usuario</span>
-                  <span class="font-medium text-sm">{{ output.userId.username || 'N/A' }}</span>
+                  <span class="font-medium text-sm">{{ output.userId?.username || 'N/A' }}</span>
                 </div>
                 <div class="flex flex-col">
                   <span class="text-[0.65rem] uppercase tracking-wider text-gray-400 font-bold mb-1">Medio Pago</span>
@@ -481,6 +481,7 @@ export default {
     },
     async previousPage() {
       if (this.outputsStore.pagination.page > 1) {
+        this.outputsStore.pagination.page--;
         await this.outputsStore.loadData();
       }
     },
@@ -489,14 +490,15 @@ export default {
         this.outputsStore.pagination.page <
         this.outputsStore.pagination.totalPages
       ) {
+        this.outputsStore.pagination.page++;
         await this.outputsStore.loadData();
       }
     },
 
     async changeLimit(newLimit) {
-      this.pagination.limit = newLimit;
-      this.pagination.page = 1; // Resetear a la primera página cuando cambia el límite
-      await this.outputsStore.loadData;
+      this.outputsStore.pagination.limit = newLimit;
+      this.outputsStore.pagination.page = 1; // Resetear a la primera página cuando cambia el límite
+      await this.outputsStore.loadData();
     },
     async handleActionChange(output, event) {
       const action = event.target.value;
