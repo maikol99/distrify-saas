@@ -625,10 +625,7 @@ export class CajaService {
     }
   }
 
-  //Cron diario para abrir caja automáticamente a las 06:05 AM Argentina (antes de que empiece el día)
-  @Cron('5 6 * * *', {
-    timeZone: 'America/Argentina/Buenos_Aires',
-  })
+  // Apertura automática desactivada: el usuario decide manualmente cuándo abrir la caja
   async autoOpenCaja() {
     try {
       this.logger.log('Iniciando apertura automática de cajas...');
@@ -665,10 +662,7 @@ export class CajaService {
     }
   }
 
-  //Cron de seguridad diario para cerrar caja a las 06:00 AM Argentina (si quedó abierta del turno noche)
-  @Cron('0 6 * * *', {
-    timeZone: 'America/Argentina/Buenos_Aires',
-  })
+  // Cierre automático desactivado: el usuario decide manualmente cuándo cerrar la caja
   async autoCloseCaja() {
     try {
       this.logger.log('Iniciando cierre automático de cajas de seguridad (06:00 AM ARG)...');
