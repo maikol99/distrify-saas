@@ -102,9 +102,9 @@
         <button @click="$emit('close')" class="py-2 px-5 bg-white border border-gray-200 text-gray-600 rounded-xl font-semibold cursor-pointer transition-colors hover:bg-gray-100 hover:text-gray-800 shadow-sm w-full md:w-auto">
           Cancelar
         </button>        
-        <button @click.prevent="saveExpense()" class="py-2 px-5 bg-orange-500 border-none text-white rounded-xl font-semibold cursor-pointer transition-colors hover:bg-orange-600 shadow-sm flex items-center justify-center disabled:bg-gray-400 disabled:cursor-not-allowed w-full md:w-auto" :disabled="loading">
+        <button @click.prevent="saveExpense()" class="py-2 px-5 bg-orange-500 border-none text-white rounded-xl font-semibold cursor-pointer transition-colors hover:bg-orange-600 shadow-sm flex items-center justify-center disabled:bg-gray-400 disabled:cursor-not-allowed w-full md:w-auto" :disabled="loading" style="pointer-events: auto;">
           <span class="material-symbols-outlined mr-2 animate-spin" v-if="loading">progress_activity</span>
-          Guardar
+          {{ loading ? 'Guardando...' : 'Guardar' }}
         </button>
       </div>
     </div>
@@ -152,6 +152,7 @@ export default {
       this.paymentMethods = [];
     },
     async saveExpense() {
+      if (this.loading) return; // Guard contra doble envío
       try {
         this.loading = true;
         const shopId = this.globalStore.shopId();
