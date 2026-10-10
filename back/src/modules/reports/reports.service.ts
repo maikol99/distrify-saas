@@ -248,7 +248,7 @@ export class ReportsService {
       const monthlyBuysData = this.calculateMonthlyData(transformedBuys);
       const monthlyInputsData = this.calculateMonthlyData(transformedInputs);
       const monthlyRealCostData = this.calculateMonthlyRealCost(transformedBuys);
-      const monthlyProfitData = this.calculateMonthlyProfit(monthlySalesData, monthlyRealCostData, monthlyOutputsData);
+      const monthlyProfitData = this.calculateMonthlyProfit(transformedSales);
 
       return {
         // Totales generales
@@ -452,22 +452,22 @@ export class ReportsService {
     return monthlyData;
   }
 
-  private calculateMonthlyProfit(
-    monthlySales: Record<string, number>,
-    monthlyRealCost: Record<string, number>,
-    monthlyOutputs: Record<string, number>,
-  ): Record<string, number> {
-    const allMonths = new Set([
-      ...Object.keys(monthlySales),
-      ...Object.keys(monthlyRealCost),
-      ...Object.keys(monthlyOutputs),
-    ]);
+  private calculateMonthlyProfit(sales: any[]): Record<string, number> {
     const result: Record<string, number> = {};
-    allMonths.forEach((month) => {
-      result[month] =
-        (monthlySales[month] || 0) -
-        (monthlyRealCost[month] || 0) -
-        (monthlyOutputs[month] || 0);
+    sales.forEach((sale) => {
+      const date = new Date(sale.date);
+      const monthYear = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+
+      let saleCost = 0;
+      if (sale.productDetails && Array.isArray(sale.productDetails)) {
+        for (const item of sale.productDetails) {
+          const qty = Number(item.quantity) || 1;
+          const cost = Number(item.buyPrice) || 0;
+          saleCost += qty * cost;
+        }
+      }
+      const saleProfit = Math.max(0, (sale.total || 0) - saleCost);
+      result[monthYear] = (result[monthYear] || 0) + saleProfit;
     });
     return result;
   }
