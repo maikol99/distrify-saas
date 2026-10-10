@@ -325,7 +325,7 @@ export class CajaService {
         .skip(skip)
 
         .select(
-          '_id estado fechaApertura totalCaja arqueoFinal title entregasEfectivo',
+          '_id estado fechaApertura fechaCierre totalCaja arqueoFinal title entregasEfectivo createdAt',
         )
         .limit(limitNumber)
         .sort({ fechaApertura: -1 });
@@ -554,7 +554,7 @@ export class CajaService {
         .sort({ fechaApertura: -1 })
 
         .select(
-          '_id estado fechaApertura totalCaja arqueoFinal title entregasEfectivo userIdApertura',
+          '_id estado fechaApertura fechaCierre totalCaja arqueoFinal title entregasEfectivo userIdApertura createdAt',
         );
 
       if (cajas.length === 0) {
@@ -606,8 +606,10 @@ export class CajaService {
     }
   }
 
-  //Cron diario para abrir caja automáticamente a las 00:00 Argentina
-  @Cron('0 0 * * *')
+  //Cron diario para abrir caja automáticamente a las 06:05 AM Argentina (antes de que empiece el día)
+  @Cron('5 6 * * *', {
+    timeZone: 'America/Argentina/Buenos_Aires',
+  })
   async autoOpenCaja() {
     try {
       this.logger.log('Iniciando apertura automática de cajas...');
@@ -644,11 +646,13 @@ export class CajaService {
     }
   }
 
-  //Cron diario para cerrar caja a las 23:59 Argentina
-  @Cron('59 23 * * *')
+  //Cron de seguridad diario para cerrar caja a las 06:00 AM Argentina (si quedó abierta del turno noche)
+  @Cron('0 6 * * *', {
+    timeZone: 'America/Argentina/Buenos_Aires',
+  })
   async autoCloseCaja() {
     try {
-      this.logger.log('Iniciando cierre automático de cajas...');
+      this.logger.log('Iniciando cierre automático de cajas de seguridad (06:00 AM ARG)...');
 
       const shopsResult = await this.shopsService.getAllShops(1, 99999);
       const shops = shopsResult.data || [];

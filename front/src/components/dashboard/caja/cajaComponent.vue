@@ -154,7 +154,7 @@
       <div v-for="caja in cajaStore.cajas" :key="caja._id" class="box-card">
         <div class="box-header">
           <h3 class="box-name">{{ caja.title }}</h3>
-          <span class="box-date">{{ formatDate(caja.createdAt) }}</span>
+          <span class="box-date">{{ formatDate(caja.fechaApertura || caja.createdAt) }}</span>
 
           <!-- Boton para eliminar -->
           <button @click="cajaStore.deleteCaja(caja._id)" class="btn-delete">
@@ -309,6 +309,7 @@ export default {
       this.$router.push("/caja/detalles/" + caja._id);
     },
     formatDate(date) {
+      if (!date) return "-";
       return moment(date).format("DD/MM/YYYY");
     },
     formatCurrency(value) {
