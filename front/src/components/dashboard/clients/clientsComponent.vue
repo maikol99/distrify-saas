@@ -184,15 +184,18 @@
                 {{ formatValue(client.debt) }}
               </td>
               <td class="p-4 flex justify-center">
-                <select
-                  class="p-2 border border-gray-200 rounded-xl bg-white text-sm focus:outline-none focus:border-orange-500 cursor-pointer"
-                  @change="handleActionChange(client, $event)"
-                >
-                  <option value="">Acciones</option>
-                  <option value="verVentas">Ver Ventas</option>
-                  <option value="edit">Editar</option>
-                  <option value="delete">Eliminar</option>
-                </select>
+                <div class="relative">
+                  <select
+                    class="appearance-none pl-3 pr-8 py-2 border border-gray-200 rounded-xl bg-white text-sm focus:outline-none focus:border-orange-500 cursor-pointer"
+                    @change="handleActionChange(client, $event)"
+                  >
+                    <option value="">Acciones</option>
+                    <option value="verVentas">Ver Ventas</option>
+                    <option value="edit">Editar</option>
+                    <option value="delete">Eliminar</option>
+                  </select>
+                  <span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" style="font-size:1rem">expand_more</span>
+                </div>
               </td>
             </tr>
           </tbody>
@@ -208,15 +211,18 @@
                <p class="text-gray-500 m-0 text-xs truncate">{{ client.email }}</p>
              </div>
              <!-- Dropdown Acciones -->
-              <select
-                class="p-1.5 border border-gray-200 rounded-xl bg-gray-50 text-xs focus:outline-none focus:border-orange-500 cursor-pointer"
-                @change="handleActionChange(client, $event)"
-              >
-                <option value="">Acciones</option>
-                <option value="verVentas">Ver Ventas</option>
-                <option value="edit">Editar</option>
-                <option value="delete">Eliminar</option>
-              </select>
+              <div class="relative">
+                <select
+                  class="appearance-none p-1.5 pl-2 pr-7 border border-gray-200 rounded-xl bg-gray-50 text-xs focus:outline-none focus:border-orange-500 cursor-pointer"
+                  @change="handleActionChange(client, $event)"
+                >
+                  <option value="">Acciones</option>
+                  <option value="verVentas">Ver Ventas</option>
+                  <option value="edit">Editar</option>
+                  <option value="delete">Eliminar</option>
+                </select>
+                <span class="material-symbols-outlined absolute right-1.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" style="font-size:0.9rem">expand_more</span>
+              </div>
            </div>
            
            <div class="grid grid-cols-2 gap-3 mt-4 text-gray-600 border-t border-gray-50 pt-3">
@@ -291,17 +297,20 @@
         </button>
         <!-- Selector de elementos por página -->
         <div class="flex items-center gap-2">
-          <label for="itemsPerPage">Clientes por página:</label>
-          <select
-            @change="clientStore.changeLimit($event.target.value)"
-            id="itemsPerPage"
-            class="py-2 px-3 border border-gray-200 rounded-xl bg-white focus:outline-none focus:border-orange-500 cursor-pointer"
-          >
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="20">20</option>
-            <option value="50">50</option>
-          </select>
+          <label for="itemsPerPage" class="text-sm text-gray-600">Clientes por página:</label>
+          <div class="relative flex items-center">
+            <select
+              @change="clientStore.changeLimit($event.target.value)"
+              id="itemsPerPage"
+              class="appearance-none py-1.5 pl-3 pr-8 border border-gray-200 rounded-xl bg-white text-sm focus:outline-none focus:border-orange-500 cursor-pointer"
+            >
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="20">20</option>
+              <option value="50">50</option>
+            </select>
+            <span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" style="font-size: 1rem;">expand_more</span>
+          </div>
         </div>
       </div>
     </div>
