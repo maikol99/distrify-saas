@@ -26,7 +26,7 @@
           v-if="!globalStore.isSidebarCollapsed"
           src="/alevia-logo.png"
           alt="Alevia Pay"
-          width="150px"
+          class="h-16 w-auto object-contain"
         />
         <span
           v-if="!globalStore.isSidebarCollapsed"
