@@ -582,22 +582,23 @@ export default {
 }
 
 .btn-primary {
-  background-color: #f9931e;
+  background: linear-gradient(to bottom right, #fb923c, #ea580c);
   color: white;
   border: none;
   padding: 0.625rem 1.25rem;
-  border-radius: 9999px;
-  font-weight: 500;
+  border-radius: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .btn-primary:hover {
-  background-color: #e8821a;
-  /* Color de hover para el naranja */
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 .btn-secondary {
@@ -605,7 +606,7 @@ export default {
   color: #4b5563;
   border: 1px solid #e5e7eb;
   padding: 0.625rem 1.25rem;
-  border-radius: 9999px;
+  border-radius: 1rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -729,21 +730,23 @@ export default {
 }
 
 .btn-toggle-filters {
-  background-color: #f9931e;
+  background: linear-gradient(to bottom right, #fb923c, #ea580c);
   color: white;
   border: none;
   padding: 0.5rem 1rem;
-  border-radius: 9999px;
-  font-weight: 500;
+  border-radius: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .btn-toggle-filters:hover {
-  background-color: #e8821a;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 .filters-container {
@@ -985,23 +988,26 @@ export default {
 }
 
 .btn-pagination {
-  background-color: #f9931e;
+  background: linear-gradient(to bottom right, #fb923c, #ea580c);
   color: white;
   border: none;
   padding: 0.5rem 1rem;
-  border-radius: 9999px;
-  font-weight: 500;
+  border-radius: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .btn-pagination:hover:not(:disabled) {
-  background-color: #e8821a;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 .btn-pagination:disabled {
-  background-color: #cccccc;
+  background: #cccccc;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
 .items-per-page {
