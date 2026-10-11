@@ -822,21 +822,23 @@ export default {
 }
 
 .btn-toggle-filters {
-  background: #f9931e;
+  background: linear-gradient(135deg, #f9931e 0%, #f76707 100%);
   color: white;
   border: none;
   padding: 0.5rem 1.25rem;
-  border-radius: 0.5rem;
-  font-weight: 500;
+  border-radius: 1rem;
+  font-weight: 600;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  transition: background 0.2s;
+  box-shadow: 0 4px 6px rgba(249, 147, 30, 0.3);
+  transition: all 0.2s ease;
 }
 
 .btn-toggle-filters:hover {
-  background: #e8821a;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(249, 147, 30, 0.4);
 }
 
 .filters-container {
@@ -901,39 +903,43 @@ export default {
 
 /* Buttons */
 .btn-primary {
-  background: #f9931e;
+  background: linear-gradient(135deg, #f9931e 0%, #f76707 100%);
   color: white;
   border: none;
   padding: 0.6rem 1.25rem;
-  border-radius: 0.5rem;
-  font-weight: 500;
+  border-radius: 1rem;
+  font-weight: 600;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  transition: background 0.2s;
+  box-shadow: 0 4px 6px rgba(249, 147, 30, 0.3);
+  transition: all 0.2s ease;
 }
 
 .btn-primary:hover {
-  background: #e8821a;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(249, 147, 30, 0.4);
 }
 
 .btn-secondary {
-  background: #f3f4f6;
+  background: white;
   color: #4b5563;
   border: 1px solid #e5e7eb;
   padding: 0.6rem 1.25rem;
-  border-radius: 0.5rem;
+  border-radius: 1rem;
   font-weight: 500;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  transition: all 0.2s;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
 }
 
 .btn-secondary:hover {
-  background: #e5e7eb;
+  background-color: #f9fafb;
+  transform: translateY(-1px);
 }
 
 /* Loading */

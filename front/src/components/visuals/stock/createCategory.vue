@@ -1,8 +1,8 @@
 <template>
-  <div class="fixed inset-0 bg-black/50 flex flex-col items-center justify-end md:justify-center z-[100] md:p-4 backdrop-blur-sm" @click.self="$emit('close')">
-    <div class="bg-white w-full h-auto max-h-[95vh] md:w-[600px] md:h-auto md:max-h-[90vh] md:rounded-3xl rounded-t-3xl shadow-2xl flex flex-col font-sans overflow-hidden slide-up" @click.stop>
+  <div class="fixed inset-0 bg-black/50 flex flex-col items-center justify-center z-[100] p-4 backdrop-blur-sm" @click.self="$emit('close')">
+    <div class="bg-white w-full h-auto max-h-[90vh] md:w-[600px] rounded-3xl shadow-2xl flex flex-col font-sans overflow-hidden" @click.stop>
       <!-- HEADER -->
-      <div class="flex justify-between items-center p-5 border-b border-orange-100 bg-orange-50 text-orange-600 md:rounded-t-3xl">
+      <div class="flex justify-between items-center p-5 border-b border-orange-100 bg-orange-50 text-orange-600 rounded-t-3xl">
         <h2 class="text-xl font-bold m-0 flex items-center gap-2">
           <i class="fas fa-tag"></i>
           Crear Categoría
@@ -45,11 +45,11 @@
       </div>
 
       <!-- FOOTER -->
-      <div class="p-5 border-t border-gray-100 bg-gray-50 flex flex-col-reverse md:flex-row justify-end gap-3 md:rounded-b-3xl mt-auto">
+      <div class="p-5 border-t border-gray-100 bg-gray-50 flex flex-col-reverse md:flex-row justify-end gap-3 rounded-b-3xl mt-auto">
         <button type="button" @click="resetForm" class="py-3 md:py-2 px-5 bg-white border border-gray-200 text-gray-600 rounded-xl font-semibold cursor-pointer transition-colors hover:bg-gray-100 w-full md:w-auto text-center" :disabled="loading">
           Cancelar
         </button>
-        <button @click="createCategory" type="button" class="py-3 md:py-2 px-5 bg-orange-500 border-none text-white rounded-xl font-semibold cursor-pointer transition-colors hover:bg-orange-600 flex items-center justify-center w-full md:w-auto disabled:opacity-50 disabled:cursor-not-allowed" :disabled="loading">
+        <button @click="createCategory" type="button" class="py-3 md:py-2 px-5 bg-gradient-to-br from-orange-400 to-orange-600 border-none text-white rounded-xl font-semibold cursor-pointer shadow-md transition-all hover:-translate-y-0.5 hover:shadow-lg flex items-center justify-center w-full md:w-auto disabled:opacity-50 disabled:cursor-not-allowed" :disabled="loading">
           <span v-if="loading" class="material-symbols-outlined mr-2 animate-spin">progress_activity</span>
           <i v-else class="fas fa-save mr-2"></i>
           {{ loading ? "Guardando..." : "Crear Categoría" }}

@@ -403,6 +403,7 @@ export default {
   gap: 0.75rem;
   justify-content: flex-end;
   flex-wrap: wrap;
+  margin-bottom: 1.5rem;
 }
 
 .filter-toggle-container {
