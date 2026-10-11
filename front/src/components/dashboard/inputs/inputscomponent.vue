@@ -586,7 +586,7 @@ export default {
   color: white;
   border: none;
   padding: 0.625rem 1.25rem;
-  border-radius: 0.375rem;
+  border-radius: 9999px;
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s ease;
@@ -605,7 +605,7 @@ export default {
   color: #4b5563;
   border: 1px solid #e5e7eb;
   padding: 0.625rem 1.25rem;
-  border-radius: 0.375rem;
+  border-radius: 9999px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -733,7 +733,7 @@ export default {
   color: white;
   border: none;
   padding: 0.5rem 1rem;
-  border-radius: 0.375rem;
+  border-radius: 9999px;
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s ease;
@@ -989,7 +989,7 @@ export default {
   color: white;
   border: none;
   padding: 0.5rem 1rem;
-  border-radius: 0.375rem;
+  border-radius: 9999px;
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s ease;
