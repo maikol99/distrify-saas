@@ -728,7 +728,7 @@
         <button @click="showingTransferModal = false" class="py-3 md:py-2 px-5 bg-white border border-gray-200 text-gray-600 rounded-xl font-semibold cursor-pointer hover:bg-gray-100 shadow-sm w-full md:w-auto text-center" :disabled="transferLoading">
           Cancelar
         </button>
-        <button @click="transferStock" class="py-3 md:py-2 px-5 bg-orange-500 border-none text-white rounded-xl font-semibold cursor-pointer hover:bg-orange-600 shadow-sm flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed w-full md:w-auto" :disabled="transferLoading || !canTransfer">
+        <button @click="transferStock" class="py-3 md:py-2 px-5 bg-gradient-to-br from-orange-400 to-orange-600 border-none text-white rounded-xl font-semibold cursor-pointer shadow-md hover:-translate-y-0.5 hover:shadow-lg transition-all flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 w-full md:w-auto" :disabled="transferLoading || !canTransfer">
           <span v-if="transferLoading" class="material-symbols-outlined mr-2 animate-spin">progress_activity</span>
           <i v-else class="fas fa-exchange-alt mr-2"></i>
           {{ transferLoading ? "Transfiriendo..." : "Transferir" }}
@@ -1134,11 +1134,11 @@ export default {
 .clear-search:hover { color: #ef4444; }
 
 .btn-search {
-  background: #f9931e;
+  background: linear-gradient(135deg, #f9931e 0%, #f76707 100%);
   color: white;
   border: none;
   padding: 0.55rem 1rem;
-  border-radius: 0.625rem;
+  border-radius: 1rem;
   font-weight: 600;
   font-size: 0.875rem;
   cursor: pointer;
@@ -1147,9 +1147,13 @@ export default {
   gap: 0.375rem;
   white-space: nowrap;
   flex-shrink: 0;
-  transition: background 0.15s;
+  box-shadow: 0 4px 6px rgba(249, 147, 30, 0.3);
+  transition: all 0.2s ease;
 }
-.btn-search:hover { background: #e8821a; }
+.btn-search:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(249, 147, 30, 0.4);
+}
 
 .btn-toggle-filters {
   background: #f1f5f9;
@@ -1186,11 +1190,11 @@ export default {
 
 /* ─── Botones generales ─── */
 .btn-primary {
-  background: #f9931e;
+  background: linear-gradient(135deg, #f9931e 0%, #f76707 100%);
   color: white;
   border: none;
   padding: 0.55rem 1rem;
-  border-radius: 0.625rem;
+  border-radius: 1rem;
   font-weight: 600;
   font-size: 0.875rem;
   cursor: pointer;
@@ -1198,9 +1202,13 @@ export default {
   align-items: center;
   gap: 0.375rem;
   white-space: nowrap;
-  transition: background 0.15s;
+  box-shadow: 0 4px 6px rgba(249, 147, 30, 0.3);
+  transition: all 0.2s ease;
 }
-.btn-primary:hover { background: #e8821a; }
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(249, 147, 30, 0.4);
+}
 
 .btn-secondary {
   background: #f8fafc;
@@ -1632,7 +1640,12 @@ select.filter-input {
   transition: all 0.15s;
 }
 .page-number:hover:not(:disabled) { background: #f3f4f6; }
-.page-number.active { background: #f9931e; color: white; border-color: #f9931e; }
+.page-number.active {
+  background: linear-gradient(135deg, #f9931e 0%, #f76707 100%);
+  color: white;
+  border: none;
+  box-shadow: 0 4px 6px rgba(249, 147, 30, 0.3);
+}
 .page-number:disabled { opacity: 0.4; cursor: not-allowed; }
 .page-ellipsis { padding: 0.5rem 0.25rem; color: #9ca3af; font-weight: 600; }
 

@@ -1121,12 +1121,19 @@ export default {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background-color: #f9931e;
+  background: linear-gradient(135deg, #f9931e 0%, #f76707 100%);
   color: white;
   border: none;
   padding: 0.5rem 1rem;
-  border-radius: 0.375rem;
+  border-radius: 1rem;
+  font-weight: 600;
   cursor: pointer;
+  box-shadow: 0 4px 6px rgba(249, 147, 30, 0.3);
+  transition: all 0.2s ease;
+}
+.btn-toggle-price-lists:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(249, 147, 30, 0.4);
 }
 
 .product-creator-container {
@@ -1853,35 +1860,38 @@ textarea.form-control {
 }
 
 .btn-primary {
-  background-color: #f9931e;
+  background: linear-gradient(135deg, #f9931e 0%, #f76707 100%);
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
-  border-radius: 0.375rem;
-  font-weight: 500;
+  border-radius: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   font-size: 0.875rem;
+  box-shadow: 0 4px 6px rgba(249, 147, 30, 0.3);
 }
 
 .btn-primary:hover:not(:disabled) {
-  background-color: #e8851b;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(249, 147, 30, 0.4);
 }
 
 .btn-primary:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
 .btn-secondary {
-  background-color: #f3f4f6;
+  background: white;
   color: #4b5563;
   border: 1px solid #e5e7eb;
   padding: 0.75rem 1.5rem;
-  border-radius: 0.375rem;
+  border-radius: 1rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -1889,10 +1899,12 @@ textarea.form-control {
   align-items: center;
   gap: 0.5rem;
   font-size: 0.875rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background-color: #e5e7eb;
+  background-color: #f9fafb;
+  transform: translateY(-1px);
 }
 
 .btn-secondary:disabled {
@@ -2052,19 +2064,21 @@ textarea.form-control {
   align-items: center;
   gap: 0.4rem;
   padding: 0.6rem 1rem;
-  background-color: #f9931e;
+  background: linear-gradient(135deg, #f9931e 0%, #f76707 100%);
   color: white;
   border: none;
-  border-radius: 0.375rem;
+  border-radius: 1rem;
   font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
-  transition: background-color 0.2s ease;
+  box-shadow: 0 4px 6px rgba(249, 147, 30, 0.3);
+  transition: all 0.2s ease;
 }
 
 .btn-generate-code:hover {
-  background-color: #e8851b;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(249, 147, 30, 0.4);
 }
 
 .btn-generate-code i {
