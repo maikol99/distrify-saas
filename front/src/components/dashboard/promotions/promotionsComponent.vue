@@ -981,60 +981,66 @@ export default {
 }
 
 .btn-primary {
-  background-color: #f9931e;
+  background: linear-gradient(135deg, #f9931e 0%, #f76707 100%);
   color: white;
   border: none;
   padding: 0.625rem 1.25rem;
-  border-radius: 0.5rem;
+  border-radius: 1rem;
   font-weight: 600;
   font-size: 0.875rem;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  transition: background-color 0.2s;
+  box-shadow: 0 4px 6px rgba(249, 147, 30, 0.3);
+  transition: all 0.2s ease;
 }
 
 .btn-primary:hover {
-  background-color: #e8821a;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(249, 147, 30, 0.4);
 }
 
 .btn-secondary {
-  background-color: white;
+  background: white;
   color: #374151;
   border: 1px solid #e5e7eb;
   padding: 0.625rem 1.25rem;
-  border-radius: 0.5rem;
+  border-radius: 1rem;
   font-weight: 600;
   font-size: 0.875rem;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  transition: all 0.2s;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
 }
 
 .btn-secondary:hover {
-  background-color: #f3f4f6;
+  background-color: #f9fafb;
+  transform: translateY(-1px);
 }
 
 .btn-search {
-  background-color: #f9931e;
+  background: linear-gradient(135deg, #f9931e 0%, #f76707 100%);
   color: white;
   border: none;
   padding: 0.625rem 1.25rem;
-  border-radius: 0.5rem;
+  border-radius: 1rem;
   font-weight: 600;
   font-size: 0.875rem;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  transition: background-color 0.2s;
+  box-shadow: 0 4px 6px rgba(249, 147, 30, 0.3);
+  transition: all 0.2s ease;
 }
 
 .btn-search:hover {
-  background-color: #e8821a;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(249, 147, 30, 0.4);
 }
 
 .filter-toggle-container {
@@ -1042,21 +1048,23 @@ export default {
 }
 
 .btn-toggle-filters {
-  background-color: #f9931e;
+  background: linear-gradient(135deg, #f9931e 0%, #f76707 100%);
   color: white;
   border: none;
   padding: 0.5rem 1rem;
-  border-radius: 0.375rem;
-  font-weight: 500;
+  border-radius: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
+  box-shadow: 0 4px 6px rgba(249, 147, 30, 0.3);
 }
 
 .btn-toggle-filters:hover {
-  background-color: #e8821a;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(249, 147, 30, 0.4);
 }
 
 .filters-container {
@@ -1256,17 +1264,19 @@ export default {
   padding: 0.5rem 1rem;
   border: 1px solid #e5e7eb;
   background: white;
-  border-radius: 0.375rem;
+  border-radius: 1rem;
   cursor: pointer;
   transition: all 0.2s;
   display: flex;
   align-items: center;
   gap: 0.5rem;
   font-size: 0.875rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .pagination-btn:hover:not(:disabled) {
-  background-color: #f3f4f6;
+  background-color: #f9fafb;
+  transform: translateY(-1px);
 }
 
 .pagination-btn:disabled {
@@ -1284,22 +1294,25 @@ export default {
   padding: 0.5rem 0.75rem;
   border: 1px solid #e5e7eb;
   background: white;
-  border-radius: 0.375rem;
+  border-radius: 1rem;
   cursor: pointer;
   transition: all 0.2s;
   min-width: 2.5rem;
   text-align: center;
   font-size: 0.875rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .page-number:hover:not(:disabled) {
-  background-color: #f3f4f6;
+  background-color: #f9fafb;
+  transform: translateY(-1px);
 }
 
 .page-number.active {
-  background-color: #f9931e;
+  background: linear-gradient(135deg, #f9931e 0%, #f76707 100%);
   color: white;
-  border-color: #f9931e;
+  border: none;
+  box-shadow: 0 4px 6px rgba(249, 147, 30, 0.3);
 }
 
 .page-number:disabled {
@@ -1326,7 +1339,7 @@ export default {
 .form-control {
   padding: 0.375rem 0.75rem;
   border: 1px solid #d1d5db;
-  border-radius: 0.375rem;
+  border-radius: 1rem;
   background: white;
   min-width: 5rem;
   font-size: 0.875rem;
