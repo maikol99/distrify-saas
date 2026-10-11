@@ -507,6 +507,12 @@
     </div>
   </div>
   <spinnerComponent v-if="ordersListStore?.loading" />
+  <toastComponent
+    v-if="ordersListStore?.toast?.showing"
+    :message="ordersListStore.toast.message"
+    :state="ordersListStore.toast.state"
+    @close="ordersListStore.toast.showing = false"
+  />
 </template>
 
 <script>
@@ -514,10 +520,11 @@ import { mapState, mapActions } from "pinia";
 import { usePedidosStore } from "@/stores/pedidosStore";
 import { useGlobalStore } from "@/stores/globalStore";
 import spinnerComponent from "@/components/visuals/spinnerComponent.vue"; // Assuming this path is correct
+import toastComponent from "@/components/visuals/toast/toastComponent.vue";
 import jsPDF from "jspdf";
 
 export default {
-  components: { spinnerComponent },
+  components: { spinnerComponent, toastComponent },
   data() {
     return {
       globalStore: useGlobalStore(),

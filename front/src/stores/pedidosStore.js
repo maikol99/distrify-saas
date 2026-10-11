@@ -25,6 +25,11 @@ export const usePedidosStore = defineStore("ordersList", {
       paymentType: null
     },
     filtersApplied: false,
+    toast: {
+      showing: false,
+      message: "",
+      state: "information",
+    },
     globalStore: useGlobalStore(),
   }),
   actions: {
@@ -77,7 +82,11 @@ export const usePedidosStore = defineStore("ordersList", {
 
         if (!pedidoToUpdate) {
           console.error("Pedido no encontrado para actualizar:", pedidoId);
-          alert("Error: Pedido no encontrado para actualizar.");
+          this.toast = {
+            showing: true,
+            message: "Error: Pedido no encontrado para actualizar.",
+            state: "danger",
+          };
           return false;
         }
 
@@ -86,10 +95,18 @@ export const usePedidosStore = defineStore("ordersList", {
           console.log("Estado cambiado a Finalizado. Intentando crear venta...");
           const saleCreated = await this.createSaleFromPedido(pedidoToUpdate);
           if (!saleCreated) {
-            alert("Error al crear la venta. El estado del pedido no se actualizará a Finalizado.");
+            this.toast = {
+              showing: true,
+              message: "Error al crear la venta. El estado del pedido no se actualizará a Finalizado.",
+              state: "danger",
+            };
             return false; // Prevent updating order status if sale creation fails
           }
-          alert("Venta creada exitosamente.");
+          this.toast = {
+            showing: true,
+            message: "Venta creada exitosamente.",
+            state: "success",
+          };
         }
 
         const response = await api.put(`/orders/update/${pedidoId}`, updates)
@@ -109,7 +126,11 @@ export const usePedidosStore = defineStore("ordersList", {
         return false
       } catch (error) {
         console.error("Error updating pedido:", error)
-        alert("Error al actualizar el pedido: " + (error.response?.data?.message || error.message))
+        this.toast = {
+          showing: true,
+          message: "Error al actualizar el pedido: " + (error.response?.data?.message || error.message),
+          state: "danger",
+        }
         return false
       } finally {
         this.loading = false
@@ -149,7 +170,11 @@ export const usePedidosStore = defineStore("ordersList", {
         }
       } catch (error) {
         console.error("Error al crear la venta:", error);
-        alert("Error al crear la venta: " + (error.response?.data?.message || error.message));
+        this.toast = {
+          showing: true,
+          message: "Error al crear la venta: " + (error.response?.data?.message || error.message),
+          state: "danger",
+        };
         return false;
       }
     },
@@ -157,7 +182,11 @@ export const usePedidosStore = defineStore("ordersList", {
       // Reuse the generic updatePedido action to set status to 'Cancelado'
       const success = await this.updatePedido(pedidoId, { status: "Cancelado" })
       if (success) {
-        alert("Pedido anulado")
+        this.toast = {
+          showing: true,
+          message: "Pedido anulado exitosamente",
+          state: "success",
+        }
         this.clearSelectedPedido()
       }
       return success
@@ -221,7 +250,11 @@ export const usePedidosStore = defineStore("ordersList", {
           this.limit = data.pagination.limit
           this.filtersApplied = true
         } else {
-          alert("Error al obtener pedidos filtrados: " + data.message)
+          this.toast = {
+            showing: true,
+            message: data.message || "No se encontraron pedidos con los filtros aplicados",
+            state: "information",
+          }
           this.pedidos = []
           this.totalPedidos = 0
           this.totalPages = 0
@@ -230,7 +263,11 @@ export const usePedidosStore = defineStore("ordersList", {
         }
       } catch (error) {
         console.error("Error fetching filtered pedidos:", error)
-        alert("Error al obtener pedidos filtrados. Por favor, intente de nuevo.")
+        this.toast = {
+          showing: true,
+          message: error.response?.data?.message || "Error al obtener pedidos filtrados. Por favor, intente de nuevo.",
+          state: "danger",
+        }
         this.pedidos = []
         this.totalPedidos = 0
         this.totalPages = 0
