@@ -9,7 +9,7 @@
       <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Tipo</label>
-          <select v-model="store.filters.type" class="w-full p-2 border border-gray-300 rounded-lg text-sm">
+          <select v-model="store.filters.type" class="w-full p-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-orange-500 bg-white">
             <option value="">Todos</option>
             <option value="ingreso">Ingreso</option>
             <option value="egreso">Egreso</option>
@@ -17,7 +17,7 @@
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Método de pago</label>
-          <select v-model="store.filters.paymentMethod" class="w-full p-2 border border-gray-300 rounded-lg text-sm">
+          <select v-model="store.filters.paymentMethod" class="w-full p-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-orange-500 bg-white">
             <option value="">Todos</option>
             <option value="Efectivo">Efectivo</option>
             <option value="Transferencia">Transferencia</option>
@@ -28,15 +28,15 @@
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Fecha inicio</label>
-          <input v-model="store.filters.startDate" type="date" class="w-full p-2 border border-gray-300 rounded-lg text-sm" />
+          <input v-model="store.filters.startDate" type="date" class="w-full p-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-orange-500 bg-white" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Fecha fin</label>
-          <input v-model="store.filters.endDate" type="date" class="w-full p-2 border border-gray-300 rounded-lg text-sm" />
+          <input v-model="store.filters.endDate" type="date" class="w-full p-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-orange-500 bg-white" />
         </div>
         <div class="flex items-end gap-2">
-          <button @click="applyFilters" class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 text-sm font-medium">Filtrar</button>
-          <button @click="clearFilters" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 text-sm font-medium">Limpiar</button>
+          <button @click="applyFilters" class="flex-1 py-2 px-4 bg-gradient-to-br from-orange-400 to-orange-600 text-white border-none rounded-xl font-semibold cursor-pointer shadow-md transition-all hover:-translate-y-0.5 hover:shadow-lg text-sm">Filtrar</button>
+          <button @click="clearFilters" class="flex-1 py-2 px-4 bg-white border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 text-sm font-medium transition-all shadow-sm hover:-translate-y-0.5 cursor-pointer">Limpiar</button>
         </div>
       </div>
     </div>
