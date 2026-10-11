@@ -508,10 +508,10 @@
   </div>
   <spinnerComponent v-if="ordersListStore?.loading" />
   <toastComponent
-    v-if="ordersListStore?.toast?.showing"
-    :message="ordersListStore.toast.message"
-    :state="ordersListStore.toast.state"
-    @close="ordersListStore.toast.showing = false"
+    v-if="toast?.showing"
+    :message="toast.message"
+    :state="toast.state"
+    @close="toast.showing = false"
   />
 </template>
 
@@ -543,6 +543,7 @@ export default {
       "totalPages",
       "clientSearchResults",
       "selectedClient",
+      "toast",
     ]),
     ordersListStore() {
       return usePedidosStore();

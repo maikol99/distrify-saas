@@ -79,6 +79,11 @@ export default {
       clearTimeout(this.timeoutId);
     }
   },
+  beforeUnmount() {
+    if (this.timeoutId) {
+      clearTimeout(this.timeoutId);
+    }
+  },
   methods: {
     close() {
       this.visible = false;
