@@ -1806,21 +1806,23 @@ export default {
 }
 
 .btn-toggle-filters {
-  background-color: #f9931e;
+  background: linear-gradient(135deg, #f9931e 0%, #f76707 100%);
   color: white;
   border: none;
   padding: 0.5rem 1rem;
   border-radius: 1rem;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
+  box-shadow: 0 4px 6px rgba(249, 147, 30, 0.3);
 }
 
 .btn-toggle-filters:hover {
-  background-color: #e8821a;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(249, 147, 30, 0.4);
 }
 
 .filters-container {
