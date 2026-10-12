@@ -59,7 +59,7 @@
           <tr v-if="store.movements.length === 0" class="border-t">
             <td colspan="6" class="p-8 text-center text-gray-500">No se encontraron movimientos</td>
           </tr>
-          <tr v-for="m in store.movements" :key="m._id" class="border-t hover:bg-gray-50">
+          <tr v-for="m in paginatedMovements" :key="m._id" class="border-t hover:bg-gray-50">
             <td class="p-3 text-sm text-gray-600">{{ formatDate(m.createdAt || m.date) }}</td>
             <td class="p-3 text-sm">
               <span class="px-2 py-1 rounded-full text-xs font-medium" :class="m.movementType === 'ingreso' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'">
@@ -75,6 +75,40 @@
           </tr>
         </tbody>
       </table>
+
+      <!-- Pagination -->
+      <div v-if="!store.loading && totalPages > 1" class="flex items-center justify-between px-4 py-3 border-t border-gray-100">
+        <span class="text-sm text-gray-500">
+          Mostrando {{ (currentPage - 1) * itemsPerPage + 1 }}–{{ Math.min(currentPage * itemsPerPage, store.movements.length) }} de {{ store.movements.length }}
+        </span>
+        <div class="flex items-center gap-1">
+          <button
+            @click="goToPage(currentPage - 1)"
+            :disabled="currentPage === 1"
+            class="px-3 py-1.5 rounded-xl text-sm font-medium border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            ‹
+          </button>
+          <button
+            v-for="page in visiblePages"
+            :key="page"
+            @click="goToPage(page)"
+            :class="page === currentPage
+              ? 'bg-gradient-to-br from-orange-400 to-orange-600 text-white border-none shadow-md'
+              : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'"
+            class="px-3 py-1.5 rounded-xl text-sm font-medium transition-all cursor-pointer"
+          >
+            {{ page }}
+          </button>
+          <button
+            @click="goToPage(currentPage + 1)"
+            :disabled="currentPage === totalPages"
+            class="px-3 py-1.5 rounded-xl text-sm font-medium border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            ›
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -89,15 +123,44 @@ export default {
   data() {
     return {
       store: useMovementsStore(),
+      currentPage: 1,
+      itemsPerPage: 20,
     };
+  },
+  computed: {
+    totalPages() {
+      return Math.ceil(this.store.movements.length / this.itemsPerPage);
+    },
+    paginatedMovements() {
+      const start = (this.currentPage - 1) * this.itemsPerPage;
+      return this.store.movements.slice(start, start + this.itemsPerPage);
+    },
+    visiblePages() {
+      const pages = [];
+      const total = this.totalPages;
+      const current = this.currentPage;
+      const delta = 2;
+      const left = Math.max(1, current - delta);
+      const right = Math.min(total, current + delta);
+      for (let i = left; i <= right; i++) {
+        pages.push(i);
+      }
+      return pages;
+    },
   },
   methods: {
     applyFilters() {
+      this.currentPage = 1;
       this.store.fetchMovements(1, this.store.pagination.limit);
     },
     clearFilters() {
+      this.currentPage = 1;
       this.store.clearFilters();
       this.store.fetchMovements(1, this.store.pagination.limit);
+    },
+    goToPage(page) {
+      if (page < 1 || page > this.totalPages) return;
+      this.currentPage = page;
     },
     formatDate(date) {
       if (!date) return "-";
@@ -113,3 +176,4 @@ export default {
   },
 };
 </script>
+
