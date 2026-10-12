@@ -52,10 +52,19 @@
             </div>
           </div>
         </div>
-        <!-- Sparkline verde estético -->
+        <!-- Sparkline verde con degradado -->
         <div class="stat-sparkline">
-          <svg viewBox="0 0 100 35" class="sparkline-svg stroke-green" preserveAspectRatio="none">
-            <path d="M0,28 Q25,25 45,18 T75,10 T100,5" fill="none" stroke-width="2.5" stroke-linecap="round"/>
+          <svg viewBox="0 0 100 35" class="sparkline-svg" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="grad-green" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#10b981" stop-opacity="0.35"/>
+                <stop offset="100%" stop-color="#10b981" stop-opacity="0.0"/>
+              </linearGradient>
+            </defs>
+            <!-- Área rellena -->
+            <path d="M0,28 Q25,25 45,18 T75,10 T100,5 V35 H0 Z" fill="url(#grad-green)"/>
+            <!-- Línea de borde -->
+            <path d="M0,28 Q25,25 45,18 T75,10 T100,5" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round"/>
           </svg>
         </div>
       </div>
@@ -75,10 +84,19 @@
             </div>
           </div>
         </div>
-        <!-- Sparkline azul estético -->
+        <!-- Sparkline azul con degradado -->
         <div class="stat-sparkline">
-          <svg viewBox="0 0 100 35" class="sparkline-svg stroke-blue" preserveAspectRatio="none">
-            <path d="M0,25 Q30,22 55,14 T80,12 T100,6" fill="none" stroke-width="2.5" stroke-linecap="round"/>
+          <svg viewBox="0 0 100 35" class="sparkline-svg" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="grad-blue" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.35"/>
+                <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.0"/>
+              </linearGradient>
+            </defs>
+            <!-- Área rellena -->
+            <path d="M0,25 Q30,22 55,14 T80,12 T100,6 V35 H0 Z" fill="url(#grad-blue)"/>
+            <!-- Línea de borde -->
+            <path d="M0,25 Q30,22 55,14 T80,12 T100,6" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round"/>
           </svg>
         </div>
       </div>
@@ -98,10 +116,19 @@
             </div>
           </div>
         </div>
-        <!-- Sparkline lila estético -->
+        <!-- Sparkline lila con degradado -->
         <div class="stat-sparkline">
-          <svg viewBox="0 0 100 35" class="sparkline-svg stroke-purple" preserveAspectRatio="none">
-            <path d="M0,22 Q30,12 60,26 T85,15 T100,8" fill="none" stroke-width="2.5" stroke-linecap="round"/>
+          <svg viewBox="0 0 100 35" class="sparkline-svg" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="grad-purple" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#a855f7" stop-opacity="0.35"/>
+                <stop offset="100%" stop-color="#a855f7" stop-opacity="0.0"/>
+              </linearGradient>
+            </defs>
+            <!-- Área rellena -->
+            <path d="M0,22 Q30,12 60,26 T85,15 T100,8 V35 H0 Z" fill="url(#grad-purple)"/>
+            <!-- Línea de borde -->
+            <path d="M0,22 Q30,12 60,26 T85,15 T100,8" fill="none" stroke="#a855f7" stroke-width="2.5" stroke-linecap="round"/>
           </svg>
         </div>
       </div>
@@ -447,11 +474,11 @@ export default {
                   backgroundColor: (context) => {
                     const chart = context.chart;
                     const { ctx, chartArea } = chart;
-                    if (!chartArea) return "rgba(249, 147, 30, 0.25)";
+                    if (!chartArea) return "rgba(249, 147, 30, 0.4)";
                     const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-                    gradient.addColorStop(0, "rgba(249, 147, 30, 0.35)"); // Sombra más fuerte y visible arriba
-                    gradient.addColorStop(0.65, "rgba(249, 147, 30, 0.12)");
-                    gradient.addColorStop(1, "rgba(249, 147, 30, 0.01)"); // Desvanecido abajo
+                    gradient.addColorStop(0, "rgba(249, 147, 30, 0.55)");
+                    gradient.addColorStop(0.5, "rgba(249, 147, 30, 0.20)");
+                    gradient.addColorStop(1, "rgba(249, 147, 30, 0.0)");
                     return gradient;
                   },
                   borderColor: "#f9931e",
