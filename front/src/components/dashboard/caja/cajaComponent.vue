@@ -2,10 +2,6 @@
   <div class="box-container">
     <!-- Header Superior de Caja -->
     <div class="caja-top-header">
-      <div class="header-titles">
-        <h1 class="main-page-title">Caja</h1>
-        <p class="main-page-subtitle">Control y seguimiento de tus cajas</p>
-      </div>
       <div class="header-date-chip">
         <span class="material-symbols-outlined date-chip-icon">calendar_today</span>
         <span>{{ todayFormatted }}</span>
