@@ -986,6 +986,8 @@ export default {
   transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+  min-width: 170px;
   gap: 0.5rem;
   box-shadow: 0 4px 6px rgba(249, 147, 30, 0.3);
 }
