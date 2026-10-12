@@ -394,20 +394,18 @@ export default {
         }
 
         // 2. Conteo real de transacciones de hoy
-        const startFormatted = moment().format("YYYY-MM-DD");
-        const salesRes = await api.get(`/sales/get/sales-with-filter/${shopId}`, {
-          params: {
-            startDate: startFormatted,
-            endDate: startFormatted,
-            page: 1,
-            limit: 1,
-          },
-        });
+        const todayStr = moment().format("YYYY-MM-DD");
+        const salesRes = await api.get(`/sales/get/get-sales/${shopId}?page=1&limit=100`);
 
-        if (salesRes.data && salesRes.data.pagination) {
-          this.transactionsCount = salesRes.data.pagination.total || 0;
-        } else if (salesRes.data && Array.isArray(salesRes.data.data)) {
-          this.transactionsCount = salesRes.data.data.length;
+        if (salesRes.data && salesRes.data.success && Array.isArray(salesRes.data.data)) {
+          // Filtrar las ventas creadas en el día de hoy según la fecha local
+          const todaySalesList = salesRes.data.data.filter((s) => {
+            if (!s.createdAt && !s.date) return false;
+            return moment(s.createdAt || s.date).format("YYYY-MM-DD") === todayStr;
+          });
+          this.transactionsCount = todaySalesList.length;
+        } else {
+          this.transactionsCount = 0;
         }
       } catch (error) {
         console.error("Error fetching daily reports:", error);
