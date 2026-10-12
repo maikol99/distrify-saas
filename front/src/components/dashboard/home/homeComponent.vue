@@ -248,6 +248,7 @@ import {
   Tooltip,
   Legend,
   ArcElement,
+  Filler,
 } from "chart.js";
 import { Line, Doughnut } from "vue-chartjs";
 
@@ -260,6 +261,7 @@ ChartJS.register(
   Tooltip,
   Legend,
   ArcElement,
+  Filler,
 );
 
 export default {
@@ -902,7 +904,7 @@ export default {
 /* Charts Section */
 .charts-section {
   display: grid;
-  grid-template-columns: 1.5fr 1fr;
+  grid-template-columns: 1.35fr 1fr;
   gap: 1.25rem;
 }
 
@@ -912,6 +914,7 @@ export default {
   padding: 1.25rem 1.5rem;
   border: 1px solid #edf2f7;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04);
+  min-width: 0;
 }
 
 .card-header {
@@ -954,6 +957,7 @@ export default {
 .chart-wrapper {
   height: 185px;
   width: 100%;
+  position: relative;
 }
 
 .chart-empty {
@@ -971,12 +975,15 @@ export default {
 .payment-methods-layout {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  justify-content: space-around;
+  gap: 1.25rem;
   height: 185px;
+  width: 100%;
 }
 
 .doughnut-container {
-  flex: 0 0 160px;
+  flex: 1;
+  max-width: 175px;
   height: 100%;
   position: relative;
 }
@@ -984,8 +991,9 @@ export default {
 .payment-legend {
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
-  min-width: 160px;
+  gap: 0.75rem;
+  flex: 1;
+  max-width: 180px;
 }
 
 .legend-item {
