@@ -366,6 +366,7 @@ export default {
   color: #1f2937;
   background-color: #f9fafb;
   border-radius: 0.5rem;
+  padding: 1.5rem;
 }
 
 .page-header {
