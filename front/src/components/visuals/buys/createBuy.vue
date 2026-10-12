@@ -990,6 +990,11 @@ export default {
   box-shadow: 0 4px 6px rgba(249, 147, 30, 0.3);
 }
 
+.btn-toggle i {
+  color: #ffffff !important;
+  margin-right: 0.25rem;
+}
+
 .btn-toggle:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 12px rgba(249, 147, 30, 0.4);
