@@ -167,8 +167,10 @@
         <!-- Sección de productos -->
         <div class="section">
           <h3 class="section-title">
-            <i class="fas fa-boxes"></i>
-            Productos de la Compra
+            <span class="section-title-text">
+              <i class="fas fa-boxes"></i>
+              Productos de la Compra
+            </span>
             <button 
               v-if="!showProductsSection" 
               @click="showProductsSection = true" 
@@ -321,8 +323,10 @@
         <!-- Sección de gastos adicionales -->
         <div class="section">
           <h3 class="section-title">
-            <i class="fas fa-receipt"></i>
-            Gastos Adicionales
+            <span class="section-title-text">
+              <i class="fas fa-receipt"></i>
+              Gastos Adicionales
+            </span>
             <button v-if="!showCostsSection" @click="showCostsSection = true" class="btn-toggle">
               <i class="fas fa-plus"></i> Agregar gastos
             </button>
@@ -965,6 +969,12 @@ export default {
   color: #f9931e;
 }
 
+.section-title-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .section > .form-group,
 .section > .form-row {
   margin: 1.25rem;
@@ -978,7 +988,7 @@ export default {
   background: linear-gradient(135deg, #f9931e 0%, #f76707 100%);
   color: white;
   border: none;
-  padding: 0.5rem 1rem;
+  padding: 0 1rem;
   border-radius: 1rem;
   font-size: 0.875rem;
   font-weight: 600;
@@ -987,9 +997,12 @@ export default {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 170px;
+  width: 175px;
+  height: 38px;
+  box-sizing: border-box;
   gap: 0.5rem;
   box-shadow: 0 4px 6px rgba(249, 147, 30, 0.3);
+  flex-shrink: 0;
 }
 
 .btn-toggle i {
