@@ -1,5 +1,6 @@
 <template>
   <div class="suppliers-container">
+    <!-- Fila 1: Búsqueda + Acción principal -->
     <div class="actions-bar">
       <div class="search-container">
         <div class="search-input">
@@ -30,7 +31,9 @@
         <i class="fas fa-plus"></i> Registrar Nuevo Proveedor
       </button>
     </div>
-     <div class="actions-bar secondary-actions">
+
+    <!-- Fila 2: Registrar pago -->
+    <div class="secondary-action-row">
       <button @click="showingRegisterPayment = true" class="btn-secondary">
         <i class="fas fa-cash-register"></i> Registrar pago
       </button>
@@ -384,6 +387,12 @@ export default {
   margin-bottom: 1.5rem;
   flex-wrap: wrap;
   gap: 1rem;
+}
+
+.secondary-action-row {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 1.5rem;
 }
 
 .search-container {
