@@ -29,8 +29,8 @@
       }"
     >
       <div class="content-wrapper">
-        <!-- Header del contenido (opcional) -->
-        <div class="content-header">
+        <!-- Header del contenido (opcional, oculto en /inicio) -->
+        <div v-if="$route.path !== '/inicio'" class="content-header">
           <h1 class="page-title">{{ getPageTitle() }}</h1>
           <p v-if="$route.path === '/ventas'" class="page-subtitle">
             Realizá ventas y gestioná tu negocio

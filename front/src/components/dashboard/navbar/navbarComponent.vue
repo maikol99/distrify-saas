@@ -19,28 +19,28 @@
   >
     <!-- Header -->
     <div
-      class="p-6 border-bottom border-white/10 flex items-center justify-between min-h-[80px]"
+      class="p-5 border-bottom border-white/10 flex items-center justify-between min-h-[80px]"
     >
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2">
         <img
           v-if="!globalStore.isSidebarCollapsed"
           src="/alevia-logo.png"
           alt="Alevia Pay"
-          class="w-44 h-auto object-contain"
+          class="w-32 h-auto object-contain flex-shrink-0"
         />
         <span
           v-if="!globalStore.isSidebarCollapsed"
-          class="bg-primary/10 text-primary text-[10px] font-black px-2 py-1 rounded-full border border-primary/20"
+          class="bg-orange-50 text-primary text-[10px] font-black px-1.5 py-0.5 rounded-full border border-primary/20 flex-shrink-0"
           >v1.3.5</span
         >
       </div>
 
       <div
         @click="handleNotificationClick"
-        class="hidden md:block relative cursor-pointer text-slate-400 hover:text-primary transition-all p-2 hover:bg-white/10 rounded-xl"
+        class="hidden md:block relative cursor-pointer text-slate-400 hover:text-primary transition-all p-1.5 hover:bg-slate-100 rounded-xl flex-shrink-0"
         v-if="!globalStore.isSidebarCollapsed"
       >
-        <span class="material-symbols-outlined">notifications</span>
+        <span class="material-symbols-outlined text-[20px]">notifications</span>
         <span
           v-if="notificationStore.unreadCount > 0"
           class="absolute top-1 right-1 w-2 h-2 bg-primary rounded-full animate-ping"

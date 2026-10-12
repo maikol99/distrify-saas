@@ -1,0 +1,71 @@
+{
+  "name": "alevia-pay-desktop",
+  "version": "1.0.0",
+  "description": "Alevia Pay - Sistema de Gestión Comercial y Punto de Venta Offline",
+  "main": "src/main.cjs",
+  "author": "Alevia Pay",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "build:all": "node build.js",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "dist:zip": "electron-builder --win zip",
+    "dist:win": "electron-builder --win nsis"
+  },
+  "dependencies": {
+    "cross-env": "^7.0.3"
+  },
+  "devDependencies": {
+    "electron": "^33.2.1",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.aleviapay.desktop",
+    "productName": "Alevia Pay",
+    "copyright": "Copyright © 2026 Alevia Pay",
+    "directories": {
+      "output": "release",
+      "buildResources": "assets"
+    },
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "../front/dist",
+        "to": "front-dist"
+      },
+      {
+        "from": "../back/dist",
+        "to": "back-dist"
+      },
+      {
+        "from": "../back/node_modules",
+        "to": "back-node_modules"
+      }
+    ],
+    "win": {
+      "signAndEditExecutable": false,
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "${productName}-Instalador-v${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Alevia Pay",
+      "runAfterFinish": true
+    }
+  }
+}
