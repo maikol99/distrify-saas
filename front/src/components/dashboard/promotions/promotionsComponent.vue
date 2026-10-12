@@ -1,111 +1,129 @@
 <template>
   <div class="inventory-container">
-    <div class="actions-bar">
-      <div class="search-container">
-        <div class="search-input">
-          <i class="fas fa-search"></i>
+    <!-- Top Bar: Search inline & Nueva Promocion arriba a la derecha -->
+    <div class="promo-top-bar">
+      <div class="modern-search-bar">
+        <div class="search-input-wrap">
+          <i class="fas fa-search search-icon-left"></i>
           <input
             v-model="store.filters.search"
-            placeholder="Buscar por nombre de promoción"
+            placeholder="Buscar promoción por nombre..."
             @keyup.enter="applyFilters"
+            class="search-field"
           />
           <button
             v-if="store.filters.search"
             @click="clearSearch"
-            class="clear-search"
+            class="clear-search-btn"
           >
             <i class="fas fa-times"></i>
           </button>
         </div>
 
-        <button
-          class="btn-secondary clear-search"
-          @click="clearAllFilters"
-          v-if="hasActiveFilters"
-        >
-          <i class="fas fa-filter"></i>
-          Limpiar filtros
+        <select v-model="store.filters.type" @change="applyFilters" class="filter-select-inline">
+          <option value="">Tipo: Todos</option>
+          <option value="discount">Descuento</option>
+          <option value="combo">Combo</option>
+        </select>
+
+        <select v-model="store.filters.isActive" @change="applyFilters" class="filter-select-inline">
+          <option value="">Estado: Todos</option>
+          <option value="true">Activas</option>
+          <option value="false">Inactivas</option>
+        </select>
+
+        <input
+          type="date"
+          v-model="store.filters.startDate"
+          @change="applyFilters"
+          class="filter-date-inline"
+          title="Desde"
+        />
+
+        <input
+          type="date"
+          v-model="store.filters.endDate"
+          @change="applyFilters"
+          class="filter-date-inline"
+          title="Hasta"
+        />
+
+        <button @click="applyFilters" class="btn-filter-apply-top">
+          <i class="fas fa-filter"></i> Aplicar filtros
         </button>
 
-        <button class="btn-search" @click="applyFilters">
-          <i class="fas fa-search"></i> Buscar
+        <button
+          v-if="hasActiveFilters"
+          @click="clearAllFilters"
+          class="btn-secondary"
+          style="padding: 0.5rem 0.85rem; border-radius: 0.75rem;"
+          title="Limpiar filtros"
+        >
+          <i class="fas fa-times"></i>
         </button>
       </div>
 
-      <div class="action-buttons">
+      <div class="top-action-buttons">
         <button @click="openCreateModal" class="btn-primary">
           <i class="fas fa-plus"></i> Nueva Promoción
         </button>
       </div>
     </div>
 
-    <div class="filter-toggle-container">
-      <button
-        @click="showFilters = !showFilters"
-        class="btn-toggle-filters"
-      >
-        <i
-          :class="
-            showFilters ? 'fas fa-chevron-up' : 'fas fa-chevron-down'
-          "
-        ></i>
-        {{ showFilters ? "Ocultar filtros" : "Mostrar filtros" }}
-      </button>
-    </div>
-
-    <div v-if="showFilters" class="filters-container">
-      <div class="filter-group">
-        <label for="filter-active">Estado:</label>
-        <select
-          id="filter-active"
-          v-model="store.filters.isActive"
-          class="filter-select"
-          @change="applyFilters"
-        >
-          <option value="">Todas</option>
-          <option value="true">Activas</option>
-          <option value="false">Inactivas</option>
-        </select>
+    <!-- 3 KPI Cards como en Img 2 -->
+    <div class="promo-kpi-grid">
+      <!-- Tarjeta 1: Promociones activas -->
+      <div class="promo-kpi-card kpi-orange">
+        <div class="kpi-left">
+          <div class="kpi-icon-circle bg-orange-circle">
+            <span class="material-symbols-outlined">sell</span>
+          </div>
+          <div class="kpi-info">
+            <span class="kpi-label">Promociones activas</span>
+            <h2 class="kpi-number">{{ activePromotionsCount }}</h2>
+          </div>
+        </div>
+        <span class="material-symbols-outlined kpi-chevron">chevron_right</span>
+        <div class="kpi-deco kpi-deco-orange"></div>
       </div>
 
-      <div class="filter-group">
-        <label for="filter-type">Tipo:</label>
-        <select
-          id="filter-type"
-          v-model="store.filters.type"
-          class="filter-select"
-          @change="applyFilters"
-        >
-          <option value="">Todas</option>
-          <option value="discount">Descuento</option>
-          <option value="combo">Combo</option>
-        </select>
+      <!-- Tarjeta 2: Combos -->
+      <div class="promo-kpi-card kpi-green">
+        <div class="kpi-left">
+          <div class="kpi-icon-circle bg-green-circle">
+            <span class="material-symbols-outlined">inventory_2</span>
+          </div>
+          <div class="kpi-info">
+            <span class="kpi-label">Combos</span>
+            <h2 class="kpi-number">{{ combosCount }}</h2>
+          </div>
+        </div>
+        <span class="material-symbols-outlined kpi-chevron">chevron_right</span>
+        <div class="kpi-deco kpi-deco-green"></div>
       </div>
 
-      <div class="filter-group">
-        <label for="filter-start">Fecha inicio:</label>
-        <input
-          type="date"
-          id="filter-start"
-          v-model="store.filters.startDate"
-          class="filter-input"
-          @change="applyFilters"
-        />
-      </div>
-
-      <div class="filter-group">
-        <label for="filter-end">Fecha fin:</label>
-        <input
-          type="date"
-          id="filter-end"
-          v-model="store.filters.endDate"
-          class="filter-input"
-          @change="applyFilters"
-        />
+      <!-- Tarjeta 3: Próximas a vencer -->
+      <div class="promo-kpi-card kpi-blue">
+        <div class="kpi-left">
+          <div class="kpi-icon-circle bg-blue-circle">
+            <span class="material-symbols-outlined">schedule</span>
+          </div>
+          <div class="kpi-info">
+            <span class="kpi-label">Próximas a vencer</span>
+            <h2 class="kpi-number">{{ expiringSoonCount }}</h2>
+          </div>
+        </div>
+        <span class="material-symbols-outlined kpi-chevron">chevron_right</span>
+        <div class="kpi-deco kpi-deco-blue"></div>
       </div>
     </div>
 
-    <div class="stock-management">
+    <!-- Sección de tabla con título 'Listado de promociones' -->
+    <div class="promo-table-section">
+      <div class="table-section-header">
+        <h2 class="table-section-title">Listado de promociones</h2>
+      </div>
+
       <div class="data-table-container">
         <div v-if="store.loading" class="loading-overlay">
           <div class="spinner"></div>
@@ -116,14 +134,13 @@
           <table class="data-table" :class="{ loading: store.loading }">
             <thead>
               <tr>
-                <th>Nombre</th>
-                <th>Tipo</th>
-                <th>Productos</th>
-                <th>Descuento/Combo</th>
-                <th>Fecha inicio</th>
-                <th>Fecha fin</th>
-                <th>Estado</th>
-                <th>Acciones</th>
+                <th>NOMBRE</th>
+                <th>TIPO</th>
+                <th>PRODUCTOS</th>
+                <th>DESCUENTO / COMBO</th>
+                <th>VIGENCIA</th>
+                <th>ESTADO</th>
+                <th>ACCIONES</th>
               </tr>
             </thead>
             <tbody>
@@ -131,10 +148,10 @@
                 v-for="promotion in store.promotions"
                 :key="promotion._id"
               >
-                <td>{{ promotion.name || "N/A" }}</td>
+                <td class="font-semibold text-gray-800">{{ promotion.name || "N/A" }}</td>
                 <td>
-                  <span class="category-badge">
-                    {{ promotion.type === "discount" ? "Descuento" : "Combo" }}
+                  <span :class="promotion.type === 'combo' ? 'badge-combo' : 'badge-discount'">
+                    {{ promotion.type === 'discount' ? 'Descuento' : 'Combo' }}
                   </span>
                 </td>
                 <td>
@@ -145,19 +162,24 @@
                     {{ getProductNames(promotion) || "N/A" }}
                   </span>
                 </td>
-                <td>
+                <td class="font-medium text-gray-700">
                   <span v-if="promotion.type === 'discount'">
-                    {{ promotion.discountType === "percentage" ? "%" : "$" }}
+                    {{ promotion.discountType === 'percentage' ? '%' : '$' }}
                     {{ promotion.discountValue !== undefined && promotion.discountValue !== null ? promotion.discountValue : promotion.value }}
                   </span>
                   <span v-else>
                     {{ formatPrice(promotion.comboPrice) }}
                   </span>
                 </td>
-                <td>{{ formatDate(promotion.startDate) }}</td>
-                <td>{{ formatDate(promotion.endDate) }}</td>
+                <td class="text-xs text-gray-600 whitespace-nowrap">
+                  <span v-if="promotion.startDate || promotion.endDate">
+                    {{ formatDate(promotion.startDate) }} – {{ promotion.endDate ? formatDate(promotion.endDate) : 'Sin vencimiento' }}
+                  </span>
+                  <span v-else class="text-gray-400">Sin vencimiento</span>
+                </td>
                 <td>
-                  <span :class="promotion.isActive ? 'stock-ok' : 'stock-out'">
+                  <span :class="promotion.isActive ? 'status-pill-active' : 'status-pill-inactive'">
+                    <span class="status-dot-indicator"></span>
                     {{ promotion.isActive ? "Activa" : "Inactiva" }}
                   </span>
                 </td>
@@ -177,24 +199,25 @@
           </table>
         </div>
 
-        <div class="grid grid-cols-1 gap-4 md:hidden mb-4">
+        <!-- Vista mobile simplificada -->
+        <div class="grid grid-cols-1 gap-4 md:hidden mb-4 p-4">
           <div
             v-for="promotion in store.promotions"
             :key="promotion._id"
-            class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col gap-3 relative transition-colors"
+            class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col gap-3 relative"
           >
             <div class="flex justify-between items-start">
               <div class="flex flex-col min-w-0 pr-2">
-                <h3 class="font-bold text-gray-800 text-sm md:text-base m-0 truncate w-full" :title="promotion.name || 'N/A'">
+                <h3 class="font-bold text-gray-800 text-sm m-0 truncate w-full" :title="promotion.name || 'N/A'">
                   {{ promotion.name || "N/A" }}
                 </h3>
                 <span class="text-xs text-gray-500 mt-1">
-                  {{ promotion.type === "discount" ? "Descuento" : "Combo" }}
+                  {{ promotion.type === 'discount' ? 'Descuento' : 'Combo' }}
                 </span>
               </div>
               <div class="flex-shrink-0">
                 <select
-                  class="bg-gray-50 border border-gray-200 text-gray-700 rounded-lg py-1 px-2 text-xs focus:ring-orange-500 focus:border-orange-500 font-semibold"
+                  class="bg-gray-50 border border-gray-200 text-gray-700 rounded-lg py-1 px-2 text-xs font-semibold"
                   :value="getPromotionAction(promotion._id)"
                   @change="handleActionChange(promotion, $event)"
                 >
@@ -205,24 +228,24 @@
               </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-2 bg-gray-50 p-3 rounded-lg text-sm border border-gray-100">
-              <div class="flex flex-col">
-                <span class="text-gray-500 text-[10px] uppercase font-bold tracking-wider mb-1">Inicio</span>
+            <div class="grid grid-cols-2 gap-2 bg-gray-50 p-2.5 rounded-lg text-xs border border-gray-100">
+              <div>
+                <span class="text-gray-400 font-bold uppercase block text-[10px]">Inicio</span>
                 <span class="font-semibold text-gray-800">{{ formatDate(promotion.startDate) }}</span>
               </div>
-              <div class="flex flex-col text-right">
-                <span class="text-gray-500 text-[10px] uppercase font-bold tracking-wider mb-1">Fin</span>
+              <div class="text-right">
+                <span class="text-gray-400 font-bold uppercase block text-[10px]">Fin</span>
                 <span class="font-semibold text-gray-800">{{ formatDate(promotion.endDate) }}</span>
               </div>
             </div>
 
-            <div class="flex justify-between items-center border-t border-gray-100 pt-3 mt-1">
-              <span class="text-xs text-gray-500 font-semibold uppercase">
-                {{ promotion.type === "discount" ? "Descuento:" : "Precio combo:" }}
+            <div class="flex justify-between items-center border-t border-gray-100 pt-2 text-xs">
+              <span class="text-gray-500 font-semibold uppercase">
+                {{ promotion.type === 'discount' ? 'Descuento:' : 'Precio combo:' }}
               </span>
-              <span class="font-bold text-sm px-2 py-1 rounded-md bg-white border border-gray-200 shadow-sm text-orange-600">
+              <span class="font-bold text-orange-600">
                 <template v-if="promotion.type === 'discount'">
-                  {{ promotion.discountType === "percentage" ? "%" : "$" }}{{ promotion.discountValue !== undefined && promotion.discountValue !== null ? promotion.discountValue : promotion.value }}
+                  {{ promotion.discountType === 'percentage' ? '%' : '$' }}{{ promotion.discountValue !== undefined && promotion.discountValue !== null ? promotion.discountValue : promotion.value }}
                 </template>
                 <template v-else>
                   {{ formatPrice(promotion.comboPrice) }}
@@ -230,12 +253,10 @@
               </span>
             </div>
 
-            <div class="flex justify-between items-center">
-              <span class="text-xs text-gray-500 font-semibold uppercase">Estado:</span>
-              <span
-                :class="promotion.isActive ? 'text-green-600 bg-green-50' : 'text-red-600 bg-red-50'"
-                class="font-bold text-xs px-2 py-1 rounded-md border"
-              >
+            <div class="flex justify-between items-center text-xs">
+              <span class="text-gray-500 font-semibold uppercase">Estado:</span>
+              <span :class="promotion.isActive ? 'status-pill-active' : 'status-pill-inactive'">
+                <span class="status-dot-indicator"></span>
                 {{ promotion.isActive ? "Activa" : "Inactiva" }}
               </span>
             </div>
@@ -314,7 +335,7 @@
           </button>
 
           <div class="items-per-page">
-            <label for="itemsPerPage">Promociones por página:</label>
+            <label for="itemsPerPage">Mostrar por página:</label>
             <select
               id="itemsPerPage"
               v-model="itemsPerPage"
@@ -595,6 +616,21 @@ export default {
     hasActiveFilters() {
       const f = this.store.filters;
       return f.isActive || f.type || f.startDate || f.endDate || f.search;
+    },
+    activePromotionsCount() {
+      return this.store.promotions.filter((p) => p.isActive).length;
+    },
+    combosCount() {
+      return this.store.promotions.filter((p) => p.type === 'combo').length;
+    },
+    expiringSoonCount() {
+      const now = new Date();
+      const in7days = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+      return this.store.promotions.filter((p) => {
+        if (!p.endDate) return false;
+        const end = new Date(p.endDate);
+        return end >= now && end <= in7days;
+      }).length;
     },
   },
 
@@ -1551,4 +1587,255 @@ export default {
     padding: 1rem;
   }
 }
+
+/* ===== PROMO TOP BAR ===== */
+.promo-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+.modern-search-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex: 1;
+  flex-wrap: wrap;
+  padding: 0.75rem 1rem;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+}
+.search-input-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 180px;
+  display: flex;
+  align-items: center;
+}
+.search-icon-left {
+  position: absolute;
+  left: 0.65rem;
+  color: #9ca3af;
+  font-size: 0.85rem;
+  pointer-events: none;
+}
+.search-field {
+  width: 100%;
+  padding: 0.5rem 2rem 0.5rem 2.1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  background: white;
+}
+.search-field:focus {
+  outline: none;
+  border-color: #f9931e;
+  box-shadow: 0 0 0 3px rgba(249,147,30,0.1);
+}
+.clear-search-btn {
+  position: absolute;
+  right: 0.5rem;
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 0.2rem;
+}
+.filter-select-inline,
+.filter-date-inline {
+  padding: 0.5rem 0.65rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 0.82rem;
+  background: white;
+  color: #374151;
+  min-width: 110px;
+}
+.filter-select-inline:focus,
+.filter-date-inline:focus {
+  outline: none;
+  border-color: #f9931e;
+}
+.btn-filter-apply-top {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #f9931e 0%, #f76707 100%);
+  color: white;
+  border: none;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  font-size: 0.82rem;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 3px 6px rgba(249,147,30,0.3);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.btn-filter-apply-top:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 10px rgba(249,147,30,0.4);
+}
+.top-action-buttons {
+  display: flex;
+  align-items: center;
+}
+
+/* ===== KPI CARDS ===== */
+.promo-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.promo-kpi-card {
+  background: white;
+  border-radius: 1.25rem;
+  border: 1px solid #f1f5f9;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  transition: box-shadow 0.2s, transform 0.2s;
+  overflow: hidden;
+  position: relative;
+}
+.promo-kpi-card:hover {
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  transform: translateY(-1px);
+}
+.kpi-orange { border-left: 4px solid #f97316; }
+.kpi-green  { border-left: 4px solid #10b981; }
+.kpi-blue   { border-left: 4px solid #3b82f6; }
+.kpi-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  z-index: 1;
+}
+.kpi-icon-circle {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.bg-orange-circle { background: linear-gradient(135deg, #f97316, #ea580c); color: white; }
+.bg-green-circle  { background: linear-gradient(135deg, #10b981, #059669); color: white; }
+.bg-blue-circle   { background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; }
+.kpi-info { display: flex; flex-direction: column; }
+.kpi-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.kpi-orange .kpi-label { color: #ea580c; }
+.kpi-green  .kpi-label { color: #059669; }
+.kpi-blue   .kpi-label { color: #2563eb; }
+.kpi-number {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0.1rem 0 0;
+  line-height: 1.1;
+}
+.kpi-chevron {
+  font-size: 1.4rem;
+  color: #cbd5e1;
+  z-index: 1;
+}
+.kpi-deco {
+  position: absolute;
+  bottom: -20px;
+  right: -20px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  opacity: 0.12;
+}
+.kpi-deco-orange { background: #f97316; }
+.kpi-deco-green  { background: #10b981; }
+.kpi-deco-blue   { background: #3b82f6; }
+
+/* ===== TABLE SECTION ===== */
+.promo-table-section {
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+.table-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.1rem 1.5rem 0.9rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+.table-section-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+}
+
+/* ===== BADGES & STATUS PILLS ===== */
+.badge-combo {
+  display: inline-block;
+  padding: 0.2rem 0.65rem;
+  background: #fff7ed;
+  color: #ea580c;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid #fed7aa;
+}
+.badge-discount {
+  display: inline-block;
+  padding: 0.2rem 0.65rem;
+  background: #eff6ff;
+  color: #2563eb;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid #bfdbfe;
+}
+.status-pill-active,
+.status-pill-inactive {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.22rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+.status-pill-active {
+  background: #f0fdf4;
+  color: #16a34a;
+  border: 1px solid #bbf7d0;
+}
+.status-pill-inactive {
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+.status-dot-indicator {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+@media (max-width: 768px) {
+  .promo-kpi-grid { grid-template-columns: 1fr; }
+  .promo-top-bar { flex-direction: column; align-items: stretch; }
+  .modern-search-bar { flex-direction: column; align-items: stretch; }
+}
+
 </style>
