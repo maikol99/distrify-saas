@@ -269,6 +269,13 @@
     @close="showingRegisterPayment = false"
     @submit="suppliersStore.getAllSuppliers()"
   ></supplierRegisterPayment>
+
+  <toastComponent
+    v-if="suppliersStore.toast.showing"
+    :message="suppliersStore.toast.message"
+    :state="suppliersStore.toast.state"
+    @close="suppliersStore.toast.showing = false"
+  ></toastComponent>
 </template>
 
 <script>
@@ -280,6 +287,7 @@ import { useSuppliersStore } from "@/stores/suppliersStore";
 import supplierDetails from "@/components/visuals/suppliers/supplierDetails.vue";
 import supplierRegisterPayment from "@/components/visuals/suppliers/supplierRegisterPayment.vue";
 import numeral from "numeral";
+import toastComponent from "@/components/visuals/toast/toastComponent.vue";
 
 export default {
   components: {
@@ -289,6 +297,7 @@ export default {
     editSupplier,
     supplierDetails,
     supplierRegisterPayment,
+    toastComponent,
   },
   data() {
     return {

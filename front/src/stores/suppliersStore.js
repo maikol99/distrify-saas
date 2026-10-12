@@ -28,6 +28,11 @@ export const useSuppliersStore = defineStore("suppliers", {
         page: 1,
         limit: 10,
       },
+      toast: {
+        showing: false,
+        message: "",
+        state: "",
+      },
     };
   },
 
@@ -48,7 +53,6 @@ export const useSuppliersStore = defineStore("suppliers", {
       const total = this.pagination.totalPages;
       const pages = [];
 
-      // Mostrar páginas alrededor de la actual
       const start = Math.max(1, current - 1);
       const end = Math.min(total, current + 1);
 
@@ -67,6 +71,10 @@ export const useSuppliersStore = defineStore("suppliers", {
       return parsedUserInfo ? parsedUserInfo.shopId : null;
     },
 
+    showToast(message, state = "success") {
+      this.toast = { showing: true, message, state };
+    },
+
     async editSupplier(id) {
       try {
         this.loading = true;
@@ -76,32 +84,39 @@ export const useSuppliersStore = defineStore("suppliers", {
         );
         const data = response.data;
         if (data.success) {
-          window.alert("Proveedor actualizado correctamente");
+          this.showToast("Proveedor actualizado correctamente", "success");
           this.getAllSuppliers();
         } else {
-          window.alert("Error al actualizar el proveedor: " + data.message);
+          this.showToast("Error al actualizar el proveedor: " + data.message, "danger");
         }
       } catch (error) {
         console.error("Error al guardar el proveedor", error);
-        window.alert(
-          "Error al guardar el proveedor. Por favor intente nuevamente."
-        );
+        this.showToast("Error al guardar el proveedor. Por favor intente nuevamente.", "danger");
       } finally {
         this.loading = false;
       }
     },
+
     async getSuppliersNames() {
-      this.loading = true
-      const response = await api.get(
-        `/suppliers/get/all-suppliers-with-select/${this.shopId()}`
-      );
-      const data = response.data
-      if (data.success) {
-        this.suppliers = data.suppliers;
-      } else {
-        window.alert("Error al cargar los proveedores: " + data.message);
+      this.loading = true;
+      try {
+        const response = await api.get(
+          `/suppliers/get/all-suppliers-with-select/${this.shopId()}`
+        );
+        const data = response.data;
+        if (data.success) {
+          this.suppliers = data.suppliers;
+        } else {
+          // Falla silenciosamente — no interrumpir al usuario con alert en un modal
+          console.warn("No se pudieron cargar los proveedores:", data.message);
+        }
+      } catch (error) {
+        console.error("Error al cargar proveedores para selector:", error);
+      } finally {
+        this.loading = false;
       }
     },
+
     async createSupplier() {
       try {
         this.loading = true;
@@ -111,10 +126,10 @@ export const useSuppliersStore = defineStore("suppliers", {
         );
         const data = response.data;
         if (data.success) {
-          window.alert("Proveedor creado correctamente");
+          this.showToast("Proveedor creado correctamente", "success");
           this.getAllSuppliers();
         } else {
-          window.alert("Error al crear el proveedor: " + data.message);
+          this.showToast("Error al crear el proveedor: " + data.message, "danger");
         }
       } catch (error) {
         console.log("Error al crear el proveedor", error);
@@ -141,9 +156,7 @@ export const useSuppliersStore = defineStore("suppliers", {
         }
       } catch (error) {
         console.log(error);
-        window.alert(
-          "Error al cargar los proveedores. Por favor recargue la página."
-        );
+        this.showToast("Error al cargar los proveedores. Por favor recargue la página.", "danger");
       } finally {
         this.loading = false;
       }
@@ -157,24 +170,22 @@ export const useSuppliersStore = defineStore("suppliers", {
         );
         const data = response.data;
         if (data.success) {
-          window.alert("Proveedor eliminado correctamente");
-          // Si estamos en la última página y no quedan elementos, ir a la página anterior
+          this.showToast("Proveedor eliminado correctamente", "success");
           if (this.suppliers.length === 1 && this.pagination.page > 1) {
             this.pagination.page--;
           }
           this.getAllSuppliers();
         } else {
-          window.alert("Error al eliminar el proveedor: " + data.message);
+          this.showToast("Error al eliminar el proveedor: " + data.message, "danger");
         }
       } catch (error) {
         console.log("Error al eliminar: ", error);
-        window.alert(
-          "Error al eliminar el proveedor. Por favor intente nuevamente."
-        );
+        this.showToast("Error al eliminar el proveedor. Por favor intente nuevamente.", "danger");
       } finally {
         this.loading = false;
       }
     },
+
     async searchByName() {
       try {
         this.loading = true;
@@ -187,7 +198,7 @@ export const useSuppliersStore = defineStore("suppliers", {
         if (data.success) {
           this.suppliers = data.suppliers;
         } else {
-          window.alert("No se encontraron proveedores con ese nombre.");
+          this.showToast("No se encontraron proveedores con ese nombre.", "information");
         }
       } catch (error) {
         console.log("Error al buscar proveedores por nombre", error);
@@ -195,13 +206,13 @@ export const useSuppliersStore = defineStore("suppliers", {
         this.loading = false;
       }
     },
+
     async checkInput() {
       if (this.searchQuery === "") {
         await this.getAllSuppliers();
       }
     },
 
-    // Métodos de paginación
     async previousPage() {
       if (this.pagination.page > 1) {
         this.pagination.page--;
@@ -229,11 +240,10 @@ export const useSuppliersStore = defineStore("suppliers", {
 
     async changeLimit(newLimit) {
       this.pagination.limit = newLimit;
-      this.pagination.page = 1; // Resetear a la primera página
+      this.pagination.page = 1;
       await this.getAllSuppliers();
     },
 
-    // Método para limpiar filtros (si se implementa filtrado)
     async clearFilters() {
       this.pagination.page = 1;
       await this.getAllSuppliers();
