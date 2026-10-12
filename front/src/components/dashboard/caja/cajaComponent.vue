@@ -342,6 +342,7 @@
 import openCaja from "@/components/visuals/caja/openCaja.vue";
 import spinnerComponent from "@/components/visuals/spinnerComponent.vue";
 import { useCajaStore } from "@/stores/cajaStore";
+import { useGlobalStore } from "@/stores/globalStore";
 import moment from "moment";
 import numeral from "numeral";
 import api from "@/config/axios.config";
@@ -355,6 +356,7 @@ export default {
   data() {
     return {
       cajaStore: useCajaStore(),
+      globalStore: useGlobalStore(),
       showingFilters: true,
       showingOpenCaja: false,
       todaySales: 0,
@@ -392,14 +394,23 @@ export default {
     },
     async fetchTodaySales() {
       try {
-        const start = moment().startOf("day").toISOString();
-        const end = moment().endOf("day").toISOString();
+        const shopId = this.globalStore.shopId();
+        if (!shopId) return;
+        const start = new Date();
+        start.setHours(0, 0, 0, 0);
+        const end = new Date();
+        end.setHours(23, 59, 59, 999);
         const res = await api.get("/reports/get/business-report", {
-          params: { startDate: start, endDate: end },
+          params: {
+            shopId: shopId,
+            startDate: start.toISOString(),
+            endDate: end.toISOString(),
+          },
         });
-        const totals = res.data?.data?.totals || res.data?.totals || {};
-        this.todaySales = totals.sales || 0;
-        this.currentCajaBalance = totals.sales || 0;
+        if (res.data && res.data.totals) {
+          this.todaySales = res.data.totals.sales || 0;
+          this.currentCajaBalance = res.data.totals.sales || 0;
+        }
       } catch (e) {
         this.todaySales = 0;
         this.currentCajaBalance = 0;
