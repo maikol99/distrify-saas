@@ -563,7 +563,7 @@ export default {
 
 <style scoped>
 .home-container {
-  padding: 1.5rem;
+  padding: 1rem 1.25rem;
   width: 100%;
   margin: 0 auto;
   color: #334155;
@@ -575,12 +575,12 @@ export default {
 .welcome-banner {
   background: linear-gradient(135deg, #f9931e 0%, #f76707 100%);
   border-radius: 1.5rem;
-  padding: 1.75rem 2rem;
+  padding: 1.25rem 2rem;
   color: white;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   box-shadow: 0 10px 25px -5px rgba(249, 147, 30, 0.35);
   position: relative;
   overflow: hidden;
@@ -705,13 +705,13 @@ export default {
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1.25rem;
-  margin-bottom: 2.25rem;
+  gap: 1rem;
+  margin-bottom: 1rem;
 }
 
 .stat-card {
   background: white;
-  padding: 1.5rem;
+  padding: 1.1rem 1.25rem;
   border-radius: 1.5rem;
   display: flex;
   align-items: center;
@@ -788,10 +788,10 @@ export default {
 
 /* Sparklines SVG */
 .stat-sparkline {
-  width: 90px;
-  height: 35px;
+  width: 110px;
+  height: 45px;
   flex-shrink: 0;
-  opacity: 0.85;
+  opacity: 0.9;
 }
 
 .sparkline-svg {
@@ -805,11 +805,11 @@ export default {
 
 /* Quick Access */
 .content-section {
-  margin-bottom: 2.25rem;
+  margin-bottom: 1rem;
 }
 
 .section-header {
-  margin-bottom: 1.25rem;
+  margin-bottom: 0.75rem;
 }
 
 .section-title {
@@ -828,17 +828,17 @@ export default {
 .quick-access-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 1.25rem;
+  gap: 1rem;
 }
 
 .action-card {
   background: white;
   border-radius: 1.25rem;
-  padding: 1.5rem 1rem;
+  padding: 1rem 0.75rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.85rem;
+  gap: 0.65rem;
   cursor: pointer;
   border: 1px solid #edf2f7;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -852,8 +852,8 @@ export default {
 }
 
 .action-icon-bg {
-  width: 3.25rem;
-  height: 3.25rem;
+  width: 3rem;
+  height: 3rem;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -875,31 +875,31 @@ export default {
 /* Charts Section */
 .charts-section {
   display: grid;
-  grid-template-columns: 1.6fr 1fr;
-  gap: 1.5rem;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 1.25rem;
 }
 
 .premium-card {
   background: white;
   border-radius: 1.5rem;
-  padding: 1.75rem;
+  padding: 1.25rem 1.5rem;
   border: 1px solid #edf2f7;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04);
 }
 
 .card-header {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .card-header h3 {
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   font-weight: 800;
   color: #1e293b;
   margin: 0;
 }
 
 .card-subtitle {
-  font-size: 0.8125rem;
+  font-size: 0.8rem;
   color: #94a3b8;
   font-weight: 500;
 }
@@ -925,7 +925,7 @@ export default {
 }
 
 .chart-wrapper {
-  height: 210px;
+  height: 185px;
   width: 100%;
 }
 
@@ -944,12 +944,12 @@ export default {
 .payment-methods-layout {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
-  height: 210px;
+  gap: 1rem;
+  height: 185px;
 }
 
 .doughnut-container {
-  flex: 1;
+  flex: 0 0 160px;
   height: 100%;
   position: relative;
 }
