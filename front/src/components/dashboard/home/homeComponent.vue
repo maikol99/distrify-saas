@@ -925,7 +925,7 @@ export default {
 }
 
 .chart-wrapper {
-  height: 280px;
+  height: 210px;
   width: 100%;
 }
 
@@ -945,7 +945,7 @@ export default {
   display: flex;
   align-items: center;
   gap: 1.5rem;
-  height: 280px;
+  height: 210px;
 }
 
 .doughnut-container {
