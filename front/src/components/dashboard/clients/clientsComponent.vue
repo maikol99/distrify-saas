@@ -1,52 +1,5 @@
 <template>
   <div class="p-6 bg-slate-50 min-h-screen font-sans">
-    <!-- Métricas / Tarjetas superiores (como en la imagen de referencia) -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-      <!-- Tarjeta 1: Total de clientes -->
-      <div class="bg-white rounded-2xl p-4.5 border border-gray-100 shadow-sm flex items-center justify-between">
-        <div class="flex items-center gap-3.5">
-          <div class="w-13 h-13 rounded-2xl bg-orange-50 text-orange-500 flex items-center justify-center flex-shrink-0">
-            <span class="material-symbols-outlined text-2xl">group</span>
-          </div>
-          <div>
-            <span class="text-sm font-semibold text-gray-500">Total de clientes</span>
-            <h3 class="text-2xl font-black text-gray-900 m-0">{{ totalClientsCount }}</h3>
-          </div>
-        </div>
-      </div>
-
-      <!-- Tarjeta 2: Con deuda pendiente (clickeable para filtrar) -->
-      <div
-        @click="filterByDebtOnly"
-        class="bg-white rounded-2xl p-4.5 border border-gray-100 shadow-sm flex items-center justify-between cursor-pointer hover:border-red-200 transition-all hover:shadow-md group"
-      >
-        <div class="flex items-center gap-3.5">
-          <div class="w-13 h-13 rounded-2xl bg-red-50 text-red-500 flex items-center justify-center flex-shrink-0">
-            <span class="material-symbols-outlined text-2xl">warning</span>
-          </div>
-          <div>
-            <span class="text-sm font-semibold text-gray-500">Con deuda pendiente</span>
-            <h3 class="text-2xl font-black text-gray-900 m-0">{{ clientsWithDebtCount }}</h3>
-          </div>
-        </div>
-        <span class="material-symbols-outlined text-gray-400 group-hover:text-red-500 group-hover:translate-x-0.5 transition-all text-2xl">
-          chevron_right
-        </span>
-      </div>
-
-      <!-- Tarjeta 3: Deuda total -->
-      <div class="bg-white rounded-2xl p-4.5 border border-gray-100 shadow-sm flex items-center justify-between">
-        <div class="flex items-center gap-3.5">
-          <div class="w-13 h-13 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center flex-shrink-0">
-            <span class="material-symbols-outlined text-2xl">payments</span>
-          </div>
-          <div>
-            <span class="text-sm font-semibold text-gray-500">Deuda total</span>
-            <h3 class="text-2xl font-black text-gray-900 m-0">{{ formatValue(totalDebtAmount) }}</h3>
-          </div>
-        </div>
-      </div>
-    </div>
     <div class="flex justify-between items-center mb-6 flex-wrap gap-4">
       <div class="flex flex-1 w-full md:max-w-md gap-3">
         <div class="relative flex-1">
@@ -185,39 +138,26 @@
       <div class="overflow-x-auto w-full hidden md:block">
         <table class="w-full border-collapse">
           <thead>
-            <tr class="bg-white border-b border-gray-100 text-left">
-              <th class="py-4 px-4.5 font-bold text-[0.8rem] text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                <div class="flex items-center gap-1.5 cursor-pointer select-none">
-                  <span>NOMBRE</span>
-                  <span class="material-symbols-outlined text-[15px] text-slate-400">unfold_more</span>
-                </div>
+            <tr class="bg-gray-50 border-b border-gray-100 text-left">
+              <th class="p-4 font-semibold text-gray-600 whitespace-nowrap">
+                Nombre
               </th>
-              <th class="py-4 px-4.5 font-bold text-[0.8rem] text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                <div class="flex items-center gap-1.5 cursor-pointer select-none">
-                  <span>DIRECCIÓN</span>
-                  <span class="material-symbols-outlined text-[15px] text-slate-400">unfold_more</span>
-                </div>
+              <th class="p-4 font-semibold text-gray-600 whitespace-nowrap">
+                Dirección
               </th>
-              <th class="py-4 px-4.5 font-bold text-[0.8rem] text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                <div class="flex items-center gap-1.5 cursor-pointer select-none">
-                  <span>TELÉFONO</span>
-                  <span class="material-symbols-outlined text-[15px] text-slate-400">unfold_more</span>
-                </div>
+              <th class="p-4 font-semibold text-gray-600 whitespace-nowrap">
+                Teléfono
               </th>
-              <th class="py-4 px-4.5 font-bold text-[0.8rem] text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                <div class="flex items-center gap-1.5 cursor-pointer select-none">
-                  <span>EMAIL</span>
-                  <span class="material-symbols-outlined text-[15px] text-slate-400">unfold_more</span>
-                </div>
+              <th class="p-4 font-semibold text-gray-600 whitespace-nowrap">
+                Email
               </th>
-              <th class="py-4 px-4.5 font-bold text-[0.8rem] text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                <div class="flex items-center gap-1.5 cursor-pointer select-none">
-                  <span>DEUDA</span>
-                  <span class="material-symbols-outlined text-[15px] text-slate-400">unfold_more</span>
-                </div>
+              <th class="p-4 font-semibold text-gray-600 whitespace-nowrap">
+                Deuda
               </th>
-              <th class="py-4 px-4.5 font-bold text-[0.8rem] text-slate-500 uppercase tracking-wider whitespace-nowrap text-right">
-                <span>ACCIONES</span>
+              <th
+                class="p-4 font-semibold text-gray-600 whitespace-nowrap text-center"
+              >
+                Acciones
               </th>
             </tr>
           </thead>
@@ -226,57 +166,43 @@
               v-if="clientStore.clients.length > 0"
               v-for="(client, index) in clientStore.clients"
               :key="client._id"
-              class="border-b border-gray-50 hover:bg-slate-50/70 transition-colors"
+              class="border-b border-gray-50 hover:bg-gray-50 transition-colors"
             >
-              <!-- Nombre con Avatar de Iniciales Circular -->
-              <td class="py-4 px-4.5">
-                <div class="flex items-center gap-3.5">
+              <td class="p-4 text-gray-800">
+                <div class="flex items-center gap-3">
                   <div
-                    class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm text-white flex-shrink-0 shadow-sm"
+                    class="w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs text-white flex-shrink-0 shadow-sm"
                     :style="{ backgroundColor: getAvatarColor(client.name || '', index) }"
                   >
                     {{ getInitials(client.name || '') }}
                   </div>
-                  <span class="font-bold text-slate-800 text-[0.95rem] tracking-wide">{{ client.name }}</span>
+                  <span class="font-bold text-gray-800 text-[0.95rem]">{{ client.name }}</span>
                 </div>
               </td>
-              <!-- Dirección en mayúscula suave -->
               <td
-                class="py-4 px-4.5 text-sm font-semibold text-slate-600 max-w-[240px] truncate"
+                class="p-4 text-gray-600 max-w-[200px] truncate"
                 :title="client.address"
               >
-                {{ client.address ? client.address.toUpperCase() : '-' }}
+                {{ client.address ? client.address.toUpperCase() : '' }}
               </td>
-              <!-- Teléfono -->
-              <td class="py-4 px-4.5 text-sm font-medium text-slate-600">
-                {{ client.phone || '-' }}
+              <td class="p-4 text-gray-600">{{ client.phone }}</td>
+              <td class="p-4 text-gray-600">{{ client.email }}</td>
+              <td
+                class="p-4 font-medium"
+                :class="client.debt > 0 ? 'text-red-500' : 'text-emerald-600'"
+              >
+                {{ formatValue(client.debt) }}
               </td>
-              <!-- Email -->
-              <td class="py-4 px-4.5 text-sm font-medium text-slate-600">
-                {{ client.email || '-' }}
-              </td>
-              <!-- Deuda (pill verde pastel para $0.00 o rojo pastel si debe) -->
-              <td class="py-4 px-4.5">
-                <span
-                  class="inline-flex items-center px-3.5 py-1.5 rounded-full text-xs md:text-sm font-bold"
-                  :class="client.debt > 0 ? 'bg-red-50 text-red-600 border border-red-100' : 'bg-emerald-50 text-emerald-600 border border-emerald-100'"
+              <td class="p-4 flex justify-center">
+                <select
+                  class="px-3 py-2 border border-gray-200 rounded-xl bg-white text-sm focus:outline-none focus:border-orange-500 cursor-pointer"
+                  @change="handleActionChange(client, $event)"
                 >
-                  {{ formatValue(client.debt) }}
-                </span>
-              </td>
-              <!-- Acciones selector elegante -->
-              <td class="py-4 px-4.5 text-right">
-                <div class="inline-flex items-center justify-end gap-1.5">
-                  <select
-                    class="py-2 px-3.5 border border-gray-200 rounded-full bg-white text-xs md:text-sm font-semibold text-slate-700 hover:border-gray-300 focus:outline-none focus:border-orange-500 cursor-pointer shadow-sm transition-all"
-                    @change="handleActionChange(client, $event)"
-                  >
-                    <option value="">Acciones ▾</option>
-                    <option value="verVentas">Ver Ventas</option>
-                    <option value="edit">Editar</option>
-                    <option value="delete">Eliminar</option>
-                  </select>
-                </div>
+                  <option value="">Acciones</option>
+                  <option value="verVentas">Ver Ventas</option>
+                  <option value="edit">Editar</option>
+                  <option value="delete">Eliminar</option>
+                </select>
               </td>
             </tr>
           </tbody>
