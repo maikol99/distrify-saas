@@ -1670,6 +1670,7 @@ export default {
 .filter-toggle-container {
   text-align: right;
   margin-bottom: 1rem;
+  padding: 1rem 1rem 0;
 }
 
 .btn-toggle-filters {
