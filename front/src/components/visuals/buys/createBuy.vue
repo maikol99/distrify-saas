@@ -988,7 +988,7 @@ export default {
   background: linear-gradient(135deg, #f9931e 0%, #f76707 100%);
   color: white;
   border: none;
-  padding: 0 1rem;
+  padding: 0 1.25rem;
   border-radius: 1rem;
   font-size: 0.875rem;
   font-weight: 600;
@@ -997,7 +997,8 @@ export default {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 175px;
+  white-space: nowrap;
+  min-width: 195px;
   height: 38px;
   box-sizing: border-box;
   gap: 0.5rem;
