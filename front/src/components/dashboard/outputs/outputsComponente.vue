@@ -1,5 +1,37 @@
 <template>
   <div class="output-container">
+    <!-- KPI CARDS EGRESOS -->
+    <div class="outputs-kpi-grid">
+      <!-- Tarjeta 1: Egresos de hoy -->
+      <div class="outputs-kpi-card kpi-orange">
+        <div class="kpi-left">
+          <div class="kpi-icon-circle bg-orange-circle">
+            <span class="material-symbols-outlined">account_balance_wallet</span>
+          </div>
+          <div class="kpi-info">
+            <span class="kpi-label">Egresos de hoy</span>
+            <h2 class="kpi-number">${{ formatAmount(todayExpenses) }}</h2>
+          </div>
+        </div>
+        <span class="material-symbols-outlined kpi-chevron">chevron_right</span>
+        <div class="kpi-deco kpi-deco-orange"></div>
+      </div>
+
+      <!-- Tarjeta 2: Cantidad de egresos hoy -->
+      <div class="outputs-kpi-card kpi-blue">
+        <div class="kpi-left">
+          <div class="kpi-icon-circle bg-blue-circle">
+            <span class="material-symbols-outlined">calendar_today</span>
+          </div>
+          <div class="kpi-info">
+            <span class="kpi-label">Cantidad de egresos hoy</span>
+            <h2 class="kpi-number">{{ todayExpensesCount }}</h2>
+          </div>
+        </div>
+        <span class="material-symbols-outlined kpi-chevron">chevron_right</span>
+        <div class="kpi-deco kpi-deco-blue"></div>
+      </div>
+    </div>
     <div class="actions-bar">
       <!-- Botones de acción principales (arriba a la derecha) -->
       <div class="main-action-buttons"></div>
@@ -355,6 +387,8 @@
 <script>
 import toastComponent from "@/components/visuals/toast/toastComponent.vue";
 import { useOutputsStore } from "@/stores/outputsStore";
+import api from "@/config/axios.config";
+import { useGlobalStore } from "@/stores/globalStore";
 import moment from "moment";
 import numeral from "numeral";
 import spinnerComponent from "@/components/visuals/spinnerComponent.vue";
@@ -380,12 +414,54 @@ export default {
       showingEditOutput: false,
       showingDeleteOutput: false,
       outputsStore: useOutputsStore(),
+      globalStore: useGlobalStore(),
+      todayExpenses: 0,
+      todayExpensesCount: 0,
       outputToDelete: null,
       outputToEdit: null,
     };
   },
 
   methods: {
+    async fetchTodayExpenses() {
+      try {
+        const shopId = this.globalStore.shopId();
+        if (!shopId) return;
+
+        const start = new Date();
+        start.setHours(0, 0, 0, 0);
+        const end = new Date();
+        end.setHours(23, 59, 59, 999);
+
+        // 1. Obtener monto total desde business-report
+        const res = await api.get("/reports/get/business-report", {
+          params: {
+            shopId: shopId,
+            startDate: start.toISOString(),
+            endDate: end.toISOString(),
+          },
+        });
+        if (res.data && res.data.totals) {
+          this.todayExpenses = res.data.totals.expenses || 0;
+        }
+
+        // 2. Obtener lista de egresos de hoy para contar cantidad exacta
+        const outputsRes = await api.get("/outputs/get/outputs-filtered", {
+          params: {
+            shopId: shopId,
+            page: 1,
+            limit: 100,
+            startDate: start.toISOString(),
+            endDate: end.toISOString(),
+          },
+        });
+        if (outputsRes.data && outputsRes.data.success) {
+          this.todayExpensesCount = outputsRes.data.pagination?.total ?? outputsRes.data.data?.length ?? 0;
+        }
+      } catch (error) {
+        console.error("Error fetching today expenses:", error);
+      }
+    },
     async printOutput(output) {
       const { jsPDF } = await import("jspdf");
       const autoTable = (await import("jspdf-autotable")).default;
@@ -503,6 +579,7 @@ export default {
   },
   async mounted() {
     await this.outputsStore.fetchOutputs();
+    await this.fetchTodayExpenses();
   },
 };
 </script>
@@ -1042,4 +1119,124 @@ export default {
     justify-content: center;
   }
 }
+
+/* ===== KPI CARDS EGRESOS ===== */
+.outputs-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.outputs-kpi-card {
+  background: white;
+  border-radius: 1.25rem;
+  border: 1px solid #f1f5f9;
+  padding: 1.25rem 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  transition: box-shadow 0.2s, transform 0.2s;
+  overflow: hidden;
+  position: relative;
+}
+
+.outputs-kpi-card:hover {
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  transform: translateY(-1px);
+}
+
+.kpi-orange {
+  border-left: 4px solid #f97316;
+}
+
+.kpi-blue {
+  border-left: 4px solid #3b82f6;
+}
+
+.kpi-left {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  z-index: 1;
+}
+
+.kpi-icon-circle {
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.bg-orange-circle {
+  background: #fff7ed;
+  color: #ea580c;
+  border: 1px solid #ffedd5;
+}
+
+.bg-blue-circle {
+  background: #eff6ff;
+  color: #2563eb;
+  border: 1px solid #dbeafe;
+}
+
+.kpi-icon-circle .material-symbols-outlined {
+  font-size: 1.65rem;
+}
+
+.kpi-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.kpi-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #1e3a8a;
+  letter-spacing: -0.01em;
+}
+
+.kpi-number {
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: #0f2757;
+  margin: 0.15rem 0 0;
+  line-height: 1.1;
+}
+
+.kpi-chevron {
+  font-size: 1.4rem;
+  color: #cbd5e1;
+  z-index: 1;
+}
+
+.kpi-deco {
+  position: absolute;
+  bottom: -30px;
+  right: -25px;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  opacity: 0.18;
+  pointer-events: none;
+}
+
+.kpi-deco-orange {
+  background: radial-gradient(circle, #f97316 0%, rgba(249, 115, 22, 0) 70%);
+}
+
+.kpi-deco-blue {
+  background: radial-gradient(circle, #3b82f6 0%, rgba(59, 130, 246, 0) 70%);
+}
+
+@media (max-width: 768px) {
+  .outputs-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 </style>
