@@ -289,10 +289,10 @@ export default {
       doughnutOptions: {
         responsive: true,
         maintainAspectRatio: false,
-        cutout: "72%",
+        cutout: "52%", // Donut más ancho y relleno, idéntico a la maqueta
         plugins: {
           legend: {
-            display: false, // La leyenda personalizada la dibujamos al costado
+            display: false,
           },
         },
       },
@@ -446,14 +446,25 @@ export default {
               datasets: [
                 {
                   label: "Ventas",
-                  backgroundColor: "rgba(249, 147, 30, 0.15)",
+                  backgroundColor: (context) => {
+                    const chart = context.chart;
+                    const { ctx, chartArea } = chart;
+                    if (!chartArea) return "rgba(249, 147, 30, 0.25)";
+                    const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+                    gradient.addColorStop(0, "rgba(249, 147, 30, 0.35)"); // Sombra más fuerte y visible arriba
+                    gradient.addColorStop(0.65, "rgba(249, 147, 30, 0.12)");
+                    gradient.addColorStop(1, "rgba(249, 147, 30, 0.01)"); // Desvanecido abajo
+                    return gradient;
+                  },
                   borderColor: "#f9931e",
+                  borderWidth: 3,
                   pointBackgroundColor: "#f9931e",
                   pointBorderColor: "#ffffff",
-                  pointBorderWidth: 2,
-                  pointRadius: 4,
+                  pointBorderWidth: 2.5,
+                  pointRadius: 4.5,
+                  pointHoverRadius: 6,
                   data: values,
-                  tension: 0.35,
+                  tension: 0.38,
                   fill: true,
                 },
               ],
