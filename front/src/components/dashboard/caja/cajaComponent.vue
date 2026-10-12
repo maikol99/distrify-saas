@@ -1,5 +1,72 @@
 <template>
   <div class="box-container">
+    <!-- Header Superior de Caja -->
+    <div class="caja-top-header">
+      <div class="header-titles">
+        <h1 class="main-page-title">Caja</h1>
+        <p class="main-page-subtitle">Control y seguimiento de tus cajas</p>
+      </div>
+      <div class="header-date-chip">
+        <span class="material-symbols-outlined date-chip-icon">calendar_today</span>
+        <span>{{ todayFormatted }}</span>
+      </div>
+    </div>
+
+    <!-- 3 Tarjetas KPI Superiores (como en la imagen de referencia) -->
+    <div class="caja-kpi-grid">
+      <!-- Tarjeta 1: Caja activa -->
+      <div
+        class="caja-kpi-card kpi-orange"
+        :class="{ 'cursor-pointer hover:shadow-md': activeCaja }"
+        @click="activeCaja ? viewCajaDetails(activeCaja) : null"
+      >
+        <div class="kpi-left">
+          <div class="kpi-icon-circle bg-orange-circle">
+            <span class="material-symbols-outlined">point_of_sale</span>
+          </div>
+          <div class="kpi-info">
+            <span class="kpi-title">Caja activa</span>
+            <h2 class="kpi-main-val">{{ activeCaja ? (activeCaja.title || 'N.° ' + activeCajaNumber) : 'Sin caja activa' }}</h2>
+            <div class="kpi-status-row">
+              <span class="status-dot" :class="activeCaja ? 'dot-open' : 'dot-closed'"></span>
+              <span class="status-text">{{ activeCaja ? 'Abierta' : 'Cerrada' }}</span>
+            </div>
+          </div>
+        </div>
+        <span v-if="activeCaja" class="material-symbols-outlined kpi-arrow arrow-orange">chevron_right</span>
+      </div>
+
+      <!-- Tarjeta 2: Ventas del día -->
+      <div class="caja-kpi-card kpi-green">
+        <div class="kpi-left">
+          <div class="kpi-icon-circle bg-green-circle">
+            <span class="material-symbols-outlined">trending_up</span>
+          </div>
+          <div class="kpi-info">
+            <span class="kpi-title">Ventas del día</span>
+            <h2 class="kpi-main-val">{{ formatCurrency(todaySales) }}</h2>
+            <span class="kpi-caption">Total vendido hoy</span>
+          </div>
+        </div>
+        <span class="material-symbols-outlined kpi-arrow arrow-green">chevron_right</span>
+      </div>
+
+      <!-- Tarjeta 3: Saldo actual de caja -->
+      <div class="caja-kpi-card kpi-blue">
+        <div class="kpi-left">
+          <div class="kpi-icon-circle bg-blue-circle">
+            <span class="material-symbols-outlined">account_balance_wallet</span>
+          </div>
+          <div class="kpi-info">
+            <span class="kpi-title">Saldo actual de caja</span>
+            <h2 class="kpi-main-val">{{ formatCurrency(currentCajaBalance) }}</h2>
+            <span class="kpi-caption">Dinero disponible en las cajas de hoy</span>
+          </div>
+        </div>
+        <span class="material-symbols-outlined kpi-arrow arrow-blue">chevron_right</span>
+      </div>
+    </div>
+
     <!-- Barra de filtros -->
     <div class="actions-bar">
       <!-- <div class="filter-toggle-container">
@@ -12,16 +79,19 @@
         </button>
       </div> -->
 
-      <div v-if="showingFilters" class="filters-container">
+      <div v-if="showingFilters" class="filters-container modern-filters-bar">
         <div class="filter-group">
           <label for="filter-name">Filtrar por nombre:</label>
-          <input
-            type="text"
-            v-model="cajaStore.filters.title"
-            id="filter-name"
-            placeholder="Buscar caja..."
-            class="filter-input"
-          />
+          <div class="input-with-icon">
+            <span class="material-symbols-outlined input-icon-left">search</span>
+            <input
+              type="text"
+              v-model="cajaStore.filters.title"
+              id="filter-name"
+              placeholder="Buscar caja..."
+              class="filter-input with-left-icon"
+            />
+          </div>
         </div>
 
         <div class="filter-group">
@@ -39,13 +109,16 @@
 
         <div class="filter-group">
           <label for="filter-createdBy">Usuario apertura:</label>
-          <input
-            type="text"
-            v-model="cajaStore.filters.createdBy"
-            id="filter-createdBy"
-            placeholder="Buscar por usuario..."
-            class="filter-input"
-          />
+          <div class="input-with-icon">
+            <span class="material-symbols-outlined input-icon-left">search</span>
+            <input
+              type="text"
+              v-model="cajaStore.filters.createdBy"
+              id="filter-createdBy"
+              placeholder="Buscar por usuario..."
+              class="filter-input with-left-icon"
+            />
+          </div>
         </div>
 
         <div class="filter-group">
@@ -88,18 +161,7 @@
               id="startDate"
               class="filter-input"
             />
-            <i
-              v-if="!cajaStore.filters.startDate"
-              class="fas fa-calendar-alt date-icon"
-            ></i>
           </div>
-          <button
-            @click="cajaStore.filters.startDate = null"
-            v-if="cajaStore.filters.startDate"
-            class="clear-filter-btn"
-          >
-            <i class="fas fa-times"></i>
-          </button>
         </div>
 
         <div class="filter-group date-filter">
@@ -111,30 +173,21 @@
               id="endDate"
               class="filter-input"
             />
-            <i
-              v-if="!cajaStore.filters.endDate"
-              class="fas fa-calendar-alt date-icon"
-            ></i>
           </div>
-          <button
-            @click="cajaStore.filters.endDate = null"
-            v-if="cajaStore.filters.endDate"
-            class="clear-filter-btn"
-          >
-            <i class="fas fa-times"></i>
-          </button>
         </div>
 
-        <div class="filter-actions">
-          <button @click="cajaStore.filterCajas" class="btn-primary">
-            <i class="fas fa-filter"></i> Aplicar Filtros
+        <div class="filter-button-wrapper">
+          <button @click="cajaStore.filterCajas" class="btn-primary btn-filter-apply">
+            <span class="material-symbols-outlined text-sm">filter_alt</span>
+            <span>Aplicar Filtros</span>
           </button>
           <button
             v-if="cajaStore.filtersApplied === true"
             @click="cajaStore.clearFilters"
-            class="btn-secondary"
+            class="btn-secondary btn-filter-clear"
+            title="Limpiar filtros"
           >
-            <i class="fas fa-times"></i> Limpiar Filtros
+            <span class="material-symbols-outlined text-sm">close</span>
           </button>
         </div>
       </div>
@@ -291,6 +344,8 @@ import spinnerComponent from "@/components/visuals/spinnerComponent.vue";
 import { useCajaStore } from "@/stores/cajaStore";
 import moment from "moment";
 import numeral from "numeral";
+import api from "@/config/axios.config";
+
 export default {
   name: "BoxManagement",
   components: {
@@ -302,7 +357,27 @@ export default {
       cajaStore: useCajaStore(),
       showingFilters: true,
       showingOpenCaja: false,
+      todaySales: 0,
+      currentCajaBalance: 0,
     };
+  },
+  computed: {
+    todayFormatted() {
+      return (
+        "Hoy · " +
+        moment().locale("es").format("D [de] MMMM [de] YYYY")
+      );
+    },
+    activeCaja() {
+      return (
+        this.cajaStore.cajas.find((c) => c.estado === "abierta") || null
+      );
+    },
+    activeCajaNumber() {
+      if (!this.activeCaja) return null;
+      const idx = this.cajaStore.cajas.indexOf(this.activeCaja) + 1;
+      return idx;
+    },
   },
   methods: {
     viewCajaDetails(caja) {
@@ -315,9 +390,26 @@ export default {
     formatCurrency(value) {
       return numeral(value).format("$0.00");
     },
+    async fetchTodaySales() {
+      try {
+        const start = moment().startOf("day").toISOString();
+        const end = moment().endOf("day").toISOString();
+        const res = await api.get("/reports/get/business-report", {
+          params: { startDate: start, endDate: end },
+        });
+        const totals = res.data?.data?.totals || res.data?.totals || {};
+        this.todaySales = totals.sales || 0;
+        this.currentCajaBalance = totals.sales || 0;
+      } catch (e) {
+        this.todaySales = 0;
+        this.currentCajaBalance = 0;
+      }
+    },
   },
   async mounted() {
     await this.cajaStore.fetchCajas();
+    await this.fetchTodaySales();
+    moment.locale("es");
   },
 };
 </script>
@@ -865,4 +957,173 @@ export default {
     justify-content: center;
   }
 }
+
+/* ===== TOP HEADER ===== */
+.caja-top-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+.header-titles {
+  display: flex;
+  flex-direction: column;
+}
+.main-page-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0;
+  line-height: 1.2;
+}
+.main-page-subtitle {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin: 0.25rem 0 0;
+}
+.header-date-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  color: #ea580c;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.date-chip-icon {
+  font-size: 1rem;
+}
+
+/* ===== KPI CARDS GRID ===== */
+.caja-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.caja-kpi-card {
+  background: white;
+  border-radius: 1.25rem;
+  border: 1px solid #f1f5f9;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: box-shadow 0.2s, transform 0.2s;
+  overflow: hidden;
+  position: relative;
+}
+.caja-kpi-card:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
+}
+.kpi-orange { border-left: 4px solid #f97316; }
+.kpi-green  { border-left: 4px solid #10b981; }
+.kpi-blue   { border-left: 4px solid #3b82f6; }
+.kpi-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.kpi-icon-circle {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.bg-orange-circle { background: linear-gradient(135deg, #f97316, #ea580c); color: white; }
+.bg-green-circle  { background: linear-gradient(135deg, #10b981, #059669); color: white; }
+.bg-blue-circle   { background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; }
+.kpi-info { display: flex; flex-direction: column; }
+.kpi-title {
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.kpi-main-val {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0.15rem 0;
+  line-height: 1.2;
+}
+.kpi-caption { font-size: 0.78rem; color: #94a3b8; }
+.kpi-status-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.25rem;
+}
+.status-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.dot-open   { background: #10b981; box-shadow: 0 0 0 3px rgba(16,185,129,0.2); }
+.dot-closed { background: #94a3b8; }
+.status-text { font-size: 0.82rem; color: #10b981; font-weight: 600; }
+.kpi-arrow { font-size: 1.5rem; color: #cbd5e1; transition: color 0.2s; }
+.arrow-orange:hover { color: #f97316; }
+.arrow-green { color: #a7f3d0; }
+.arrow-blue  { color: #bfdbfe; }
+
+/* ===== MODERN FILTERS BAR ===== */
+.modern-filters-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  background: white;
+}
+.modern-filters-bar .filter-group {
+  display: flex;
+  flex-direction: column;
+  min-width: 120px;
+  flex: 1;
+}
+.modern-filters-bar .filter-group label {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-bottom: 0.25rem;
+  font-weight: 500;
+}
+.input-with-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.input-icon-left {
+  position: absolute;
+  left: 0.6rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  color: #9ca3af;
+  pointer-events: none;
+}
+.with-left-icon { padding-left: 2rem !important; }
+.filter-button-wrapper { display: flex; align-items: flex-end; gap: 0.5rem; }
+.btn-filter-apply { display: inline-flex; align-items: center; gap: 0.4rem; white-space: nowrap; }
+.btn-filter-clear { padding: 0.6rem; min-width: unset; }
+
+@media (max-width: 768px) {
+  .caja-kpi-grid { grid-template-columns: 1fr; }
+  .caja-top-header { flex-direction: column; align-items: flex-start; }
+}
+
 </style>
