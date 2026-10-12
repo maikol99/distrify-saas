@@ -1,5 +1,52 @@
 <template>
   <div class="p-6 bg-slate-50 min-h-screen font-sans">
+    <!-- Métricas / Tarjetas superiores (como en la imagen de referencia) -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <!-- Tarjeta 1: Total de clientes -->
+      <div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-orange-50 text-orange-500 flex items-center justify-center flex-shrink-0">
+            <span class="material-symbols-outlined text-2xl">group</span>
+          </div>
+          <div>
+            <span class="text-xs font-semibold text-gray-500">Total de clientes</span>
+            <h3 class="text-xl font-black text-gray-900 m-0">{{ totalClientsCount }}</h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tarjeta 2: Con deuda pendiente (clickeable para filtrar) -->
+      <div
+        @click="filterByDebtOnly"
+        class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm flex items-center justify-between cursor-pointer hover:border-red-200 transition-all hover:shadow-md group"
+      >
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-red-50 text-red-500 flex items-center justify-center flex-shrink-0">
+            <span class="material-symbols-outlined text-2xl">warning</span>
+          </div>
+          <div>
+            <span class="text-xs font-semibold text-gray-500">Con deuda pendiente</span>
+            <h3 class="text-xl font-black text-gray-900 m-0">{{ clientsWithDebtCount }}</h3>
+          </div>
+        </div>
+        <span class="material-symbols-outlined text-gray-400 group-hover:text-red-500 group-hover:translate-x-0.5 transition-all text-xl">
+          chevron_right
+        </span>
+      </div>
+
+      <!-- Tarjeta 3: Deuda total -->
+      <div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center flex-shrink-0">
+            <span class="material-symbols-outlined text-2xl">payments</span>
+          </div>
+          <div>
+            <span class="text-xs font-semibold text-gray-500">Deuda total</span>
+            <h3 class="text-xl font-black text-gray-900 m-0">{{ formatValue(totalDebtAmount) }}</h3>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="flex justify-between items-center mb-6 flex-wrap gap-4">
       <div class="flex flex-1 w-full md:max-w-md gap-3">
         <div class="relative flex-1">
@@ -138,61 +185,98 @@
       <div class="overflow-x-auto w-full hidden md:block">
         <table class="w-full border-collapse">
           <thead>
-            <tr class="bg-gray-50 border-b border-gray-100 text-left">
-              <th class="p-4 font-semibold text-gray-600 whitespace-nowrap">
-                Nombre
+            <tr class="bg-white border-b border-gray-100 text-left">
+              <th class="py-3.5 px-4 font-bold text-[0.72rem] text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                <div class="flex items-center gap-1.5 cursor-pointer select-none">
+                  <span>NOMBRE</span>
+                  <span class="material-symbols-outlined text-[13px] text-slate-400">unfold_more</span>
+                </div>
               </th>
-              <th class="p-4 font-semibold text-gray-600 whitespace-nowrap">
-                Dirección
+              <th class="py-3.5 px-4 font-bold text-[0.72rem] text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                <div class="flex items-center gap-1.5 cursor-pointer select-none">
+                  <span>DIRECCIÓN</span>
+                  <span class="material-symbols-outlined text-[13px] text-slate-400">unfold_more</span>
+                </div>
               </th>
-              <th class="p-4 font-semibold text-gray-600 whitespace-nowrap">
-                Teléfono
+              <th class="py-3.5 px-4 font-bold text-[0.72rem] text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                <div class="flex items-center gap-1.5 cursor-pointer select-none">
+                  <span>TELÉFONO</span>
+                  <span class="material-symbols-outlined text-[13px] text-slate-400">unfold_more</span>
+                </div>
               </th>
-              <th class="p-4 font-semibold text-gray-600 whitespace-nowrap">
-                Email
+              <th class="py-3.5 px-4 font-bold text-[0.72rem] text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                <div class="flex items-center gap-1.5 cursor-pointer select-none">
+                  <span>EMAIL</span>
+                  <span class="material-symbols-outlined text-[13px] text-slate-400">unfold_more</span>
+                </div>
               </th>
-              <th class="p-4 font-semibold text-gray-600 whitespace-nowrap">
-                Deuda
+              <th class="py-3.5 px-4 font-bold text-[0.72rem] text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                <div class="flex items-center gap-1.5 cursor-pointer select-none">
+                  <span>DEUDA</span>
+                  <span class="material-symbols-outlined text-[13px] text-slate-400">unfold_more</span>
+                </div>
               </th>
-              <th
-                class="p-4 font-semibold text-gray-600 whitespace-nowrap text-center"
-              >
-                Acciones
+              <th class="py-3.5 px-4 font-bold text-[0.72rem] text-slate-500 uppercase tracking-wider whitespace-nowrap text-right">
+                <span>ACCIONES</span>
               </th>
             </tr>
           </thead>
           <tbody>
             <tr
               v-if="clientStore.clients.length > 0"
-              v-for="client in clientStore.clients"
+              v-for="(client, index) in clientStore.clients"
               :key="client._id"
-              class="border-b border-gray-50 hover:bg-gray-50 transition-colors"
+              class="border-b border-gray-50 hover:bg-slate-50/70 transition-colors"
             >
-              <td class="p-4 text-gray-800">{{ client.name }}</td>
+              <!-- Nombre con Avatar de Iniciales Circular -->
+              <td class="py-3.5 px-4">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs text-white flex-shrink-0 shadow-sm"
+                    :style="{ backgroundColor: getAvatarColor(client.name || '', index) }"
+                  >
+                    {{ getInitials(client.name || '') }}
+                  </div>
+                  <span class="font-bold text-slate-800 text-sm tracking-wide">{{ client.name }}</span>
+                </div>
+              </td>
+              <!-- Dirección en mayúscula suave -->
               <td
-                class="p-4 text-gray-600 max-w-[200px] truncate"
+                class="py-3.5 px-4 text-xs font-semibold text-slate-500 max-w-[220px] truncate"
                 :title="client.address"
               >
-                {{ client.address }}
+                {{ client.address ? client.address.toUpperCase() : '-' }}
               </td>
-              <td class="p-4 text-gray-600">{{ client.phone }}</td>
-              <td class="p-4 text-gray-600">{{ client.email }}</td>
-              <td
-                class="p-4 font-medium"
-                :class="client.debt > 0 ? 'text-red-500' : 'text-emerald-600'"
-              >
-                {{ formatValue(client.debt) }}
+              <!-- Teléfono -->
+              <td class="py-3.5 px-4 text-xs font-medium text-slate-500">
+                {{ client.phone || '-' }}
               </td>
-              <td class="p-4 flex justify-center">
-                <select
-                  class="px-3 py-2 border border-gray-200 rounded-xl bg-white text-sm focus:outline-none focus:border-orange-500 cursor-pointer"
-                  @change="handleActionChange(client, $event)"
+              <!-- Email -->
+              <td class="py-3.5 px-4 text-xs font-medium text-slate-500">
+                {{ client.email || '-' }}
+              </td>
+              <!-- Deuda (pill verde pastel para $0.00 o rojo pastel si debe) -->
+              <td class="py-3.5 px-4">
+                <span
+                  class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold"
+                  :class="client.debt > 0 ? 'bg-red-50 text-red-600 border border-red-100' : 'bg-emerald-50 text-emerald-600 border border-emerald-100'"
                 >
-                  <option value="">Acciones</option>
-                  <option value="verVentas">Ver Ventas</option>
-                  <option value="edit">Editar</option>
-                  <option value="delete">Eliminar</option>
-                </select>
+                  {{ formatValue(client.debt) }}
+                </span>
+              </td>
+              <!-- Acciones selector elegante con tres puntos -->
+              <td class="py-3.5 px-4 text-right">
+                <div class="inline-flex items-center justify-end gap-1.5">
+                  <select
+                    class="py-1.5 px-3 border border-gray-200 rounded-full bg-white text-xs font-semibold text-slate-600 hover:border-gray-300 focus:outline-none focus:border-orange-500 cursor-pointer shadow-sm transition-all"
+                    @change="handleActionChange(client, $event)"
+                  >
+                    <option value="">Acciones ▾</option>
+                    <option value="verVentas">Ver Ventas</option>
+                    <option value="edit">Editar</option>
+                    <option value="delete">Eliminar</option>
+                  </select>
+                </div>
               </td>
             </tr>
           </tbody>
@@ -434,8 +518,43 @@ export default {
       selectedClientForSales: null,
     };
   },
-  computed: {},
+  computed: {
+    totalClientsCount() {
+      return this.clientStore.pagination.total || this.clientStore.clients.length;
+    },
+    clientsWithDebtCount() {
+      return this.clientStore.clients.filter((c) => Number(c.debt || 0) > 0).length;
+    },
+    totalDebtAmount() {
+      return this.clientStore.clients.reduce((acc, c) => acc + Number(c.debt || 0), 0);
+    },
+  },
   methods: {
+    getInitials(name) {
+      if (!name) return "CL";
+      const parts = name.trim().split(" ");
+      if (parts.length >= 2) {
+        return (parts[0][0] + parts[1][0]).toUpperCase();
+      }
+      return name.slice(0, 2).toUpperCase();
+    },
+    getAvatarColor(name, index) {
+      const palette = [
+        "#f97316", // Naranja
+        "#8b5cf6", // Violeta
+        "#3b82f6", // Azul
+        "#10b981", // Esmeralda
+        "#ec4899", // Rosa
+        "#06b6d4", // Cyan
+        "#f59e0b", // Ámbar
+      ];
+      return palette[index % palette.length];
+    },
+    filterByDebtOnly() {
+      this.showFilters = true;
+      this.clientStore.hasDebt = "true";
+      this.applyClientFilters();
+    },
     async handleActionChange(client, event) {
       const action = event.target.value;
       switch (action) {
