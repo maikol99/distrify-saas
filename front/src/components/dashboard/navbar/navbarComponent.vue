@@ -19,40 +19,39 @@
   >
     <!-- Header -->
     <div
-      class="p-5 border-bottom border-white/10 flex items-center justify-between min-h-[80px]"
+      class="p-4 border-bottom border-white/10 min-h-[90px] flex flex-col justify-center"
     >
-      <div class="flex items-center gap-2">
-        <img
-          v-if="!globalStore.isSidebarCollapsed"
-          src="/alevia-logo.png"
-          alt="Alevia Pay"
-          class="w-32 h-auto object-contain flex-shrink-0"
-        />
-        <span
-          v-if="!globalStore.isSidebarCollapsed"
-          class="bg-orange-50 text-primary text-[10px] font-black px-1.5 py-0.5 rounded-full border border-primary/20 flex-shrink-0"
-          >v1.3.5</span
-        >
-      </div>
+      <div v-if="!globalStore.isSidebarCollapsed" class="flex items-center justify-between w-full">
+        <div class="flex items-center gap-2">
+          <img
+            src="/alevia-logo.png"
+            alt="Alevia Pay"
+            class="w-38 max-w-[155px] h-auto object-contain flex-shrink-0"
+          />
+          <span
+            class="bg-orange-50 text-primary text-[10px] font-black px-1.5 py-0.5 rounded-full border border-primary/20 flex-shrink-0 self-start mt-1"
+            >v1.3.5</span
+          >
+        </div>
 
-      <div
-        @click="handleNotificationClick"
-        class="hidden md:block relative cursor-pointer text-slate-400 hover:text-primary transition-all p-1.5 hover:bg-slate-100 rounded-xl flex-shrink-0"
-        v-if="!globalStore.isSidebarCollapsed"
-      >
-        <span class="material-symbols-outlined text-[20px]">notifications</span>
-        <span
-          v-if="notificationStore.unreadCount > 0"
-          class="absolute top-1 right-1 w-2 h-2 bg-primary rounded-full animate-ping"
-        ></span>
-        <span
-          v-if="notificationStore.unreadCount > 0"
-          class="absolute top-1 right-1 w-2 h-2 bg-primary rounded-full"
-        ></span>
+        <div
+          @click="handleNotificationClick"
+          class="hidden md:block relative cursor-pointer text-slate-400 hover:text-primary transition-all p-1.5 hover:bg-slate-100 rounded-xl flex-shrink-0"
+        >
+          <span class="material-symbols-outlined text-[20px]">notifications</span>
+          <span
+            v-if="notificationStore.unreadCount > 0"
+            class="absolute top-1 right-1 w-2 h-2 bg-primary rounded-full animate-ping"
+          ></span>
+          <span
+            v-if="notificationStore.unreadCount > 0"
+            class="absolute top-1 right-1 w-2 h-2 bg-primary rounded-full"
+          ></span>
+        </div>
       </div>
 
       <button
-        class="md:hidden text-slate-400 hover:text-primary"
+        class="md:hidden text-slate-400 hover:text-primary self-end"
         @click="closeMobileMenu"
       >
         <span class="material-symbols-outlined">close</span>

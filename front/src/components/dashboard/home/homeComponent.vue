@@ -955,7 +955,7 @@ export default {
 }
 
 .chart-wrapper {
-  height: 185px;
+  height: 230px;
   width: 100%;
   position: relative;
 }
@@ -976,14 +976,14 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-around;
-  gap: 1.25rem;
-  height: 185px;
+  gap: 1.5rem;
+  height: 230px;
   width: 100%;
 }
 
 .doughnut-container {
-  flex: 1;
-  max-width: 175px;
+  flex: 1.2;
+  max-width: 230px;
   height: 100%;
   position: relative;
 }
@@ -991,9 +991,9 @@ export default {
 .payment-legend {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.85rem;
   flex: 1;
-  max-width: 180px;
+  max-width: 190px;
 }
 
 .legend-item {
