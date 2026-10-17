@@ -807,33 +807,12 @@
     </div>
     </Teleport>
 
-    <!-- Quick Output Modal -->
-    <Teleport to="body">
-    <div v-if="showQuickOutput" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" @click.self="showQuickOutput = false">
-      <div class="bg-white rounded-xl p-6 w-full max-w-md">
-        <h3 class="text-lg font-bold mb-4">Registrar Egreso Rápido</h3>
-        <input v-model="quickOutput.description" placeholder="Descripción" class="w-full p-2 border rounded-lg mb-3" />
-        <input v-model.number="quickOutput.total" type="number" placeholder="Monto" class="w-full p-2 border rounded-lg mb-3" />
-        <select v-model="quickOutput.category" class="w-full p-2 border rounded-lg mb-3">
-          <option value="Alquiler">Alquiler</option>
-          <option value="Servicios">Servicios</option>
-          <option value="Sueldos">Sueldos</option>
-          <option value="Impuestos">Impuestos</option>
-          <option value="Otros">Otros</option>
-        </select>
-        <select v-model="quickOutput.paymentMethod" class="w-full p-2 border rounded-lg mb-4">
-          <option value="Efectivo">Efectivo</option>
-          <option value="Transferencia">Transferencia</option>
-          <option value="TarjetaCredito">Tarjeta de Crédito</option>
-          <option value="TarjetaDebito">Tarjeta de Débito</option>
-        </select>
-        <div class="flex justify-end gap-3">
-          <button @click="showQuickOutput = false" class="px-4 py-2 bg-gray-200 rounded-lg">Cancelar</button>
-          <button @click="createQuickOutput" class="px-4 py-2 bg-red-500 text-white rounded-lg">Guardar</button>
-        </div>
-      </div>
-    </div>
-    </Teleport>
+    <!-- Quick Output Modal: Usar el modal completo de Registrar Egreso (con Gasto del Local y Pago a Proveedor) -->
+    <createOutput
+      v-if="showQuickOutput"
+      @close="showQuickOutput = false"
+      @submit="handleOutputCreated"
+    ></createOutput>
 
     <!-- Modales -->
 
@@ -1193,6 +1172,7 @@ import useVuelidate from "@vuelidate/core";
 import paymentMethods from "@/components/visuals/sales/paymentMethods.vue";
 import spinnerComponent from "@/components/visuals/spinnerComponent.vue";
 import variantsSelectorModal from "@/components/visuals/sales/variantsSelectorModal.vue";
+import createOutput from "@/components/visuals/outputs/createOutput.vue";
 import sentTicketByEmail from "@/components/visuals/sales/sentTicketByEmail.vue";
 import toastComponent from "@/components/visuals/toast/toastComponent.vue";
 import numeral from "numeral";
@@ -1213,6 +1193,7 @@ export default {
     spinnerComponent,
     variantsSelectorModal,
     sentTicketByEmail,
+    createOutput,
     toastComponent,
 
     clientSelectorModal: defineAsyncComponent(
@@ -1514,6 +1495,11 @@ export default {
       } catch (e) {
         this.showToast('Error al registrar ingreso', 'danger');
       }
+    },
+
+    handleOutputCreated() {
+      this.showQuickOutput = false;
+      this.showToast('Egreso registrado correctamente', 'success');
     },
 
     async createQuickOutput() {
